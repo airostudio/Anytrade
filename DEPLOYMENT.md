@@ -2,11 +2,12 @@
 
 ## Quick Fix for Current Build Error
 
-The build error you're seeing is because Prisma client needs to be generated during the build process. I've just pushed a fix that:
+The build errors have been fixed! Latest changes:
 
-1. ✅ Moved `prisma` to regular dependencies (was in devDependencies)
-2. ✅ Added automatic Prisma client generation via postinstall script
-3. ✅ Updated build command to generate Prisma before building Next.js
+1. ✅ Downgraded to Prisma 5.22.0 (stable version, fixes schema compatibility)
+2. ✅ Moved `prisma` to regular dependencies for Vercel builds
+3. ✅ Added automatic Prisma client generation via postinstall script
+4. ✅ Updated build command to generate Prisma before building Next.js
 
 **Action Required:** Vercel should automatically redeploy with the latest push. The build should now succeed.
 
@@ -244,6 +245,13 @@ CREATE INDEX "Payment_status_idx" ON "Payment"("status");
 1. Check Vercel build logs for specific errors
 2. Ensure `PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1` is set in environment variables
 3. Try triggering a manual redeploy
+
+### "The datasource property url is no longer supported" error?
+This was an issue with Prisma 7.x which has breaking changes. The project now uses Prisma 5.22.0 (stable version) which is compatible with the schema. If you still see this error:
+1. Make sure you've pulled the latest code
+2. Delete `node_modules` and `package-lock.json`
+3. Run `npm install` again
+4. Redeploy
 
 ### Can't sign in after deploying?
 1. Make sure `DATABASE_URL` is set and correct
