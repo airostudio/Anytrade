@@ -12,11 +12,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^7.2.0",
+    "bcryptjs": "^3.0.3",
     "next": "14.2.15",
+    "next-auth": "^5.0.0-beta.30",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.69.0",
+    "stripe": "^20.1.0",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -24,6 +33,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
+    "prisma": "^7.2.0",
     "tailwindcss": "^3.4.14",
     "typescript": "^5"
   }
