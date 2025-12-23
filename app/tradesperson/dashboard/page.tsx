@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { signOut } from '@/lib/auth'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import Logo from '@/app/components/Logo'
 
 export default async function TradespersonDashboardPage() {
   const session = await auth()
@@ -30,9 +31,7 @@ export default async function TradespersonDashboardPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              AnyTrade
-            </Link>
+            <Logo size="small" />
             <span className="text-sm text-gray-500">Tradesperson Dashboard</span>
           </div>
           <div className="flex items-center space-x-4">

@@ -1,4 +1,5 @@
 import BackgroundSlideshow from './components/BackgroundSlideshow'
+import Logo from './components/Logo'
 
 export default function HomePage() {
   return (
@@ -6,9 +7,11 @@ export default function HomePage() {
       <BackgroundSlideshow />
 
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl">
-          AnyTrade
-        </h1>
+        <div className="mb-8 flex justify-center">
+          <div className="bg-white/95 backdrop-blur-sm px-8 py-6 rounded-2xl shadow-2xl">
+            <Logo size="large" />
+          </div>
+        </div>
         <p className="text-2xl md:text-3xl text-white mb-12 drop-shadow-lg font-medium">
           Find Trusted Tradespeople for Any Job
         </p>
