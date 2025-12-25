@@ -69,8 +69,36 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error("Signup error:", error)
+
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      // Database connection error
+      if (error.message.includes('connect') || error.message.includes('ECONNREFUSED')) {
+        return NextResponse.json(
+          { error: "Database connection failed. Please check DATABASE_URL." },
+          { status: 500 }
+        )
+      }
+
+      // Table doesn't exist
+      if (error.message.includes('relation') || error.message.includes('does not exist')) {
+        return NextResponse.json(
+          { error: "Database tables not found. Please run: npx prisma db push" },
+          { status: 500 }
+        )
+      }
+
+      // Prisma client not generated
+      if (error.message.includes('PrismaClient')) {
+        return NextResponse.json(
+          { error: "Prisma client not initialized. Please run: npx prisma generate" },
+          { status: 500 }
+        )
+      }
+    }
+
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     )
   }
