@@ -65,14 +65,16 @@ export default function HomePage() {
               </div>
             </div>
             <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-              {/* Placeholder for retro Aussie tradesman image */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-blue-500 flex items-center justify-center">
-                <div className="text-center text-white p-8">
-                  <p className="text-2xl font-bold mb-2">Hero Image Placeholder</p>
-                  <p className="text-sm opacity-90">Replace with 1960s-70s Aussie tradesman with Holden/Ford ute</p>
-                  <p className="text-xs mt-4 opacity-75">Suggested: /images/hero-retro-tradesman.jpg</p>
-                </div>
-              </div>
+              <Image
+                src="/images/hero-retro-tradesman.png"
+                alt="Classic Australian Tradesman with Vintage Ute"
+                fill
+                className="object-cover"
+                priority
+              />
+              {/* Subtle vintage overlay for extra authenticity */}
+              <div className="absolute inset-0 bg-orange-900/10 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           </div>
         </div>
