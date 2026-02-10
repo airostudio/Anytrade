@@ -13,6 +13,7 @@ datasource db {
 enum UserRole {
   CLIENT
   TRADESPERSON
+  ADMIN
 }
 
 enum JobStatus {
