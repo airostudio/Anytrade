@@ -131,6 +131,45 @@ The webhook (`/api/stripe/webhook`) handles `checkout.session.completed`,
 `customer.subscription.deleted` and `charge.refunded`. It is idempotent —
 Stripe retries, and an already-settled payment is skipped.
 
+### Paying tradies — Stripe Connect
+
+Tradies onboard as **Express** accounts. Job money uses **separate charges and
+transfers**, not destination charges: the customer is charged to the platform,
+the funds sit in escrow, and a `Transfer` moves the tradie's share across when
+the customer signs the job off. A destination charge would pay out the moment
+the card is captured, which is exactly what escrow exists to prevent.
+
+The money path, end to end:
+
+1. Customer accepts a quote and pays into escrow. The PaymentIntent carries a
+   `transfer_group` of `job_<id>` so the two halves reconcile in Stripe.
+2. Payment sits as `HELD_IN_ESCROW`. AnyTrade holds it, not the tradie.
+3. The customer signs the job off. That releases the escrow **and** fires the
+   payout — no separate "release" step to forget.
+4. `payoutForPayment()` transfers `tradesperson_amount` to the connected
+   account, sourced from the original charge. The platform keeps the fee simply
+   by transferring less than it charged.
+
+If the tradie has not finished onboarding when the money is released, the payout
+is parked as `transfer_status = 'pending_account'` rather than failing silently.
+They are told what is waiting, and `settlePendingTransfers()` sweeps it the
+moment their account goes live — triggered by the `account.updated` webhook or
+by the "Check with Stripe" button.
+
+`lib/connect.ts` owns all of this. Connect webhook events (`account.updated`,
+`transfer.created`, `transfer.reversed`, `payout.failed`) come into the same
+endpoint — register the URL as a Connect endpoint as well as an account one.
+
+Payout state is derived by `payoutSummary()` into one of five states —
+`not_started`, `incomplete`, `pending_review`, `ready`, `restricted` — which is
+what both the tradie's billing page and the admin tradie list render. Stripe's
+raw requirement keys are translated into plain English by `describeRequirement()`
+so a tradie reads "Bank account for payouts", not `external_account`.
+
+Without Stripe keys, Connect runs in demo mode too: onboarding completes inline
+against a clearly-fake `acct_demo_…` id and transfers are recorded as paid, so
+the whole payout lifecycle is demonstrable before you have an account.
+
 ### The two passcode gates
 
 `lib/gates.ts` implements both. The cookie stores an HMAC of the *current*

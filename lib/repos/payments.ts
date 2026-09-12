@@ -1,5 +1,11 @@
 import { query, queryOne, safeRead } from '../db'
-import type { PaymentRow, PaymentStatus, PaymentType, PaymentWithContext } from '../types'
+import type {
+  PaymentRow,
+  PaymentStatus,
+  PaymentType,
+  PaymentWithContext,
+  TransferStatus,
+} from '../types'
 
 const PAYMENT_SELECT = `
   SELECT p.*,
@@ -189,6 +195,110 @@ export async function revenueByMonth(months = 12): Promise<{ month: string; gros
           GROUP BY date_trunc('month', created_at)
           ORDER BY date_trunc('month', created_at)`,
         [String(months)]
+      ),
+    []
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Payout leg (Stripe Connect transfers)
+// ─────────────────────────────────────────────────────────────
+
+export async function setTransferGroup(
+  paymentId: string,
+  transferGroup: string,
+  destinationAccountId: string | null
+): Promise<void> {
+  await query(
+    `UPDATE payments
+        SET transfer_group = COALESCE(transfer_group, $2),
+            destination_account_id = COALESCE($3, destination_account_id)
+      WHERE id = $1`,
+    [paymentId, transferGroup, destinationAccountId]
+  )
+}
+
+export async function recordTransfer(
+  paymentId: string,
+  patch: {
+    status: TransferStatus
+    transferId?: string | null
+    destinationAccountId?: string | null
+    error?: string | null
+  }
+): Promise<void> {
+  await query(
+    `UPDATE payments
+        SET transfer_status        = $2,
+            stripe_transfer_id     = COALESCE($3, stripe_transfer_id),
+            destination_account_id = COALESCE($4, destination_account_id),
+            transfer_error         = $5,
+            transferred_at         = CASE WHEN $2 = 'paid' THEN now() ELSE transferred_at END
+      WHERE id = $1`,
+    [
+      paymentId,
+      patch.status,
+      patch.transferId ?? null,
+      patch.destinationAccountId ?? null,
+      patch.error ?? null,
+    ]
+  )
+}
+
+export async function getPaymentByTransfer(transferId: string): Promise<PaymentRow | null> {
+  return safeRead(
+    () => queryOne<PaymentRow>('SELECT * FROM payments WHERE stripe_transfer_id = $1', [transferId]),
+    null
+  )
+}
+
+/**
+ * Escrow that the customer has already released but which could not be paid
+ * out, because the tradie had no usable payout account at the time. These are
+ * swept as soon as their Connect account goes live.
+ */
+export async function paymentsAwaitingTransfer(tradespersonId?: string): Promise<PaymentRow[]> {
+  const sql = tradespersonId
+    ? `SELECT p.* FROM payments p
+         JOIN bids b ON b.job_id = p.job_id AND b.status = 'ACCEPTED'
+        WHERE p.transfer_status = 'pending_account'
+          AND p.status = 'RELEASED'
+          AND b.tradesperson_id = $1
+        ORDER BY p.created_at`
+    : `SELECT * FROM payments
+        WHERE transfer_status = 'pending_account' AND status = 'RELEASED'
+        ORDER BY created_at`
+  return safeRead(() => query<PaymentRow>(sql, tradespersonId ? [tradespersonId] : []), [])
+}
+
+/** Total still owed to tradies because their payout account is not ready. */
+export async function unpaidTransferTotal(): Promise<number> {
+  const row = await safeRead(
+    () =>
+      queryOne<{ total: number }>(
+        `SELECT COALESCE(SUM(tradesperson_amount), 0) AS total
+           FROM payments WHERE transfer_status = 'pending_account' AND status = 'RELEASED'`
+      ),
+    null
+  )
+  return Number(row?.total ?? 0)
+}
+
+/** Escrowed job payments where this tradie is the payee, newest first. */
+export async function earningsForTradie(
+  tradespersonId: string,
+  limit = 50
+): Promise<PaymentWithContext[]> {
+  return safeRead(
+    () =>
+      query<PaymentWithContext>(
+        `${PAYMENT_SELECT}
+          JOIN bids b ON b.job_id = p.job_id AND b.status = 'ACCEPTED'
+         WHERE b.tradesperson_id = $1
+           AND p.type IN ('JOB_DEPOSIT','JOB_BALANCE')
+         ORDER BY p.created_at DESC
+         LIMIT $2`,
+        [tradespersonId, limit]
       ),
     []
   )

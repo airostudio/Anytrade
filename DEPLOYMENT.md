@@ -52,6 +52,7 @@ psql "$DATABASE_URL" -f db/schema.sql
 | `HOMEGIRLS_PASSCODE`    | strongly | As above, for the Homegirls section                           |
 | `STRIPE_SECRET_KEY`     | no       | Omit to run billing in demo mode                              |
 | `STRIPE_WEBHOOK_SECRET` | no       | Required if `STRIPE_SECRET_KEY` is set                        |
+| `STRIPE_CONNECT_COUNTRY`| no       | Platform country for Connect accounts (default `AU`)          |
 | `PGPOOL_MAX`            | no       | Max pooled connections (default 10)                           |
 
 Set the two passcodes in the environment for production. They take precedence
@@ -102,12 +103,56 @@ is reachable and whether keys are configured.
 
 Prices are defined in code (`CREDIT_PACKS` and `MEMBERSHIP_PLANS` in
 `lib/constants.ts`) and sent to Checkout as inline `price_data`, so there are no
-Stripe Price IDs to keep in sync. Escrow payouts to tradies are recorded against
-each payment (`tradesperson_amount`); wiring actual transfers requires Stripe
-Connect onboarding, for which the `stripe_account_id` and `stripe_onboarded`
-columns are already in place.
+Stripe Price IDs to keep in sync.
 
-## 6. First admin account
+## 6. Stripe Connect (paying tradies)
+
+Tradies are paid via Connect **Express** accounts, using separate charges and
+transfers so money can be held in escrow until the customer signs the job off.
+
+1. **Enable Connect** in the Stripe dashboard (Connect → Get started) and pick
+   **Express** as the account type.
+2. **Set the platform country** if you are not operating in Australia:
+   `STRIPE_CONNECT_COUNTRY=NZ` (defaults to `AU`).
+3. **Brand the onboarding** under Connect → Settings → Branding. Tradies see
+   this during sign-up, so it should look like AnyTrade, not like Stripe.
+4. **Register the Connect webhook.** The same URL handles both, but Stripe
+   treats them as separate endpoints — add
+   `https://your-domain/api/stripe/webhook` a second time as a **Connect**
+   endpoint and subscribe it to:
+   - `account.updated`
+   - `transfer.created`
+   - `transfer.reversed`
+   - `payout.failed`
+
+   Use the same `STRIPE_WEBHOOK_SECRET` if Stripe issues one secret, or set the
+   Connect endpoint's secret if it differs.
+5. **Fund transfers.** Transfers draw on the platform's Stripe balance. Because
+   each transfer is sourced from the original charge, the money is normally
+   already there — but a negative balance will make transfers fail, so keep an
+   eye on Balance → Overview while volume is low.
+
+### What tradies see
+
+`/tradie/billing` shows a payout panel in one of five states: not set up, half
+finished, being checked, ready, or action needed. Stripe's requirement keys are
+translated into plain English, and the panel links straight into their Express
+dashboard once connected.
+
+### If a tradie is not onboarded when money is released
+
+The payout is parked (`payments.transfer_status = 'pending_account'`), the
+tradie is told what is waiting, and it transfers automatically once their
+account goes live. Nothing is lost and nothing needs manual intervention.
+Admin → Payments shows the total parked and who it is waiting on.
+
+### Testing Connect
+
+In Stripe test mode, onboarding accepts test values — use `000-000` as the SMS
+code and the prefilled test data Stripe offers. Test-mode transfers settle
+instantly. `GET /api/stripe/webhook` confirms which events the endpoint expects.
+
+## 7. First admin account
 
 `npm run db:seed` creates `admin@anytrade.com.au`. On a production database
 seeded only with the schema, promote an account you have signed up:
@@ -118,7 +163,7 @@ UPDATE users SET role = 'ADMIN' WHERE email = 'you@example.com';
 
 Then sign in and enter the admin passcode at `/admin/unlock`.
 
-## 7. After deploying — worth checking
+## 8. After deploying — worth checking
 
 - `/` renders and the directory lists tradies.
 - Sign in lands each role on its own dashboard.
@@ -126,6 +171,8 @@ Then sign in and enter the admin passcode at `/admin/unlock`.
 - `/homegirls` redirects to `/homegirls/enter`.
 - A test job can be posted, quoted on and hired.
 - If Stripe is live, a test-mode purchase reaches the webhook and credits land.
+- A tradie can start Connect onboarding and comes back with payouts enabled.
+- Signing a funded job off releases the escrow and transfers the tradie's share.
 
 The Playwright suite covers all of this — point it at the deployment:
 

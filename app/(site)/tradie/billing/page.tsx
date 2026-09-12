@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import { Panel, Pill, SectionHeading, StatTile, Stamp } from '@/components/ui'
 import { getTradieByUserId, creditHistory } from '@/lib/repos/tradies'
-import { paymentsForUser } from '@/lib/repos/payments'
+import { paymentsForUser, paymentsAwaitingTransfer } from '@/lib/repos/payments'
+import { describeRequirement, payoutSummary } from '@/lib/connect'
+import PayoutPanel from '@/components/PayoutPanel'
 import { isStripeLive } from '@/lib/stripe'
 import { MEMBERSHIP_PLANS } from '@/lib/constants'
 import {
@@ -13,7 +15,8 @@ import {
   PAYMENT_STATUS_LABEL,
   paymentStatusTone,
 } from '@/lib/utils'
-import type { CreditLedgerRow } from '@/lib/types'
+import type { CreditLedgerRow, PaymentStatus, TransferStatus } from '@/lib/types'
+import { earningsForTradie } from '@/lib/repos/payments'
 import BuyForms from './BuyForms'
 
 export const dynamic = 'force-dynamic'
@@ -29,10 +32,15 @@ export default async function BillingPage({
   const tradie = await getTradieByUserId(session.user.id)
   if (!tradie) return null
 
-  const [payments, ledger] = await Promise.all([
+  const [payments, ledger, awaiting] = await Promise.all([
     paymentsForUser(session.user.id, 50),
     creditHistory(tradie.id, 25) as Promise<CreditLedgerRow[]>,
+    paymentsAwaitingTransfer(tradie.id),
   ])
+
+  const payouts = payoutSummary(tradie)
+  const awaitingTotal = awaiting.reduce((total, p) => total + p.tradesperson_amount, 0)
+  const jobEarnings = await earningsForTradie(tradie.id)
 
   const live = isStripeLive()
   const currentPlan = MEMBERSHIP_PLANS.find((p) => p.tier === tradie.membership_tier)
@@ -114,6 +122,16 @@ export default async function BillingPage({
         </Panel>
       ) : null}
 
+      <PayoutPanel
+        state={payouts.state}
+        label={payouts.label}
+        blurb={payouts.blurb}
+        accountId={payouts.accountId}
+        requirements={payouts.requirements.map(describeRequirement)}
+        awaitingTransfer={awaitingTotal}
+        stripeLive={live}
+      />
+
       <BuyForms currentTier={tradie.membership_tier} highlightPlan={searchParams.plan} />
 
       {/* Credit ledger */}
@@ -160,6 +178,59 @@ export default async function BillingPage({
         ) : (
           <Panel className="p-5 text-sm text-ink-soft">
             No credit movements yet. Your sign-up credits will show here.
+          </Panel>
+        )}
+      </section>
+
+      {/* Job earnings */}
+      <section>
+        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Job earnings</h2>
+        {jobEarnings.length ? (
+          <Panel className="overflow-x-auto">
+            <table className="w-full min-w-[720px] text-sm">
+              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+                <tr>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3">Job</th>
+                  <th className="px-4 py-3 text-right">Customer paid</th>
+                  <th className="px-4 py-3 text-right">AnyTrade fee</th>
+                  <th className="px-4 py-3 text-right">Your share</th>
+                  <th className="px-4 py-3">Payout</th>
+                </tr>
+              </thead>
+              <tbody>
+                {jobEarnings.map((payment) => (
+                  <tr key={payment.id} className="border-b border-dashed border-ink/20">
+                    <td className="px-4 py-3 whitespace-nowrap">{formatDate(payment.created_at)}</td>
+                    <td className="px-4 py-3">
+                      {payment.job_title ?? payment.description ?? '—'}
+                      {payment.job_reference ? (
+                        <span className="block font-mono text-xs text-ink-mute">
+                          {payment.job_reference}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono">{money(payment.amount, true)}</td>
+                    <td className="px-4 py-3 text-right font-mono text-ink-mute">
+                      −{money(payment.platform_fee, true)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono font-bold">
+                      {money(payment.tradesperson_amount, true)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Pill className={transferTone(payment.transfer_status, payment.status)}>
+                        {transferLabel(payment.transfer_status, payment.status)}
+                      </Pill>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Panel>
+        ) : (
+          <Panel className="p-5 text-sm text-ink-soft">
+            No escrowed job payments yet. Customers can choose to pay through AnyTrade when they
+            accept your quote.
           </Panel>
         )}
       </section>
@@ -212,4 +283,23 @@ export default async function BillingPage({
       </Panel>
     </div>
   )
+}
+
+
+/** How a job payment's payout leg reads to the tradie. */
+function transferLabel(transfer: TransferStatus | null, payment: PaymentStatus): string {
+  if (transfer === 'paid') return 'Paid out'
+  if (transfer === 'failed') return 'Payout failed'
+  if (transfer === 'reversed') return 'Reversed'
+  if (transfer === 'pending_account') return 'Waiting on your account'
+  if (payment === 'HELD_IN_ESCROW') return 'Held in escrow'
+  return PAYMENT_STATUS_LABEL[payment]
+}
+
+function transferTone(transfer: TransferStatus | null, payment: PaymentStatus): string {
+  if (transfer === 'paid') return 'border-bottle bg-bottle text-canvas'
+  if (transfer === 'failed' || transfer === 'reversed') return 'border-oxide bg-oxide text-canvas'
+  if (transfer === 'pending_account') return 'border-ink bg-mustard text-ink'
+  if (payment === 'HELD_IN_ESCROW') return 'border-ink bg-canvas-dark text-ink'
+  return paymentStatusTone(payment)
 }

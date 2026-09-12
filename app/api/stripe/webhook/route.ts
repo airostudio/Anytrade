@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { isStripeLive, verifyWebhook } from '@/lib/stripe'
 import { fulfilPayment } from '@/lib/fulfilment'
-import { markPaymentStatus } from '@/lib/repos/payments'
+import { getPaymentByTransfer, markPaymentStatus, recordTransfer } from '@/lib/repos/payments'
+import { handleAccountUpdated } from '@/lib/connect'
 import { query } from '@/lib/db'
 
 export const runtime = 'nodejs'
@@ -106,6 +107,52 @@ export async function POST(request: Request) {
         break
       }
 
+      // ── Connect: the tradie's payout account ──────────────────────────
+      case 'account.updated': {
+        await handleAccountUpdated(event.data.object as Stripe.Account)
+        break
+      }
+
+      case 'transfer.created': {
+        const transfer = event.data.object as Stripe.Transfer
+        const paymentId = transfer.metadata?.paymentId
+        if (paymentId) {
+          await recordTransfer(paymentId, {
+            status: 'paid',
+            transferId: transfer.id,
+            destinationAccountId:
+              typeof transfer.destination === 'string'
+                ? transfer.destination
+                : (transfer.destination?.id ?? null),
+          })
+        }
+        break
+      }
+
+      case 'transfer.reversed': {
+        const transfer = event.data.object as Stripe.Transfer
+        const payment =
+          (transfer.metadata?.paymentId
+            ? { id: transfer.metadata.paymentId }
+            : await getPaymentByTransfer(transfer.id)) ?? null
+        if (payment) {
+          await recordTransfer(payment.id, {
+            status: 'reversed',
+            transferId: transfer.id,
+            error: 'Transfer reversed in Stripe.',
+          })
+        }
+        break
+      }
+
+      case 'payout.failed': {
+        // A payout failing is the connected account's problem (bad bank
+        // details), not the transfer's. Re-syncing surfaces the requirement.
+        const payout = event.data.object as Stripe.Payout
+        console.error('[stripe] payout failed', payout.id, payout.failure_message)
+        break
+      }
+
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge
         const intentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : null
@@ -123,7 +170,10 @@ export async function POST(request: Request) {
         break
     }
   } catch (error) {
-    console.error(`[stripe] handler for ${event.type} failed`, error)
+    console.error(
+      `[stripe] handler for ${event.type} failed${event.account ? ` (account ${event.account})` : ''}`,
+      error
+    )
     // 500 tells Stripe to retry, which is what we want for a transient DB error.
     return NextResponse.json({ error: 'Handler failed.' }, { status: 500 })
   }
@@ -136,6 +186,18 @@ export async function GET() {
   return NextResponse.json({
     endpoint: 'stripe-webhook',
     configured: isStripeLive(),
-    expects: ['checkout.session.completed', 'invoice.paid', 'customer.subscription.deleted'],
+    expects: [
+      'checkout.session.completed',
+      'checkout.session.expired',
+      'payment_intent.payment_failed',
+      'invoice.paid',
+      'customer.subscription.deleted',
+      'charge.refunded',
+      // Connect (register this URL as a Connect endpoint too)
+      'account.updated',
+      'transfer.created',
+      'transfer.reversed',
+      'payout.failed',
+    ],
   })
 }

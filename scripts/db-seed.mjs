@@ -209,6 +209,11 @@ async function main() {
           ? 'PENDING'
           : 'UNVERIFIED'
 
+      // Stripe Connect: most established tradies are set up to be paid, a few
+      // are part-way through, and the newest have not started. Demo account ids
+      // are clearly fake so nobody mistakes them for live Stripe accounts.
+      const connect = connectStateFor(tradie)
+
       const tradieRes = await client.query(
         `INSERT INTO tradespeople (
            user_id, slug, business_name, tagline, bio, trades, handyman_services,
@@ -217,13 +222,16 @@ async function main() {
            free_quotes, service_areas, base_suburb, city, state, postcode, travel_radius_km,
            available_now, available_weekends, emergency_callouts, is_homegirl,
            membership_tier, membership_started_at, membership_ends_at, lead_credits,
+           stripe_account_id, stripe_charges_enabled, stripe_payouts_enabled,
+           stripe_details_submitted, stripe_requirements, stripe_onboarded, stripe_onboarded_at,
            average_rating, total_reviews, rating_quality, rating_punctuality, rating_value,
            rating_communication, rating_tidiness, completed_jobs, total_bids, won_bids,
            response_rate, response_time_mins, profile_views, is_featured, featured_until, created_at
          ) VALUES (
            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15::verification_status,$16,$17,$18,$19,
            $20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31::membership_tier,$32,$33,$34,
-           $35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50
+           $35,$36,$37,$38,$39,$40,$41,
+           $42,$43,$44,$45,$46,$47,$48,$49,$50,$51,$52,$53,$54,$55,$56,$57
          ) RETURNING id`,
         [
           userId,
@@ -260,6 +268,13 @@ async function main() {
           tradie.tier === 'FREE' ? null : daysAgo(intBetween(20, 300)),
           tradie.tier === 'FREE' ? null : daysAgo(-intBetween(3, 28)),
           tradie.credits,
+          connect.accountId,
+          connect.chargesEnabled,
+          connect.payoutsEnabled,
+          connect.detailsSubmitted,
+          connect.requirements,
+          connect.payoutsEnabled,
+          connect.payoutsEnabled ? daysAgo(intBetween(10, 260)) : null,
           tradie.rating,
           tradie.reviews,
           Math.min(5, tradie.rating + between(-0.2, 0.15)).toFixed(2),
@@ -363,8 +378,14 @@ async function main() {
       const local = candidates.filter((t) => t.place.state === jobPlace.state)
       if (local.length) candidates = local
 
-      const wanted =
-        spec.status === 'CANCELLED'
+      // A `reserved` job keeps a slot open for the demo tradie: one rival quote
+      // so the comparison view has something to compare, and the demo tradie
+      // themselves held back so the lead is still live in their feed.
+      if (spec.reserved) candidates = candidates.filter((t) => t.id !== tradieRecords[0]?.id)
+
+      const wanted = spec.reserved
+        ? 1
+        : spec.status === 'CANCELLED'
           ? intBetween(0, 1)
           : spec.status === 'OPEN'
             ? intBetween(1, 3) // leave slots free so the board still has room
@@ -417,7 +438,7 @@ async function main() {
       await client.query('UPDATE jobs SET bid_count = $2 WHERE id = $1', [jobId, placedBids.length])
 
       // Shortlist a couple on jobs still being decided.
-      if (spec.status === 'OPEN' && placedBids.length > 2) {
+      if (spec.status === 'OPEN' && !spec.reserved && placedBids.length > 2) {
         const shortlisted = placedBids[0]
         await client.query(
           `UPDATE bids SET status = 'SHORTLISTED', is_shortlisted = TRUE, shortlisted_at = now() WHERE id = $1`,
@@ -455,11 +476,17 @@ async function main() {
         ? new Date(awardedAt.getTime() + intBetween(1, 10) * 86_400_000)
         : null
 
+      // The payout leg: paid out if the winner is Connect-ready, otherwise
+      // parked as pending_account exactly as the live flow would leave it.
+      const winnerConnect = connectStateFor(winner.tradie)
+      const transferStatus = completed ? (winnerConnect.payoutsEnabled ? 'paid' : 'pending_account') : null
+
       await client.query(
         `INSERT INTO payments (
            job_id, user_id, type, description, amount, platform_fee, tradesperson_amount,
-           status, held_at, released_at, stripe_checkout_session_id, created_at
-         ) VALUES ($1,$2,'JOB_DEPOSIT',$3,$4,$5,$6,$7::payment_status,$8,$9,$10,$11)`,
+           status, held_at, released_at, stripe_checkout_session_id, created_at,
+           transfer_group, destination_account_id, transfer_status, stripe_transfer_id, transferred_at
+         ) VALUES ($1,$2,'JOB_DEPOSIT',$3,$4,$5,$6,$7::payment_status,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
         [
           jobId,
           clientId,
@@ -472,6 +499,11 @@ async function main() {
           completedAt,
           `cs_demo_${slugify(reference()).slice(0, 18)}`,
           awardedAt,
+          `job_${jobId}`,
+          winnerConnect.accountId,
+          transferStatus,
+          transferStatus === 'paid' ? `tr_demo_${jobId.replace(/-/g, '').slice(0, 16)}` : null,
+          transferStatus === 'paid' ? completedAt : null,
         ]
       )
       paymentCount++
@@ -777,6 +809,43 @@ async function main() {
   } finally {
     client.release()
     await pool.end()
+  }
+}
+
+/**
+ * Which payout state a seeded tradie is in. Paid-tier, verified tradies are
+ * onboarded; one is deliberately left half-finished so the "Stripe still needs"
+ * panel has something to show.
+ */
+function connectStateFor(tradie) {
+  const none = {
+    accountId: null,
+    chargesEnabled: false,
+    payoutsEnabled: false,
+    detailsSubmitted: false,
+    requirements: [],
+  }
+  if (!tradie.verified) return none
+
+  const id = `acct_demo_${slugify(tradie.business).replace(/-/g, '').slice(0, 14)}`
+
+  if (tradie.tier === 'FREE') {
+    // Started onboarding, never finished.
+    return {
+      accountId: id,
+      chargesEnabled: false,
+      payoutsEnabled: false,
+      detailsSubmitted: false,
+      requirements: ['external_account', 'individual.verification.document'],
+    }
+  }
+
+  return {
+    accountId: id,
+    chargesEnabled: true,
+    payoutsEnabled: true,
+    detailsSubmitted: true,
+    requirements: [],
   }
 }
 

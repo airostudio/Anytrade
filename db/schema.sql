@@ -156,6 +156,13 @@ CREATE TABLE IF NOT EXISTS tradespeople (
   stripe_account_id     TEXT UNIQUE,
   stripe_subscription_id TEXT UNIQUE,
   stripe_onboarded      BOOLEAN NOT NULL DEFAULT FALSE,
+  -- Stripe Connect payout readiness, mirrored from account.updated webhooks
+  stripe_charges_enabled   BOOLEAN NOT NULL DEFAULT FALSE,
+  stripe_payouts_enabled   BOOLEAN NOT NULL DEFAULT FALSE,
+  stripe_details_submitted BOOLEAN NOT NULL DEFAULT FALSE,
+  stripe_requirements      TEXT[] NOT NULL DEFAULT '{}',
+  stripe_onboarded_at      TIMESTAMPTZ,
+  stripe_account_synced_at TIMESTAMPTZ,
   lead_credits          INTEGER NOT NULL DEFAULT 0,
 
   average_rating        NUMERIC(3,2) NOT NULL DEFAULT 0,
@@ -345,6 +352,15 @@ CREATE TABLE IF NOT EXISTS payments (
   stripe_invoice_id          TEXT UNIQUE,
   receipt_url                TEXT,
 
+  -- Separate charges and transfers: the client's money is charged to the
+  -- platform and held, then transferred to the tradie's connected account when
+  -- the job is signed off. transfer_group ties the two halves together.
+  transfer_group         TEXT,
+  destination_account_id TEXT,
+  transfer_status        TEXT,  -- pending_account | paid | failed | reversed
+  transferred_at         TIMESTAMPTZ,
+  transfer_error         TEXT,
+
   status                     payment_status NOT NULL DEFAULT 'PENDING',
   held_at                    TIMESTAMPTZ,
   released_at                TIMESTAMPTZ,
@@ -473,3 +489,24 @@ CREATE TABLE IF NOT EXISTS contact_enquiries (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS contact_enquiries_handled_idx ON contact_enquiries (is_handled, created_at DESC);
+
+-- ── Upgrades ────────────────────────────────────────────────────────────────
+--  Applied to databases created before a column was introduced. Harmless on a
+--  fresh install, where the CREATE TABLE above already declares them.
+
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_charges_enabled   BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_payouts_enabled   BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_details_submitted BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_requirements      TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_onboarded_at      TIMESTAMPTZ;
+ALTER TABLE tradespeople ADD COLUMN IF NOT EXISTS stripe_account_synced_at TIMESTAMPTZ;
+
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS transfer_group         TEXT;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS destination_account_id TEXT;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS transfer_status        TEXT;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS transferred_at         TIMESTAMPTZ;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS transfer_error         TEXT;
+
+CREATE INDEX IF NOT EXISTS payments_transfer_status_idx ON payments (transfer_status)
+  WHERE transfer_status IS NOT NULL;
+CREATE INDEX IF NOT EXISTS tradespeople_payouts_idx ON tradespeople (stripe_payouts_enabled);

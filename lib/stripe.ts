@@ -59,6 +59,12 @@ export interface CheckoutOptions {
   cancelPath: string
   metadata: Record<string, string>
   line: CheckoutLine
+  /**
+   * Ties this charge to the Transfer that pays the tradie later. Required for
+   * escrowed job payments, which use separate charges and transfers so the
+   * money can be held until the customer signs the job off.
+   */
+  transferGroup?: string
 }
 
 /** Create a Checkout Session and return the URL to redirect the buyer to. */
@@ -88,7 +94,14 @@ export async function createCheckoutSession(opts: CheckoutOptions): Promise<stri
       },
     ],
     metadata: opts.metadata,
-    ...(isSubscription ? { subscription_data: { metadata: opts.metadata } } : {}),
+    ...(isSubscription
+      ? { subscription_data: { metadata: opts.metadata } }
+      : {
+          payment_intent_data: {
+            metadata: opts.metadata,
+            ...(opts.transferGroup ? { transfer_group: opts.transferGroup } : {}),
+          },
+        }),
     success_url: `${siteUrl()}${opts.successPath}${opts.successPath.includes('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl()}${opts.cancelPath}`,
     allow_promotion_codes: true,
@@ -120,4 +133,142 @@ export function verifyWebhook(payload: string, signature: string): Stripe.Event 
   const secret = process.env.STRIPE_WEBHOOK_SECRET
   if (!secret) throw new Error('STRIPE_WEBHOOK_SECRET is not set.')
   return stripe().webhooks.constructEvent(payload, signature, secret)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Stripe Connect
+//
+//  Tradies are onboarded as Express accounts. Job money uses *separate charges
+//  and transfers*: the customer is charged to the platform, the funds sit in
+//  escrow, and a Transfer moves the tradie's share across when the job is
+//  signed off. Destination charges would pay out at capture, which is exactly
+//  what escrow is meant to prevent.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** The country the platform operates in — drives Connect account defaults. */
+export const PLATFORM_COUNTRY = process.env.STRIPE_CONNECT_COUNTRY ?? 'AU'
+
+export interface ConnectAccountStatus {
+  id: string
+  chargesEnabled: boolean
+  payoutsEnabled: boolean
+  detailsSubmitted: boolean
+  /** Outstanding requirements Stripe still needs before payouts can run. */
+  requirements: string[]
+  disabledReason: string | null
+}
+
+function toStatus(account: Stripe.Account): ConnectAccountStatus {
+  const req = account.requirements
+  const outstanding = [
+    ...(req?.currently_due ?? []),
+    ...(req?.past_due ?? []),
+    ...(req?.eventually_due ?? []),
+  ]
+  return {
+    id: account.id,
+    chargesEnabled: Boolean(account.charges_enabled),
+    payoutsEnabled: Boolean(account.payouts_enabled),
+    detailsSubmitted: Boolean(account.details_submitted),
+    requirements: Array.from(new Set(outstanding)),
+    disabledReason: req?.disabled_reason ?? null,
+  }
+}
+
+/** Create the Express account a tradie is paid into. */
+export async function createConnectAccount(input: {
+  email: string
+  businessName: string
+  tradespersonId: string
+  suburb?: string | null
+  state?: string | null
+  postcode?: string | null
+}): Promise<ConnectAccountStatus> {
+  const account = await stripe().accounts.create({
+    type: 'express',
+    country: PLATFORM_COUNTRY,
+    email: input.email,
+    business_type: 'individual',
+    business_profile: {
+      name: input.businessName,
+      product_description: 'Trade services booked through AnyTrade',
+      mcc: '1520', // general contractors — residential building
+    },
+    capabilities: {
+      transfers: { requested: true },
+    },
+    settings: {
+      payouts: { schedule: { interval: 'daily', delay_days: 'minimum' } },
+    },
+    metadata: { tradespersonId: input.tradespersonId },
+  })
+  return toStatus(account)
+}
+
+/**
+ * A one-time onboarding link. `refresh_url` is where Stripe sends the tradie
+ * if the link expires before they finish, so it must start the flow again.
+ */
+export async function createOnboardingLink(accountId: string): Promise<string> {
+  const link = await stripe().accountLinks.create({
+    account: accountId,
+    type: 'account_onboarding',
+    refresh_url: `${siteUrl()}/tradie/billing/connect/refresh`,
+    return_url: `${siteUrl()}/tradie/billing?connect=done`,
+    collection_options: { fields: 'currently_due' },
+  })
+  return link.url
+}
+
+export async function fetchConnectAccount(accountId: string): Promise<ConnectAccountStatus> {
+  return toStatus(await stripe().accounts.retrieve(accountId))
+}
+
+/** Single-use link into the tradie's Stripe Express dashboard. */
+export async function createExpressDashboardLink(accountId: string): Promise<string> {
+  const link = await stripe().accounts.createLoginLink(accountId)
+  return link.url
+}
+
+/** Move a tradie's share of an escrowed job payment to their account. */
+export async function createTransfer(input: {
+  amountAud: number
+  destinationAccountId: string
+  transferGroup?: string | null
+  /** Links the transfer to the original charge so Stripe reports it together. */
+  sourceTransaction?: string | null
+  metadata?: Record<string, string>
+}): Promise<Stripe.Transfer> {
+  return stripe().transfers.create(
+    {
+      amount: toCents(input.amountAud),
+      currency: 'aud',
+      destination: input.destinationAccountId,
+      ...(input.transferGroup ? { transfer_group: input.transferGroup } : {}),
+      ...(input.sourceTransaction ? { source_transaction: input.sourceTransaction } : {}),
+      metadata: input.metadata ?? {},
+    },
+    // Stripe dedupes on this key, so a webhook retry cannot pay a tradie twice.
+    input.metadata?.paymentId
+      ? { idempotencyKey: `transfer_${input.metadata.paymentId}` }
+      : undefined
+  )
+}
+
+/** The charge behind a PaymentIntent, needed to source a transfer from it. */
+export async function chargeIdForIntent(paymentIntentId: string): Promise<string | null> {
+  const intent = await stripe().paymentIntents.retrieve(paymentIntentId)
+  const latest = intent.latest_charge
+  return typeof latest === 'string' ? latest : (latest?.id ?? null)
+}
+
+/** Platform balance — surfaced in admin so unpaid transfers make sense. */
+export async function platformBalance(): Promise<{ available: number; pending: number }> {
+  const balance = await stripe().balance.retrieve()
+  const sum = (entries: Stripe.Balance.Available[]) =>
+    entries.filter((e) => e.currency === 'aud').reduce((total, e) => total + e.amount, 0)
+  return {
+    available: fromCents(sum(balance.available)),
+    pending: fromCents(sum(balance.pending)),
+  }
 }

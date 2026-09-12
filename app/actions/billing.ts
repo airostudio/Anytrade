@@ -10,6 +10,7 @@ import { getUser, setStripeCustomerId } from '@/lib/repos/users'
 import { getJob } from '@/lib/repos/jobs'
 import { getBid } from '@/lib/repos/bids'
 import { fulfilPayment, releaseEscrow } from '@/lib/fulfilment'
+import { transferGroupFor } from '@/lib/connect'
 import { recordAudit } from '@/lib/repos/admin'
 import { CREDIT_PACKS, MEMBERSHIP_PLANS, PLATFORM_FEE_RATE } from '@/lib/constants'
 import type { ActionState } from './auth'
@@ -179,6 +180,9 @@ export async function payJobDeposit(_prev: ActionState, formData: FormData): Pro
     successPath: `/dashboard/jobs/${job.id}?paid=1`,
     cancelPath: `/dashboard/jobs/${job.id}?cancelled=1`,
     metadata: meta,
+    // Separate charges and transfers: this links the charge to the payout that
+    // follows when the customer signs the job off.
+    transferGroup: transferGroupFor(job.id),
   })
   redirect(url)
 }
@@ -213,6 +217,7 @@ async function startCheckout(input: {
   successPath: string
   cancelPath: string
   metadata: Record<string, string>
+  transferGroup?: string
 }): Promise<string> {
   const user = await getUser(input.userId)
   if (!user) throw new Error('User not found.')
@@ -227,6 +232,7 @@ async function startCheckout(input: {
     successPath: input.successPath,
     cancelPath: input.cancelPath,
     metadata: input.metadata,
+    transferGroup: input.transferGroup,
     line: {
       name: input.name,
       description: input.description,

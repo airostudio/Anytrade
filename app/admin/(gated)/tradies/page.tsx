@@ -9,6 +9,8 @@ import {
   adminSetVerification,
   adminToggleFeatured,
 } from '@/app/actions/admin'
+import { adminSyncPayoutAccount } from '@/app/actions/connect'
+import { payoutSummary } from '@/lib/connect'
 import { categoryName } from '@/lib/constants'
 import { formatDate, MEMBERSHIP_LABEL, money } from '@/lib/utils'
 
@@ -36,7 +38,7 @@ export default async function AdminTradiesPage({
         blurb="Verify licences, adjust credits, manage memberships and featured placement."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatTile label="Listed" value={stats.users.tradies} />
         <StatTile label="Verified" value={stats.tradies.verified} tone="bottle" />
         <StatTile
@@ -46,6 +48,12 @@ export default async function AdminTradiesPage({
         />
         <StatTile label="Paid plans" value={stats.tradies.paid} tone="safety" />
         <StatTile label="Homegirls" value={stats.tradies.homegirls} tone="mustard" />
+        <StatTile
+          label="Payouts ready"
+          value={all.filter((t) => t.stripe_payouts_enabled).length}
+          hint={`${all.filter((t) => !t.stripe_payouts_enabled).length} not set up`}
+          tone="navy"
+        />
       </div>
 
       <Panel className="p-4">
@@ -106,6 +114,22 @@ export default async function AdminTradiesPage({
                   {tradie.is_suspended ? (
                     <Pill className="border-oxide bg-oxide text-canvas">Account suspended</Pill>
                   ) : null}
+                  {(() => {
+                    const payouts = payoutSummary(tradie)
+                    return (
+                      <Pill
+                        className={
+                          payouts.state === 'ready'
+                            ? 'border-bottle bg-bottle text-canvas'
+                            : payouts.state === 'not_started'
+                              ? 'border-ink/40 bg-transparent text-ink-mute'
+                              : 'border-ink bg-mustard text-ink'
+                        }
+                      >
+                        Payouts: {payouts.label}
+                      </Pill>
+                    )
+                  })()}
                 </div>
 
                 <p className="mt-1 text-sm text-ink-mute">
@@ -133,6 +157,11 @@ export default async function AdminTradiesPage({
                   <Fact label="Licence" value={tradie.licence_number ?? '—'} />
                   <Fact label="Insurer" value={tradie.insurer_name ?? '—'} />
                   <Fact label="Joined" value={formatDate(tradie.created_at)} />
+                  <Fact label="Connect account" value={tradie.stripe_account_id ?? 'Not set up'} />
+                  <Fact
+                    label="Payouts enabled"
+                    value={tradie.stripe_payouts_enabled ? 'Yes' : 'No'}
+                  />
                 </dl>
 
                 {tradie.verification_notes ? (
@@ -198,6 +227,15 @@ export default async function AdminTradiesPage({
                     {tradie.is_featured ? 'Remove featured' : 'Make featured'}
                   </button>
                 </form>
+
+                {tradie.stripe_account_id ? (
+                  <form action={adminSyncPayoutAccount}>
+                    <input type="hidden" name="tradespersonId" value={tradie.id} />
+                    <button type="submit" className="btn-ghost btn-sm w-full">
+                      Re-check payout account
+                    </button>
+                  </form>
+                ) : null}
               </div>
             </div>
           </Panel>

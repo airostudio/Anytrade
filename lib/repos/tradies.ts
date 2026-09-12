@@ -302,3 +302,75 @@ export async function slugExists(slug: string): Promise<boolean> {
   const row = await queryOne<TradespersonRow>('SELECT id FROM tradespeople WHERE slug = $1', [slug])
   return Boolean(row)
 }
+
+// ─────────────────────────────────────────────────────────────
+//  Stripe Connect
+// ─────────────────────────────────────────────────────────────
+
+export async function setStripeAccountId(tradespersonId: string, accountId: string): Promise<void> {
+  await query('UPDATE tradespeople SET stripe_account_id = $2 WHERE id = $1', [
+    tradespersonId,
+    accountId,
+  ])
+}
+
+export interface ConnectStatusPatch {
+  chargesEnabled: boolean
+  payoutsEnabled: boolean
+  detailsSubmitted: boolean
+  requirements: string[]
+}
+
+/**
+ * Mirror a connected account's state onto the tradie row. `stripe_onboarded`
+ * means "can actually be paid", so it tracks payouts_enabled rather than
+ * whether they merely finished the form.
+ */
+export async function saveConnectStatus(
+  tradespersonId: string,
+  patch: ConnectStatusPatch
+): Promise<void> {
+  await query(
+    `UPDATE tradespeople
+        SET stripe_charges_enabled   = $2,
+            stripe_payouts_enabled   = $3,
+            stripe_details_submitted = $4,
+            stripe_requirements      = $5,
+            stripe_onboarded         = $3,
+            stripe_onboarded_at      = CASE
+                                         WHEN $3 AND stripe_onboarded_at IS NULL THEN now()
+                                         WHEN NOT $3 THEN NULL
+                                         ELSE stripe_onboarded_at
+                                       END,
+            stripe_account_synced_at = now()
+      WHERE id = $1`,
+    [
+      tradespersonId,
+      patch.chargesEnabled,
+      patch.payoutsEnabled,
+      patch.detailsSubmitted,
+      patch.requirements,
+    ]
+  )
+}
+
+export async function getTradieByStripeAccount(accountId: string): Promise<TradieProfile | null> {
+  return safeRead(
+    () => queryOne<TradieProfile>(`${PROFILE_SELECT} WHERE t.stripe_account_id = $1`, [accountId]),
+    null
+  )
+}
+
+/** Tradies whose payout account still needs attention — used by admin. */
+export async function tradiesAwaitingPayoutSetup(): Promise<TradieProfile[]> {
+  return safeRead(
+    () =>
+      query<TradieProfile>(
+        `${PROFILE_SELECT}
+          WHERE t.stripe_payouts_enabled = FALSE
+            AND EXISTS (SELECT 1 FROM bids b WHERE b.tradesperson_id = t.id AND b.status = 'ACCEPTED')
+          ORDER BY t.business_name`
+      ),
+    []
+  )
+}

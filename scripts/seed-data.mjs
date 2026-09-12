@@ -1059,6 +1059,21 @@ export const JOBS = [
     description:
       'About 22 metres of back boundary, currently old timber paling that is falling over. Neighbour has agreed to split the cost so the quote needs to be itemised for both of us. Preference for Colorbond in Woodland Grey, 1.8m high. Old fence to be removed and taken away.',
   },
+  {
+    // Left unquoted on purpose so every fresh seed has a live lead waiting in
+    // the demo tradie's feed (Parramatta, NSW — handyman).
+    reserved: true,
+    title: 'Odd jobs around the house — half a day should do it',
+    category: 'handyman',
+    size: 'HALF_DAY',
+    urgency: 'THIS_WEEK',
+    suburb: 'Parramatta',
+    min: 200,
+    max: 500,
+    status: 'OPEN',
+    description:
+      "A few things that have piled up and I've run out of weekends:\n\u00b7 Two flat-pack bedside tables still in the box\n\u00b7 Towel rail and toilet roll holder to go up in the ensuite (tiled wall)\n\u00b7 Back screen door won't latch properly\n\u00b7 Two smoke alarms chirping, need new batteries and one looks past it\n\u00b7 Curtain rail in the lounge has pulled out of the plaster\n\nHappy for it all to be done in one go, weekday or Saturday both fine.",
+  },
 ]
 
 export const CLIENT_REVIEW_TEXT = [

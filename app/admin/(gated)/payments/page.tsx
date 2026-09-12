@@ -1,6 +1,12 @@
 import Link from 'next/link'
 import { Panel, Pill, SectionHeading, StatTile, Stamp } from '@/components/ui'
-import { listAllPayments, revenueByMonth, revenueSummary } from '@/lib/repos/payments'
+import {
+  listAllPayments,
+  paymentsAwaitingTransfer,
+  revenueByMonth,
+  revenueSummary,
+  unpaidTransferTotal,
+} from '@/lib/repos/payments'
 import { adminUpdatePayment } from '@/app/actions/admin'
 import { isStripeLive } from '@/lib/stripe'
 import {
@@ -36,7 +42,7 @@ export default async function AdminPaymentsPage({
 }: {
   searchParams: { status?: string; type?: string }
 }) {
-  const [payments, revenue, monthly] = await Promise.all([
+  const [payments, revenue, monthly, stranded, strandedTotal] = await Promise.all([
     listAllPayments({
       status: STATUSES.includes(searchParams.status as PaymentStatus)
         ? (searchParams.status as PaymentStatus)
@@ -48,6 +54,8 @@ export default async function AdminPaymentsPage({
     }),
     revenueSummary(),
     revenueByMonth(12),
+    paymentsAwaitingTransfer(),
+    unpaidTransferTotal(),
   ])
 
   const maxMonth = Math.max(1, ...monthly.map((m) => Number(m.gross)))
@@ -71,6 +79,23 @@ export default async function AdminPaymentsPage({
         <StatTile label="In escrow" value={money(revenue.heldInEscrow)} tone="mustard" />
         <StatTile label="Released" value={money(revenue.releasedAllTime)} tone="safety" />
       </div>
+
+      {stranded.length ? (
+        <Panel tone="mustard" className="p-5">
+          <p className="font-sign text-lg font-bold uppercase tracking-wide">
+            {money(strandedTotal, true)} released but not yet paid out
+          </p>
+          <p className="mt-1 text-sm text-ink-soft">
+            {stranded.length} payment{stranded.length === 1 ? '' : 's'} the customer has signed off,
+            waiting on the tradie to finish Stripe Connect onboarding. Each one transfers
+            automatically the moment their payout account goes live — no action needed here unless
+            you want to chase them.
+          </p>
+          <Link href="/admin/tradies" className="btn-oxide btn-sm mt-4">
+            See who needs to set payouts up
+          </Link>
+        </Panel>
+      ) : null}
 
       {monthly.length ? (
         <Panel className="p-5">
@@ -143,6 +168,7 @@ export default async function AdminPaymentsPage({
               <th className="px-4 py-3 text-right">Fee</th>
               <th className="px-4 py-3 text-right">To tradie</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Payout</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -178,6 +204,28 @@ export default async function AdminPaymentsPage({
                   </Pill>
                 </td>
                 <td className="px-4 py-3">
+                  {payment.transfer_status ? (
+                    <Pill
+                      className={
+                        payment.transfer_status === 'paid'
+                          ? 'border-bottle bg-bottle text-canvas'
+                          : payment.transfer_status === 'pending_account'
+                            ? 'border-ink bg-mustard text-ink'
+                            : 'border-oxide bg-oxide text-canvas'
+                      }
+                    >
+                      {payment.transfer_status.replace(/_/g, ' ')}
+                    </Pill>
+                  ) : (
+                    <span className="text-ink-mute">—</span>
+                  )}
+                  {payment.transfer_error ? (
+                    <span className="block max-w-[220px] truncate text-[11px] text-oxide">
+                      {payment.transfer_error}
+                    </span>
+                  ) : null}
+                </td>
+                <td className="px-4 py-3">
                   <form action={adminUpdatePayment} className="flex gap-1.5">
                     <input type="hidden" name="paymentId" value={payment.id} />
                     <select
@@ -203,7 +251,7 @@ export default async function AdminPaymentsPage({
             ))}
             {!payments.length ? (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-ink-mute">
+                <td colSpan={10} className="px-4 py-10 text-center text-ink-mute">
                   No payments match that filter.
                 </td>
               </tr>

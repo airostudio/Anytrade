@@ -1,5 +1,6 @@
-import { adjustCredits, updateTradie, getTradieById } from './repos/tradies'
+import { adjustCredits, updateTradie } from './repos/tradies'
 import { markPaymentStatus, getPayment } from './repos/payments'
+import { attachTransferGroup, payoutForPayment } from './connect'
 import { notify } from './repos/notifications'
 import { query } from './db'
 import { CREDIT_PACKS, MEMBERSHIP_PLANS } from './constants'
@@ -99,6 +100,7 @@ export async function fulfilPayment(paymentId: string, meta: Record<string, stri
       // Funds sit in escrow until the customer signs the job off.
       await markPaymentStatus(paymentId, 'HELD_IN_ESCROW')
       if (payment.job_id) {
+        await attachTransferGroup(payment.id, payment.job_id)
         await query(
           `UPDATE jobs SET status = 'IN_PROGRESS' WHERE id = $1 AND status = 'AWARDED'`,
           [payment.job_id]
@@ -136,28 +138,18 @@ export async function fulfilPayment(paymentId: string, meta: Record<string, stri
   }
 }
 
-/** Escrow release: the client is happy, the tradie gets paid. */
+/**
+ * Escrow release: the client is happy, so the tradie gets paid.
+ *
+ * The payment is marked released first, then the Connect transfer is attempted.
+ * If the tradie has not finished payout onboarding the transfer is parked as
+ * `pending_account` and swept automatically the moment their account goes live,
+ * so releasing never silently strands money.
+ */
 export async function releaseEscrow(paymentId: string): Promise<void> {
   const payment = await getPayment(paymentId)
   if (!payment || payment.status !== 'HELD_IN_ESCROW') return
 
   await markPaymentStatus(paymentId, 'RELEASED')
-
-  if (payment.job_id) {
-    const rows = await query<{ user_id: string; tradesperson_id: string }>(
-      `SELECT user_id, tradesperson_id FROM bids WHERE job_id = $1 AND status = 'ACCEPTED'`,
-      [payment.job_id]
-    )
-    const winner = rows[0]
-    if (winner) {
-      const tradie = await getTradieById(winner.tradesperson_id)
-      await notify({
-        userId: winner.user_id,
-        title: 'Payment released',
-        body: `${payment.tradesperson_amount ? `$${payment.tradesperson_amount.toFixed(2)}` : 'Your payment'} is on its way${tradie?.stripe_onboarded ? '' : ' — connect your payout account to receive it'}.`,
-        link: '/tradie/billing',
-        kind: 'billing',
-      })
-    }
-  }
+  await payoutForPayment(paymentId)
 }

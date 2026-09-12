@@ -9,6 +9,8 @@ import { getBid, markBidsSeen } from '@/lib/repos/bids'
 import { notify } from '@/lib/repos/notifications'
 import { recordAudit } from '@/lib/repos/admin'
 import { getSettings } from '@/lib/repos/settings'
+import { paymentsForJob } from '@/lib/repos/payments'
+import { releaseEscrow } from '@/lib/fulfilment'
 import type { ActionState } from './auth'
 
 const jobSchema = z.object({
@@ -147,6 +149,15 @@ export async function markJobComplete(formData: FormData): Promise<void> {
   if (!['AWARDED', 'IN_PROGRESS'].includes(job.status)) return
 
   await completeJob(jobId)
+
+  // Signing off is what the customer is told releases the money, so do exactly
+  // that: any escrow still held against this job is released, which in turn
+  // triggers the Connect transfer to the tradie.
+  for (const payment of await paymentsForJob(jobId)) {
+    if (payment.status === 'HELD_IN_ESCROW') {
+      await releaseEscrow(payment.id)
+    }
+  }
 
   const bid = job.accepted_bid_id ? await getBid(job.accepted_bid_id) : null
   if (bid) {

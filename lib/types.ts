@@ -42,6 +42,16 @@ export type CreditReason =
   | 'MEMBERSHIP_ALLOWANCE'
 export type HomegirlsStatus = 'PENDING' | 'APPROVED' | 'DECLINED' | 'SUSPENDED'
 
+/**
+ * Payout leg of an escrowed job payment.
+ *   pending_account — released by the customer, but the tradie has no payout
+ *                     account yet; swept automatically once they onboard
+ *   paid            — transferred to the connected account
+ *   failed          — Stripe rejected the transfer; see transfer_error
+ *   reversed        — transfer was reversed after the fact
+ */
+export type TransferStatus = 'pending_account' | 'paid' | 'failed' | 'reversed'
+
 export interface UserRow {
   id: string
   email: string
@@ -109,6 +119,12 @@ export interface TradespersonRow {
   stripe_account_id: string | null
   stripe_subscription_id: string | null
   stripe_onboarded: boolean
+  stripe_charges_enabled: boolean
+  stripe_payouts_enabled: boolean
+  stripe_details_submitted: boolean
+  stripe_requirements: string[]
+  stripe_onboarded_at: Date | null
+  stripe_account_synced_at: Date | null
   lead_credits: number
   average_rating: number
   total_reviews: number
@@ -282,6 +298,11 @@ export interface PaymentRow {
   stripe_transfer_id: string | null
   stripe_invoice_id: string | null
   receipt_url: string | null
+  transfer_group: string | null
+  destination_account_id: string | null
+  transfer_status: TransferStatus | null
+  transferred_at: Date | null
+  transfer_error: string | null
   status: PaymentStatus
   held_at: Date | null
   released_at: Date | null

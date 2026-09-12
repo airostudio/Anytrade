@@ -14,6 +14,11 @@ const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const TRADIE = { email: 'bruce.kowalski@kowalski-home-handyman.com.au', password: 'Password!123' }
 const CLIENT = { email: 'margaret.doyle@example.com', password: 'Password!123' }
 const ADMIN = { email: 'admin@anytrade.com.au', password: 'Admin!2345' }
+// Seeded with a half-finished Connect account, so the requirements panel shows.
+const HALF_ONBOARDED = {
+  email: 'simon.athanasiou@athanasiou-fencing.com.au',
+  password: 'Password!123',
+}
 const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE ?? 'toolbox-1972'
 const HOMEGIRLS_PASSCODE = process.env.HOMEGIRLS_PASSCODE ?? 'homegirls-2024'
 
@@ -161,6 +166,16 @@ try {
       await page.reload({ waitUntil: 'domcontentloaded' })
       check('accepting a quote awards the job', (await page.textContent('body')).includes('Agreed price'))
 
+      // Fund the job into escrow so signing off exercises the Connect payout.
+      const payButton = page.locator('button:has-text("Pay into escrow")')
+      if (await payButton.count()) {
+        await payButton.click()
+        await page.waitForLoadState('networkidle')
+        await page.waitForTimeout(1500)
+        await page.goto(BASE + jobUrl, { waitUntil: 'domcontentloaded' })
+        check('escrow payment is held', (await page.textContent('body')).includes('held in escrow'))
+      }
+
       await Promise.all([
         page.waitForURL(/\/review/, { timeout: 30000 }),
         page.locator('button:has-text("sign it off")').first().click(),
@@ -204,6 +219,42 @@ try {
     }
   }
 
+
+  // ── Stripe Connect: payout onboarding ────────────────────────────────────
+  {
+    const page = await (await browser.newContext()).newPage()
+    await signIn(page, TRADIE)
+    await page.goto(`${BASE}/tradie/billing`, { waitUntil: 'domcontentloaded' })
+    const body = await page.textContent('body')
+    check('payout panel renders', body.includes('Getting paid'))
+    check('onboarded tradie shows as ready', body.includes('Ready for payouts'))
+    check('job earnings table lists the payout leg', body.includes('Job earnings'))
+    // Signing the job off should have released escrow and transferred the
+    // tradie's share — no manual release, no stranded money.
+    check('escrow released on sign-off is paid out', body.includes('Paid out'))
+    check('no payout left waiting', !body.includes('waiting to be sent'))
+  }
+
+  {
+    const page = await (await browser.newContext()).newPage()
+    await signIn(page, HALF_ONBOARDED)
+    await page.goto(`${BASE}/tradie/billing`, { waitUntil: 'domcontentloaded' })
+    const body = await page.textContent('body')
+    check(
+      'half-finished onboarding is flagged',
+      body.includes('Half finished') || body.includes('Action needed')
+    )
+    check('outstanding requirements are in plain English', body.includes('Bank account for payouts'))
+    check('onboarding can be resumed', body.includes('Finish setting up'))
+
+    // Demo mode completes onboarding inline rather than leaving for Stripe.
+    await page.locator('button:has-text("Finish setting up")').click()
+    await page.waitForLoadState('networkidle')
+    await page.waitForTimeout(1500)
+    await page.goto(`${BASE}/tradie/billing`, { waitUntil: 'domcontentloaded' })
+    check('onboarding completes', (await page.textContent('body')).includes('Ready for payouts'))
+  }
+
   // ── Admin: role guard + passcode gate ────────────────────────────────────
   {
     const page = await (await browser.newContext()).newPage()
@@ -227,6 +278,11 @@ try {
       const res = await page.goto(BASE + path, { waitUntil: 'domcontentloaded' })
       check(`admin page ${path}`, res?.status() === 200, String(res?.status()))
     }
+
+    await page.goto(`${BASE}/admin/tradies`, { waitUntil: 'domcontentloaded' })
+    const tradies = await page.textContent('body')
+    check('admin shows each tradie\'s payout status', tradies.includes('Payouts:'))
+    check('admin can re-check a connected account', tradies.includes('Re-check payout account'))
   }
 
   // ── Non-admin cannot reach the back office ───────────────────────────────
