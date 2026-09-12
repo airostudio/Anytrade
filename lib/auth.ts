@@ -1,76 +1,81 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { prisma } from "./prisma"
-import bcrypt from "bcryptjs"
-import { UserRole } from "@prisma/client"
+import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs'
+import { authConfig } from './auth.config'
+import { query, queryOne } from './db'
+import type { UserRole } from './types'
+
+interface AuthRow {
+  id: string
+  email: string
+  name: string
+  role: UserRole
+  password: string
+  is_suspended: boolean
+  tradesperson_id: string | null
+  tradie_slug: string | null
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/signin",
-  },
+  ...authConfig,
   providers: [
-    CredentialsProvider({
-      name: "credentials",
+    Credentials({
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
+        const email = String(credentials?.email ?? '')
+          .trim()
+          .toLowerCase()
+        const password = String(credentials?.password ?? '')
+        if (!email || !password) return null
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
-          include: {
-            tradesperson: true,
-          },
-        })
-
-        if (!user) {
-          return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
+        const row = await queryOne<AuthRow>(
+          `SELECT u.id, u.email, u.name, u.role, u.password, u.is_suspended,
+                  t.id   AS tradesperson_id,
+                  t.slug AS tradie_slug
+             FROM users u
+             LEFT JOIN tradespeople t ON t.user_id = u.id
+            WHERE u.email = $1`,
+          [email]
         )
 
-        if (!isPasswordValid) {
-          return null
-        }
+        if (!row || row.is_suspended) return null
+        if (!(await bcrypt.compare(password, row.password))) return null
+
+        await query('UPDATE users SET last_login_at = now() WHERE id = $1', [row.id])
 
         return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          tradespersonId: user.tradesperson?.id,
+          id: row.id,
+          email: row.email,
+          name: row.name,
+          role: row.role,
+          tradespersonId: row.tradesperson_id ?? undefined,
+          tradieSlug: row.tradie_slug ?? undefined,
         }
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.role = user.role
-        token.tradespersonId = user.tradespersonId
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as UserRole
-        session.user.tradespersonId = token.tradespersonId as string | undefined
-      }
-      return session
-    },
-  },
 })
+
+/** The signed-in session, or null. */
+export async function currentUser() {
+  const session = await auth()
+  return session?.user ?? null
+}
+
+/** Landing page for a role, used after sign-in and by guards. */
+export function homeForRole(role: UserRole | undefined): string {
+  switch (role) {
+    case 'ADMIN':
+      return '/admin'
+    case 'TRADESPERSON':
+      return '/tradie'
+    case 'CLIENT':
+      return '/dashboard'
+    default:
+      return '/'
+  }
+}

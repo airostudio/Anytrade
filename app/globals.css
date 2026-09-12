@@ -1,3 +1,133 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Old-school worksite furniture ───────────────────────────────────────── */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-body;
+    background-image: theme('backgroundImage.grain');
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-sign tracking-wide;
+  }
+
+  ::selection {
+    @apply bg-safety text-ink;
+  }
+
+  /* Chunky, honest focus ring — no thin modern hairlines */
+  :where(a, button, input, select, textarea):focus-visible {
+    @apply outline-none ring-4 ring-safety/60 ring-offset-2 ring-offset-canvas;
+  }
+}
+
+@layer components {
+  /* Painted enamel sign: thick keyline with a cream inset, like a workshop plaque */
+  .enamel {
+    @apply relative border-[3px] border-ink bg-canvas shadow-hard;
+  }
+
+  .enamel-navy {
+    @apply relative border-[3px] border-ink bg-navy text-canvas shadow-hard;
+  }
+
+  /* Manila docket — used for quotes, bids and receipts */
+  .docket {
+    @apply border-[3px] border-ink bg-manila shadow-hard-sm;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0 27px,
+      rgba(27, 23, 20, 0.07) 27px 28px
+    );
+  }
+
+  /* Rubber stamp badge, rotated like it was banged on by hand */
+  .stamp {
+    @apply inline-flex items-center gap-1 border-[3px] px-2.5 py-1 font-sign text-xs font-bold uppercase tracking-[0.14em];
+    transform: rotate(-3deg);
+  }
+
+  /* Hazard tape divider */
+  .hazard-tape {
+    @apply h-3 w-full border-y-2 border-ink;
+    background-image: theme('backgroundImage.diag-stripe');
+    background-size: 40px 40px;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border-[3px] border-ink px-6 py-3 font-sign text-base font-bold uppercase tracking-widest
+           transition-all duration-100 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-safety text-ink shadow-hard hover:bg-safety-light;
+  }
+
+  .btn-navy {
+    @apply btn bg-navy text-canvas shadow-hard hover:bg-navy-light;
+  }
+
+  .btn-oxide {
+    @apply btn bg-oxide text-canvas shadow-hard hover:bg-oxide-light;
+  }
+
+  .btn-ghost {
+    @apply btn bg-canvas text-ink shadow-hard-sm hover:bg-canvas-deep;
+  }
+
+  .btn-sm {
+    @apply border-2 px-3.5 py-1.5 text-xs shadow-hard-sm;
+  }
+
+  .field {
+    @apply w-full border-[3px] border-ink bg-canvas px-4 py-3 font-body text-ink
+           placeholder:text-ink-mute/60 focus:bg-white;
+  }
+
+  .label {
+    @apply mb-1.5 block font-sign text-sm font-semibold uppercase tracking-wider text-ink-soft;
+  }
+
+  /* Section eyebrow: small caps on a ruled line */
+  .eyebrow {
+    @apply mb-3 inline-block border-b-[3px] border-safety pb-1 font-sign text-sm font-bold uppercase tracking-[0.25em] text-oxide;
+  }
+
+  .card-lift {
+    @apply transition-transform duration-100 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-hard-lg;
+  }
+
+  /* Perforated tear-off edge for dockets */
+  .tear-bottom {
+    mask-image: radial-gradient(circle at 8px 100%, transparent 0 6px, black 6.5px);
+    mask-size: 16px 100%;
+    mask-repeat: repeat-x;
+  }
+}
+
+@layer utilities {
+  .text-shadow-hard {
+    text-shadow: 3px 3px 0 theme('colors.ink.DEFAULT');
+  }
+
+  .text-outline {
+    -webkit-text-stroke: 2px theme('colors.ink.DEFAULT');
+    paint-order: stroke fill;
+  }
+
+  .paper {
+    background-color: theme('colors.canvas.DEFAULT');
+    background-image: theme('backgroundImage.grain');
+  }
+}
