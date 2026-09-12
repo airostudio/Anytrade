@@ -142,6 +142,39 @@ Admin is protected twice over: `middleware.ts` requires a signed-in `ADMIN`
 account, and `app/admin/(gated)/layout.tsx` requires the passcode. The unlock
 page sits outside the gated route group so it stays reachable.
 
+## Where the Homegirls section is heading
+
+The Homegirls network currently lives inside AnyTrade as a passcode-gated
+section. The plan is for it to become **an independent female-only trades
+hiring site**, affiliated with AnyTrade so the two cross-refer and between them
+cover roughly twice the audience.
+
+It has been built with that split in mind, so the seam is already clean:
+
+| Concern        | Where it lives now                                         |
+| -------------- | ---------------------------------------------------------- |
+| Routes         | `app/homegirls/` — its own route group, layout and gate      |
+| Data           | `homegirls_members`, `homegirls_posts` — its own tables      |
+| Queries        | `lib/repos/homegirls.ts` — nothing else reads those tables   |
+| Access         | `lib/gates.ts`, the `homegirls` gate — independent of admin  |
+| Link to trades | `tradespeople.is_homegirl` (a flag, not a separate profile)  |
+| Link to jobs   | `jobs.prefer_homegirl` (routes a job to members only)        |
+
+Two join points are all that couple it to the marketplace: a tradie's
+`is_homegirl` flag and a job's `prefer_homegirl` flag. Everything else is
+self-contained.
+
+When it is split out, the likely shape is a separate Next.js app against the
+same PostgreSQL database (or its own database plus a sync/affiliate API),
+reusing `lib/repos/homegirls.ts` as-is. The pieces that would need building are
+its own branding and design system, its own auth (or shared SSO with AnyTrade),
+and a referral mechanism so a job posted on one site can surface on the other —
+the `prefer_homegirl` flag is already the hook for that last part.
+
+Until then, nothing here assumes Homegirls is permanent furniture: deleting the
+`app/homegirls/` directory, the two tables and the `homegirls` gate would leave
+the rest of the marketplace working.
+
 ## Testing
 
 The end-to-end suite drives a real browser through the whole marketplace:
