@@ -65,9 +65,13 @@ async function main() {
       await client.query('DROP FUNCTION IF EXISTS set_updated_at() CASCADE')
     }
 
-    const sql = readFileSync(resolve(process.cwd(), 'db/schema.sql'), 'utf8')
     console.log('  Applying db/schema.sql…')
-    await client.query(sql)
+    await client.query(readFileSync(resolve(process.cwd(), 'db/schema.sql'), 'utf8'))
+
+    // Supabase publishes PostgREST for every project, so tables left without
+    // row level security are readable by anyone holding the public anon key.
+    console.log('  Applying db/security.sql (row level security)…')
+    await client.query(readFileSync(resolve(process.cwd(), 'db/security.sql'), 'utf8'))
 
     const { rows } = await client.query(
       `SELECT table_name FROM information_schema.tables
