@@ -5,6 +5,7 @@ import { AuthError } from 'next-auth'
 import { z } from 'zod'
 import { homeForRole, signIn } from '@/lib/auth'
 import { createClient, createTradie, emailTaken, getUserByEmail } from '@/lib/repos/users'
+import { describeDbError, query } from '@/lib/db'
 import { recordAudit } from '@/lib/repos/admin'
 
 export interface ActionState {
@@ -48,7 +49,8 @@ export async function signUpClient(_prev: ActionState, formData: FormData): Prom
     await recordAudit({ actorId: user.id, action: 'client.signup', entityType: 'user', entityId: user.id })
   } catch (error) {
     console.error('[signup] client failed', error)
-    return { error: 'Could not create your account. Is the database connected?' }
+    const failure = describeDbError(error)
+    return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
   }
 
   await signIn('credentials', {
@@ -121,7 +123,8 @@ export async function signUpTradie(_prev: ActionState, formData: FormData): Prom
     })
   } catch (error) {
     console.error('[signup] tradie failed', error)
-    return { error: 'Could not create your account. Is the database connected?' }
+    const failure = describeDbError(error)
+    return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
   }
 
   await signIn('credentials', {
@@ -154,6 +157,14 @@ export async function signInWithCredentials(
     await signIn('credentials', { email, password, redirectTo: destination })
   } catch (error) {
     if (error instanceof AuthError) {
+      // A failed sign-in and an unreachable database look identical from here,
+      // so probe before blaming the credentials. Costs nothing on success.
+      try {
+        await query('SELECT 1')
+      } catch (dbError) {
+        const failure = describeDbError(dbError)
+        return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
+      }
       return { error: 'Those details did not match an account.' }
     }
     // next-auth signals a successful redirect by throwing — let it through.

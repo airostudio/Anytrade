@@ -111,3 +111,125 @@ export async function safeRead<T>(fn: () => Promise<T>, fallback: T): Promise<T>
     return fallback
   }
 }
+
+/**
+ * Turn a raw driver/Postgres error into something a human can act on.
+ *
+ * The generic "is the database connected?" message was useless precisely when
+ * it mattered most, so every failure path now names the actual problem and the
+ * fix.
+ */
+export interface DbFailure {
+  /** Safe to show a user. */
+  message: string
+  /** Postgres SQLSTATE or Node errno, for logs and the health endpoint. */
+  code: string | null
+  /** What to do about it — shown in the health endpoint, not to end users. */
+  hint: string | null
+}
+
+export function describeDbError(error: unknown): DbFailure {
+  const err = error as { code?: string; message?: string; constraint?: string; detail?: string }
+  const code = err?.code ?? null
+
+  switch (code) {
+    case '42P01': // undefined_table
+      return {
+        message: 'The database is reachable but its tables are missing.',
+        code,
+        hint: 'Apply db/schema.sql — run `npm run db:setup`, or paste the file into the SQL editor.',
+      }
+    case '3D000': // invalid_catalog_name
+      return {
+        message: 'That database does not exist on the server.',
+        code,
+        hint: 'Check the database name at the end of DATABASE_URL.',
+      }
+    case '28P01': // invalid_password
+    case '28000': // invalid_authorization_specification
+      return {
+        message: 'The database rejected the username or password.',
+        code,
+        hint: 'Check the credentials in DATABASE_URL. Special characters in the password must be percent-encoded.',
+      }
+    case '23505': // unique_violation
+      return {
+        message: err?.constraint?.includes('email')
+          ? 'An account with that email already exists.'
+          : 'That record already exists.',
+        code,
+        hint: null,
+      }
+    case '53300': // too_many_connections
+      return {
+        message: 'The database is out of connections.',
+        code,
+        hint: 'Use your provider’s pooled connection string and set PGPOOL_MAX=1 on serverless.',
+      }
+    case 'ENETUNREACH':
+      return {
+        message: 'The database host cannot be reached from this network.',
+        code,
+        hint:
+          'Supabase’s direct host (db.<ref>.supabase.co) is IPv6-only and unreachable from Vercel. ' +
+          'Use the Supavisor pooler host instead: aws-0-<region>.pooler.supabase.com:6543 with username postgres.<ref>.',
+      }
+    case 'ECONNREFUSED':
+      return {
+        message: 'The database refused the connection.',
+        code,
+        hint: 'Check the host and port in DATABASE_URL, and that the database allows external connections.',
+      }
+    case 'ETIMEDOUT':
+    case 'ECONNRESET':
+      return {
+        message: 'The connection to the database timed out.',
+        code,
+        hint: 'Usually a firewall, a paused database, or the wrong host. On Vercel, use the pooled connection string.',
+      }
+    case 'ENOTFOUND':
+    case 'EAI_AGAIN':
+      return {
+        message: 'The database hostname could not be resolved.',
+        code,
+        hint: 'Check the host in DATABASE_URL for a typo.',
+      }
+    case 'SELF_SIGNED_CERT_IN_CHAIN':
+    case 'DEPTH_ZERO_SELF_SIGNED_CERT':
+      return {
+        message: 'The database TLS certificate was rejected.',
+        code,
+        hint: 'Append ?sslmode=no-verify to DATABASE_URL, or use a provider certificate.',
+      }
+    default:
+      if (!process.env.DATABASE_URL) {
+        return {
+          message: 'No database is configured.',
+          code: 'NO_DATABASE_URL',
+          hint: 'Set DATABASE_URL, then redeploy — Vercel only picks up env vars on a new deployment.',
+        }
+      }
+      return {
+        message: err?.message ?? 'The database request failed.',
+        code,
+        hint: null,
+      }
+  }
+}
+
+/** Host and database from DATABASE_URL, never the credentials. */
+export function describeConnection(): { host: string; port: string; database: string; user: string } | null {
+  const raw = process.env.DATABASE_URL
+  if (!raw) return null
+  try {
+    const url = new URL(raw)
+    return {
+      host: url.hostname,
+      port: url.port || '5432',
+      database: url.pathname.replace(/^\//, '') || '(default)',
+      user: url.username || '(none)',
+    }
+  } catch {
+    return { host: '(unparseable)', port: '?', database: '?', user: '?' }
+  }
+}
