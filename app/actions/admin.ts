@@ -296,6 +296,22 @@ export async function adminSaveSettings(
   const entries = Array.from(formData.entries()).filter(([key]) => key.startsWith('setting:'))
   if (!entries.length) return { error: 'Nothing to save.' }
 
+  // Passcodes guard the back office and the members' network, so refuse weak
+  // ones outright. The values below were published in earlier versions of the
+  // source, so they are treated as compromised and never accepted.
+  const PUBLISHED = new Set(['toolbox-1972', 'homegirls-2024', 'Admin!2345'])
+  for (const [key, raw] of entries) {
+    if (!key.startsWith('setting:gate.')) continue
+    const value = String(raw).trim()
+    if (!value) continue // empty means "closed", which is allowed
+    if (value.length < 12) {
+      return { error: 'Passcodes must be at least 12 characters.' }
+    }
+    if (PUBLISHED.has(value)) {
+      return { error: 'That passcode has been published in the source code. Choose a new one.' }
+    }
+  }
+
   try {
     for (const [key, value] of entries) {
       await setSetting(key.replace(/^setting:/, ''), String(value))

@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import pg from 'pg'
-import { loadEnv, makePool } from './env.mjs'
+import { assertSafeToWipe, loadEnv, makePool } from './env.mjs'
 
 /**
  * Applies db/schema.sql.
@@ -13,6 +13,7 @@ import { loadEnv, makePool } from './env.mjs'
 loadEnv()
 
 const reset = process.argv.includes('--reset')
+if (reset) assertSafeToWipe('drop and recreate every AnyTrade table')
 const pool = makePool(pg)
 
 const TABLES = [

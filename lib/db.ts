@@ -216,20 +216,3 @@ export function describeDbError(error: unknown): DbFailure {
       }
   }
 }
-
-/** Host and database from DATABASE_URL, never the credentials. */
-export function describeConnection(): { host: string; port: string; database: string; user: string } | null {
-  const raw = process.env.DATABASE_URL
-  if (!raw) return null
-  try {
-    const url = new URL(raw)
-    return {
-      host: url.hostname,
-      port: url.port || '5432',
-      database: url.pathname.replace(/^\//, '') || '(default)',
-      user: url.username || '(none)',
-    }
-  } catch {
-    return { host: '(unparseable)', port: '?', database: '?', user: '?' }
-  }
-}

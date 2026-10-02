@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import pg from 'pg'
 import bcrypt from 'bcryptjs'
-import { loadEnv, makePool } from './env.mjs'
+import { assertSafeToWipe, loadEnv, makePool } from './env.mjs'
 import {
   ADMIN,
   CLIENTS,
@@ -20,10 +20,13 @@ import {
  * accounts, listings, jobs at every stage of the funnel, quotes, two-way
  * ratings, payments, credit movements, the Homegirls network and audit trail.
  *
- * Safe to re-run: it clears the data tables first (but not the schema).
+ * DEMO DATA ONLY. It clears every data table first and creates accounts with
+ * well-known passwords, so it refuses to run against anything but a local
+ * database. See assertSafeToWipe() in env.mjs.
  */
 
 loadEnv()
+assertSafeToWipe('seed the demo marketplace')
 const pool = makePool(pg)
 
 // Deterministic PRNG so repeated seeds produce the same demo data.
@@ -129,8 +132,6 @@ async function main() {
       ['bidding.bid_window_days', '14', 'Days a job stays open'],
       ['reviews.auto_publish', 'true', 'Publish reviews immediately'],
       ['reviews.min_chars', '20', 'Minimum review comment length'],
-      ['gate.admin_passcode', 'toolbox-1972', 'Admin section passcode'],
-      ['gate.homegirls_passcode', 'homegirls-2024', 'Homegirls section passcode'],
       [
         'homegirls.intro',
         'A members-only network for the women working in Australian trades — and for clients who would rather book one.',
@@ -799,10 +800,13 @@ async function main() {
     console.log(`  Homegirls members ${c.homegirls}`)
     console.log('\n  ── Sign in ──────────────────────────────────────────')
     console.log(`  Admin       ${ADMIN.email} / ${ADMIN.password}`)
-    console.log(`              admin passcode: toolbox-1972`)
     console.log(`  Homeowner   ${emailForDisplay(CLIENTS[0].name, 'example.com')} / ${DEMO_PASSWORD}`)
     console.log(`  Tradie      ${emailForDisplay(TRADIES[0].name, `${slugify(TRADIES[0].business).slice(0, 22)}.com.au`)} / ${DEMO_PASSWORD}`)
-    console.log(`  Homegirls passcode: homegirls-2024\n`)
+    console.log('\n  ── Passcodes ────────────────────────────────────────')
+    console.log('  The admin and Homegirls gates have NO default passcode — they stay')
+    console.log('  locked until you set one. For local development add to .env:')
+    console.log('      ADMIN_PASSCODE="<at least 12 characters>"')
+    console.log('      HOMEGIRLS_PASSCODE="<at least 12 characters>"\n')
   } catch (error) {
     await client.query('ROLLBACK')
     throw error

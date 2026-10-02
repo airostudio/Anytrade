@@ -13,8 +13,11 @@ export const SETTING_DEFAULTS: Record<string, string> = {
   'bidding.bid_window_days': '14',
   'reviews.auto_publish': 'true',
   'reviews.min_chars': '20',
-  'gate.admin_passcode': 'toolbox-1972',
-  'gate.homegirls_passcode': 'homegirls-2024',
+  // Deliberately empty. A default here would be published with the source, so a
+  // gate with no passcode configured stays LOCKED rather than falling back to
+  // a value anyone could read in the repository.
+  'gate.admin_passcode': '',
+  'gate.homegirls_passcode': '',
   'homegirls.intro':
     'A members-only network for the women working in Australian trades — and for clients who would rather book one.',
 }
@@ -42,16 +45,24 @@ export async function listSettings(): Promise<SiteSettingRow[]> {
     () => query<SiteSettingRow>('SELECT * FROM site_settings ORDER BY "group", key'),
     [] as SiteSettingRow[]
   )
-  if (rows.length) return rows
 
-  // Nothing stored yet — surface the defaults so the admin screen is usable.
-  return Object.entries(SETTING_DEFAULTS).map(([key, value]) => ({
-    key,
-    value,
-    label: null,
-    group: key.split('.')[0] ?? 'general',
-    updated_at: new Date(),
-  }))
+  // Merge in any known key that has never been stored, so every setting —
+  // including the passcodes, which start empty — can be edited from the admin
+  // screen even when other rows already exist.
+  const stored = new Set(rows.map((row) => row.key))
+  const missing = Object.entries(SETTING_DEFAULTS)
+    .filter(([key]) => !stored.has(key))
+    .map(([key, value]) => ({
+      key,
+      value,
+      label: null,
+      group: key.split('.')[0] ?? 'general',
+      updated_at: new Date(),
+    }))
+
+  return [...rows, ...missing].sort(
+    (a, b) => a.group.localeCompare(b.group) || a.key.localeCompare(b.key)
+  )
 }
 
 export async function setSetting(key: string, value: string, label?: string): Promise<void> {

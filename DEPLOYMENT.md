@@ -24,15 +24,10 @@ From a machine that can reach the database:
 DATABASE_URL="postgresql://…" npm run db:setup
 ```
 
-Optionally load the demo marketplace — useful for a staging or demo deployment,
-**not** for production:
-
-```bash
-DATABASE_URL="postgresql://…" npm run db:seed
-```
-
-Both scripts are re-runnable. `npm run db:setup -- --reset` drops every AnyTrade
-table and type first.
+**Never seed production.** `db:seed` and `db:setup --reset` are destructive and
+the seed creates accounts with well-known passwords, so both refuse to run
+against any database that is not local. `npm run db:setup` is the only one meant
+for a real database: it is non-destructive and safe to re-run.
 
 You can also apply `db/schema.sql` by hand:
 
@@ -48,16 +43,18 @@ psql "$DATABASE_URL" -f db/schema.sql
 | `NEXTAUTH_SECRET`       | yes      | `openssl rand -base64 32`                                     |
 | `NEXTAUTH_URL`          | yes      | Canonical origin, e.g. `https://anytrade.com.au`              |
 | `NEXT_PUBLIC_SITE_URL`  | no       | Absolute URLs; falls back to `NEXTAUTH_URL`                   |
-| `ADMIN_PASSCODE`        | strongly | Overrides the passcode stored in the database                 |
-| `HOMEGIRLS_PASSCODE`    | strongly | As above, for the Homegirls section                           |
+| `ADMIN_PASSCODE`        | **yes**  | 12+ chars. No default — the admin gate stays locked without it |
+| `HOMEGIRLS_PASSCODE`    | **yes**  | 12+ chars. No default — the Homegirls gate stays locked without it |
 | `STRIPE_SECRET_KEY`     | no       | Omit to run billing in demo mode                              |
 | `STRIPE_WEBHOOK_SECRET` | no       | Required if `STRIPE_SECRET_KEY` is set                        |
 | `STRIPE_CONNECT_COUNTRY`| no       | Platform country for Connect accounts (default `AU`)          |
 | `PGPOOL_MAX`            | no       | Max pooled connections (default 10)                           |
 
-Set the two passcodes in the environment for production. They take precedence
-over the values in Admin → Settings, so they never sit in the database and
-rotating one immediately signs everybody out of that section.
+There are no default passcodes: a gate with none configured is closed to
+everyone, since any default would be published with the source. The environment
+variable takes precedence over Admin → Settings, so the passcode never has to sit
+in the database, and rotating it immediately signs everybody out of that
+section.
 
 ## 4. Deploy
 

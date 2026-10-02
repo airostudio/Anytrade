@@ -8,6 +8,28 @@ import { createClient, createTradie, emailTaken, getUserByEmail } from '@/lib/re
 import { describeDbError, query } from '@/lib/db'
 import { recordAudit } from '@/lib/repos/admin'
 
+/**
+ * Visitors get a plain message and never a database error code. The real cause
+ * and the fix for it are written to the server log (Vercel → Logs), where only
+ * the operator can see them.
+ */
+function logDbFailure(where: string, error: unknown): void {
+  const failure = describeDbError(error)
+  console.error(
+    `[${where}] ${failure.message}${failure.code ? ` (${failure.code})` : ''}` +
+      `${failure.hint ? ` — ${failure.hint}` : ''}`,
+    error
+  )
+}
+
+function signupFailureMessage(error: unknown, kind: 'client' | 'tradie'): string {
+  logDbFailure(`signup:${kind}`, error)
+  if (describeDbError(error).code === '23505') {
+    return 'An account with that email already exists. Try signing in instead.'
+  }
+  return 'We could not create your account just now. Please try again in a few minutes.'
+}
+
 export interface ActionState {
   error?: string
   success?: string
@@ -49,8 +71,7 @@ export async function signUpClient(_prev: ActionState, formData: FormData): Prom
     await recordAudit({ actorId: user.id, action: 'client.signup', entityType: 'user', entityId: user.id })
   } catch (error) {
     console.error('[signup] client failed', error)
-    const failure = describeDbError(error)
-    return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
+    return { error: signupFailureMessage(error, 'client') }
   }
 
   await signIn('credentials', {
@@ -123,8 +144,7 @@ export async function signUpTradie(_prev: ActionState, formData: FormData): Prom
     })
   } catch (error) {
     console.error('[signup] tradie failed', error)
-    const failure = describeDbError(error)
-    return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
+    return { error: signupFailureMessage(error, 'tradie') }
   }
 
   await signIn('credentials', {
@@ -162,8 +182,8 @@ export async function signInWithCredentials(
       try {
         await query('SELECT 1')
       } catch (dbError) {
-        const failure = describeDbError(dbError)
-        return { error: `${failure.message} (${failure.code ?? 'unknown'}) — see /api/health/db` }
+        logDbFailure('sign-in', dbError)
+        return { error: 'We cannot sign you in right now. Please try again in a few minutes.' }
       }
       return { error: 'Those details did not match an account.' }
     }

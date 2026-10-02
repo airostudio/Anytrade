@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { lockGate, unlockGate, type GateName } from '@/lib/gates'
+import { isGateConfigured, lockGate, unlockGate, type GateName } from '@/lib/gates'
 import { recordAudit } from '@/lib/repos/admin'
 import type { ActionState } from './auth'
 
@@ -10,6 +10,18 @@ import type { ActionState } from './auth'
 async function attempt(gate: GateName, formData: FormData): Promise<ActionState> {
   const passcode = String(formData.get('passcode') ?? '')
   if (!passcode) return { error: 'Enter the passcode.' }
+
+  // A gate with no passcode is closed to everyone by design. Say so, rather
+  // than reporting a wrong passcode, so setup mistakes are obvious. The public
+  // Homegirls gate gets a neutral message instead of advertising the gap.
+  if (!(await isGateConfigured(gate))) {
+    return {
+      error:
+        gate === 'admin'
+          ? 'No admin passcode is set. Add ADMIN_PASSCODE to the environment variables and redeploy.'
+          : 'This section is not open yet.',
+    }
+  }
 
   const ok = await unlockGate(gate, passcode)
   if (!ok) {

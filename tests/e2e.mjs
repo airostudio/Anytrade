@@ -19,8 +19,15 @@ const HALF_ONBOARDED = {
   email: 'simon.athanasiou@athanasiou-fencing.com.au',
   password: 'Password!123',
 }
-const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE ?? 'toolbox-1972'
-const HOMEGIRLS_PASSCODE = process.env.HOMEGIRLS_PASSCODE ?? 'homegirls-2024'
+// There are no built-in passcodes. Start the app with the same two values set in
+// its environment, and pass them to the suite.
+const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE
+const HOMEGIRLS_PASSCODE = process.env.HOMEGIRLS_PASSCODE
+if (!ADMIN_PASSCODE || !HOMEGIRLS_PASSCODE) {
+  console.error('\n  Set ADMIN_PASSCODE and HOMEGIRLS_PASSCODE (at least 12 characters each).')
+  console.error('  Start the app with the same values, then run the suite.\n')
+  process.exit(1)
+}
 
 const passed = []
 const failed = []
@@ -273,6 +280,24 @@ try {
       page.locator('button:has-text("Unlock back office")').click(),
     ])
     check('correct admin passcode unlocks', page.url().endsWith('/admin'))
+
+    // Passcode rules on the Settings screen: weak and published values refused.
+    await page.goto(`${BASE}/admin/settings`, { waitUntil: 'domcontentloaded' })
+    const field = page.locator('input[name="setting:gate.homegirls_passcode"]')
+    await field.fill('short')
+    await page.locator('button:has-text("Save all settings")').click()
+    await page.waitForTimeout(1500)
+    check(
+      'a short passcode is refused',
+      (await page.textContent('body')).includes('at least 12 characters')
+    )
+    await field.fill('toolbox-1972')
+    await page.locator('button:has-text("Save all settings")').click()
+    await page.waitForTimeout(1500)
+    check(
+      'a passcode published in the source is refused',
+      (await page.textContent('body')).includes('published in the source')
+    )
 
     for (const path of ['/admin', '/admin/users', '/admin/tradies', '/admin/jobs', '/admin/bids', '/admin/payments', '/admin/reviews', '/admin/homegirls', '/admin/enquiries', '/admin/analytics', '/admin/audit', '/admin/settings']) {
       const res = await page.goto(BASE + path, { waitUntil: 'domcontentloaded' })

@@ -52,9 +52,12 @@ npm run dev
 
 Open http://localhost:3000.
 
-### Demo logins
+### Demo logins (local development only)
 
-`npm run db:seed` prints these at the end:
+`npm run db:seed` fills a **local** database with a fictional marketplace and
+prints these at the end. They exist only so you can click around; the seed
+refuses to run against anything but a local database, so they can never be
+planted in production.
 
 | Role      | Email                                          | Password        |
 | --------- | ---------------------------------------------- | --------------- |
@@ -62,16 +65,21 @@ Open http://localhost:3000.
 | Homeowner | `margaret.doyle@example.com`                   | `Password!123`  |
 | Tradie    | `bruce.kowalski@kowalski-home-handyman.com.au` | `Password!123`  |
 
-Passcodes for the two gated sections:
+### Passcodes
 
-| Section     | URL           | Passcode          |
-| ----------- | ------------- | ----------------- |
-| Admin       | `/admin`      | `toolbox-1972`    |
-| Homegirls   | `/homegirls`  | `homegirls-2024`  |
+The admin and Homegirls sections sit behind a passcode on top of normal sign-in.
+**There are no default passcodes.** A gate with none configured stays locked to
+everyone, because any default would be published with the source.
 
-**Change both before deploying** — set `ADMIN_PASSCODE` and
-`HOMEGIRLS_PASSCODE` in the environment (they override the database), or edit
-them in Admin → Settings.
+Set them in the environment (or in `.env` locally), at least 12 characters each:
+
+```bash
+ADMIN_PASSCODE="…"
+HOMEGIRLS_PASSCODE="…"
+```
+
+Generate one with `openssl rand -base64 18 | tr -d '/+='`. They can also be
+changed from Admin → Settings, but the environment variable takes precedence.
 
 ## Scripts
 
@@ -82,8 +90,8 @@ them in Admin → Settings.
 | `npm start`        | Serve the production build                                  |
 | `npm run lint`     | ESLint                                                      |
 | `npm run db:setup` | Apply `db/schema.sql` (add `-- --reset` to drop everything)  |
-| `npm run db:seed`  | Wipe the data tables and reseed the demo marketplace         |
-| `npm run db:reset` | `db:setup --reset` then `db:seed`                            |
+| `npm run db:seed`  | **Local only.** Wipes the data tables and reseeds the demo marketplace |
+| `npm run db:reset` | **Local only.** `db:setup --reset` then `db:seed`            |
 | `npm run test:e2e` | Playwright end-to-end suite (see below)                      |
 
 ## How the pieces fit
@@ -221,8 +229,10 @@ quoting, credit spend, shortlisting, hiring, sign-off, both ratings, both
 passcode gates, role guards and every admin page.
 
 ```bash
-npm run db:reset            # the suite mutates data, so start fresh
-npm run build && npm start
+npm run db:reset            # the suite mutates data, so start fresh (local DB only)
+npm run build
+export ADMIN_PASSCODE="…" HOMEGIRLS_PASSCODE="…"   # 12+ characters each
+npm start                   # the app and the suite need the same two values
 npm run test:e2e            # BASE_URL=… if not on :3000
 ```
 

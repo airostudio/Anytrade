@@ -1,7 +1,7 @@
 import 'server-only'
 import { createHmac, timingSafeEqual } from 'crypto'
 import { cookies } from 'next/headers'
-import { getSetting, SETTING_DEFAULTS } from './repos/settings'
+import { getSetting } from './repos/settings'
 
 /**
  * Shared-passcode gates.
@@ -37,19 +37,36 @@ const MAX_AGE: Record<GateName, number> = {
   homegirls: 60 * 60 * 24 * 30,
 }
 
+/**
+ * The key gate cookies are signed with.
+ *
+ * Outside production a fixed development key is used so a fresh checkout works.
+ * In production there is NO fallback: a signing key that is published in the
+ * source would let anyone forge a valid cookie, so a missing secret leaves the
+ * gates locked instead.
+ */
 function secret(): string {
-  return process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'anytrade-dev-secret'
+  const configured = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET
+  if (configured) return configured
+  return process.env.NODE_ENV === 'production' ? '' : 'anytrade-development-only-key'
 }
 
 /**
  * The passcode in force: an environment variable wins (so production can keep
  * it out of the database), otherwise the value saved in admin settings.
+ *
+ * Returns an empty string when neither is set, and an empty passcode means the
+ * gate is closed to everyone. There is intentionally no built-in default.
  */
 export async function currentPasscode(gate: GateName): Promise<string> {
   const fromEnv = process.env[ENV_KEY[gate]]
   if (fromEnv) return fromEnv
-  const stored = await getSetting(SETTING_KEY[gate])
-  return stored || SETTING_DEFAULTS[SETTING_KEY[gate]] || ''
+  return (await getSetting(SETTING_KEY[gate])) || ''
+}
+
+/** True when this gate has a passcode and a signing key, i.e. can be opened at all. */
+export async function isGateConfigured(gate: GateName): Promise<boolean> {
+  return Boolean(secret()) && Boolean(await currentPasscode(gate))
 }
 
 function tokenFor(gate: GateName, passcode: string): string {
@@ -67,14 +84,20 @@ function constantTimeEquals(a: string, b: string): boolean {
 export async function isGateUnlocked(gate: GateName): Promise<boolean> {
   const cookie = cookies().get(COOKIE[gate])?.value
   if (!cookie) return false
-  const expected = tokenFor(gate, await currentPasscode(gate))
-  return constantTimeEquals(cookie, expected)
+
+  // Fail closed. With no passcode the "expected" cookie would be an HMAC of an
+  // empty string, which is forgeable by anyone who knows the signing key.
+  const passcode = await currentPasscode(gate)
+  if (!passcode || !secret()) return false
+
+  return constantTimeEquals(cookie, tokenFor(gate, passcode))
 }
 
 /** Check a submitted passcode and, if it matches, set the gate cookie. */
 export async function unlockGate(gate: GateName, submitted: string): Promise<boolean> {
   const passcode = await currentPasscode(gate)
-  if (!passcode || !constantTimeEquals(submitted.trim(), passcode)) return false
+  if (!passcode || !secret()) return false
+  if (!constantTimeEquals(submitted.trim(), passcode)) return false
 
   cookies().set(COOKIE[gate], tokenFor(gate, passcode), {
     httpOnly: true,
