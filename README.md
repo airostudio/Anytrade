@@ -92,6 +92,8 @@ changed from Admin → Settings, but the environment variable takes precedence.
 | `npm run db:setup` | Apply `db/schema.sql` (add `-- --reset` to drop everything)  |
 | `npm run db:seed`  | **Local only.** Wipes the data tables and reseeds the demo marketplace |
 | `npm run db:reset` | **Local only.** `db:setup --reset` then `db:seed`            |
+| `npm run db:backup`| Encrypted `pg_dump` of the database (see BACKUPS.md)         |
+| `npm run db:restore`| Restore an encrypted backup into an empty database           |
 | `npm run test:e2e` | Playwright end-to-end suite (see below)                      |
 
 ## How the pieces fit
@@ -241,7 +243,7 @@ npm run test:e2e            # BASE_URL=… if not on :3000
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md).
+See [DEPLOYMENT.md](DEPLOYMENT.md). Backups are covered in [BACKUPS.md](BACKUPS.md).
 
 ## Project layout
 

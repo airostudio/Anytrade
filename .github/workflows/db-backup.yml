@@ -1,0 +1,115 @@
+# Nightly encrypted backup of the production database.
+#
+# Setup (once): see BACKUPS.md. You need two repository secrets:
+#   BACKUP_DATABASE_URL   the Supabase SESSION POOLER string (port 5432, host
+#                         aws-0-<region>.pooler.supabase.com, user postgres.<ref>)
+#   BACKUP_PASSPHRASE     20+ characters. Lose it and every backup is unreadable.
+#
+# GitHub's runners are IPv4-only, and Supabase's direct host
+# (db.<ref>.supabase.co) is IPv6-only, so the direct string will NOT work here.
+# Use the session pooler. The transaction pooler (port 6543) cannot run pg_dump.
+#
+# This repository is public, and workflow artifacts from a public repository are
+# readable by anyone. The dump is therefore encrypted BEFORE it is uploaded, and
+# nothing sensitive is ever written to the log.
+
+name: Database backup
+
+on:
+  schedule:
+    - cron: '30 16 * * *'     # 16:30 UTC daily = 2:30am AEST / 3:30am AEDT
+  workflow_dispatch: {}        # "Run workflow" button, for a backup on demand
+
+permissions:
+  contents: read
+
+# Never let two backups overlap.
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # A throwaway database the fresh backup is restored into, to prove it works.
+    # Restoring into a NEWER or equal major than the source is supported, so bump
+    # this image if Supabase moves its Postgres major past it (the job will fail
+    # loudly on the restore step if that ever happens).
+    services:
+      verify:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: verify
+          POSTGRES_DB: verify
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check the secrets exist
+        env:
+          HAS_URL: ${{ secrets.BACKUP_DATABASE_URL != '' }}
+          HAS_PASS: ${{ secrets.BACKUP_PASSPHRASE != '' }}
+        run: |
+          ok=true
+          [ "$HAS_URL" = "true" ]  || { echo "::error::Repository secret BACKUP_DATABASE_URL is not set. See BACKUPS.md."; ok=false; }
+          [ "$HAS_PASS" = "true" ] || { echo "::error::Repository secret BACKUP_PASSPHRASE is not set. See BACKUPS.md."; ok=false; }
+          $ok
+
+      # pg_dump refuses to dump a server newer than itself, so install the client
+      # that matches the server rather than whatever the runner ships with.
+      - name: Install a matching PostgreSQL client
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          NUM="$(psql "$BACKUP_DATABASE_URL" -Atc 'show server_version_num')"
+          MAJOR=$((NUM / 10000))
+          echo "Server is PostgreSQL $MAJOR"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq "postgresql-client-$MAJOR"
+          echo "/usr/lib/postgresql/$MAJOR/bin" >> "$GITHUB_PATH"
+
+      - name: Back up (encrypted)
+        id: backup
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          OUT_DIR: backups
+        run: bash scripts/db-backup.sh
+
+      # The point of a backup is restoring it. Restore tonight's file into the
+      # throwaway database and check every table came back.
+      - name: Prove it restores
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          RESTORE_DATABASE_URL: postgresql://postgres:verify@localhost:5432/verify
+          BACKUP_FILE: ${{ steps.backup.outputs.file }}
+        run: |
+          bash scripts/db-restore.sh "$BACKUP_FILE"
+          COUNT="$(psql "$RESTORE_DATABASE_URL" -Atc \
+            "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE'")"
+          echo "Restored $COUNT tables"
+          [ "$COUNT" -ge 14 ] || { echo "::error::Restore produced only $COUNT tables (expected 14)."; exit 1; }
+          for t in users tradespeople jobs bids reviews payments; do
+            psql "$RESTORE_DATABASE_URL" -Atc "select count(*) from public.$t" >/dev/null
+          done
+          echo "Backup verified: restores cleanly."
+
+      - name: Upload the encrypted backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: anytrade-backup-${{ github.run_id }}
+          path: backups/
+          retention-days: 30          # GitHub allows up to 90
+          if-no-files-found: error

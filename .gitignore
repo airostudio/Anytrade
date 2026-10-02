@@ -32,3 +32,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database backups (encrypted, but still never commit them)
+/backups/
+*.dump
+*.dump.gpg

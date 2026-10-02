@@ -160,7 +160,14 @@ UPDATE users SET role = 'ADMIN' WHERE email = 'you@example.com';
 
 Then sign in and enter the admin passcode at `/admin/unlock`.
 
-## 8. After deploying — worth checking
+## 8. Backups
+
+Set up the nightly encrypted, restore-tested backup before you take real users.
+Two secrets and a one-off run; the guide is [BACKUPS.md](BACKUPS.md). Note it
+needs Supabase's **session pooler** string, which is a different one from the
+connection string the app itself uses.
+
+## 9. After deploying — worth checking
 
 - `/` renders and the directory lists tradies.
 - Sign in lands each role on its own dashboard.
