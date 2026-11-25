@@ -1,3 +1,5 @@
+import { Hammer, Home } from 'lucide-react'
+import { IconTile } from '@/components/home/ui'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Panel, Stamp } from '@/components/ui'
@@ -19,10 +21,8 @@ export default function JoinPage() {
 
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         <Panel className="flex flex-col p-7">
-          <span className="text-4xl" aria-hidden>
-            🏠
-          </span>
-          <h2 className="mt-3 font-sign text-2xl font-bold uppercase tracking-wide">
+          <IconTile icon={Home} size="lg" />
+          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight">
             I need something done
           </h2>
           <p className="mt-2 flex-1 text-ink-soft">
@@ -41,10 +41,8 @@ export default function JoinPage() {
         </Panel>
 
         <Panel tone="navy" className="flex flex-col p-7">
-          <span className="text-4xl" aria-hidden>
-            🧰
-          </span>
-          <h2 className="mt-3 font-sign text-2xl font-bold uppercase tracking-wide text-safety">
+          <IconTile icon={Hammer} size="lg" />
+          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-safety-soft">
             I&apos;m a tradie
           </h2>
           <p className="mt-2 flex-1 text-canvas/85">

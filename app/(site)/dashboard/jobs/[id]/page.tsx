@@ -68,7 +68,7 @@ export default async function ClientJobPage({
 
       {searchParams.posted ? (
         <Panel tone="mustard" className="p-5">
-          <p className="font-sign text-lg font-bold uppercase tracking-wide">Job is live</p>
+          <p className="font-sign text-lg font-semibold">Job is live</p>
           <p className="mt-1 text-sm text-ink-soft">
             Reference <strong className="font-mono">{job.reference}</strong>. Tradies in{' '}
             {job.suburb} can see it now — most quotes land within a few hours.
@@ -78,7 +78,7 @@ export default async function ClientJobPage({
 
       {searchParams.paid || searchParams.demo === 'paid' ? (
         <Panel tone="mustard" className="p-5">
-          <p className="font-sign text-lg font-bold uppercase tracking-wide">
+          <p className="font-sign text-lg font-semibold">
             Payment held in escrow
           </p>
           <p className="mt-1 text-sm text-ink-soft">
@@ -91,7 +91,7 @@ export default async function ClientJobPage({
 
       {/* Job summary */}
       <Panel className="p-0">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-ink bg-canvas-deep px-5 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-canvas-deep px-5 py-3">
           <span className="font-mono text-sm font-bold">{job.reference}</span>
           <div className="flex flex-wrap gap-2">
             <Pill className={jobStatusTone(job.status)}>{JOB_STATUS_LABEL[job.status]}</Pill>
@@ -110,7 +110,7 @@ export default async function ClientJobPage({
 
           <p className="mt-5 whitespace-pre-line text-ink-soft">{job.description}</p>
 
-          <dl className="mt-6 grid gap-4 border-t-2 border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-5">
+          <dl className="mt-6 grid gap-4 border-t border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-5">
             <Fact label="Budget" value={budgetRange(job.budget_min, job.budget_max)} />
             <Fact label="Size" value={JOB_SIZE_LABEL[job.job_size]} />
             <Fact label="Timing" value={JOB_URGENCY_LABEL[job.urgency]} />
@@ -119,7 +119,7 @@ export default async function ClientJobPage({
           </dl>
 
           {canChoose ? (
-            <form action={cancelJob} className="mt-6 flex flex-wrap items-end gap-3 border-t-2 border-dashed border-ink/25 pt-5">
+            <form action={cancelJob} className="mt-6 flex flex-wrap items-end gap-3 border-t border-dashed border-ink/25 pt-5">
               <input type="hidden" name="jobId" value={job.id} />
               <div className="flex-1">
                 <label className="label" htmlFor="reason">
@@ -129,7 +129,7 @@ export default async function ClientJobPage({
                   id="reason"
                   name="reason"
                   placeholder="Reason (optional)"
-                  className="field border-2 py-2"
+                  className="field border py-2"
                 />
               </div>
               <button type="submit" className="btn-ghost btn-sm">
@@ -157,8 +157,8 @@ export default async function ClientJobPage({
               </div>
             </div>
             <div className="text-right">
-              <p className="font-sign text-xs uppercase tracking-widest text-canvas/70">Agreed price</p>
-              <p className="font-display text-4xl leading-none text-safety">{money(accepted.amount)}</p>
+              <p className="font-sign text-xs uppercase tracking-[0.12em] text-canvas/70">Agreed price</p>
+              <p className="font-display text-4xl leading-none text-safety-soft">{money(accepted.amount)}</p>
               <p className="mt-1 text-xs text-canvas/70">
                 {accepted.includes_gst ? 'GST included' : 'Plus GST'}
                 {accepted.includes_materials ? ' · materials included' : ' · materials extra'}
@@ -166,7 +166,7 @@ export default async function ClientJobPage({
             </div>
           </div>
 
-          <div className="mt-6 border-t-2 border-canvas/25 pt-5">
+          <div className="mt-6 border-t border-canvas/25 pt-5">
             <PayButtons
               jobId={job.id}
               jobStatus={job.status}
@@ -176,7 +176,7 @@ export default async function ClientJobPage({
             />
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-3 border-t-2 border-canvas/25 pt-5">
+          <div className="mt-5 flex flex-wrap gap-3 border-t border-canvas/25 pt-5">
             {job.status === 'AWARDED' ? (
               <form action={startJob}>
                 <input type="hidden" name="jobId" value={job.id} />
@@ -215,22 +215,22 @@ export default async function ClientJobPage({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <span className="eyebrow">The quotes</span>
-            <h2 className="font-sign text-2xl font-bold uppercase tracking-wide">
+            <h2 className="font-display text-2xl font-semibold tracking-tight">
               {stats.total} of {job.max_bids} received
             </h2>
           </div>
           {stats.total > 1 ? (
             <dl className="flex flex-wrap gap-5 text-sm">
               <div>
-                <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Lowest</dt>
+                <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Lowest</dt>
                 <dd className="font-display text-xl text-bottle">{money(stats.lowest)}</dd>
               </div>
               <div>
-                <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Average</dt>
+                <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Average</dt>
                 <dd className="font-display text-xl">{money(stats.average)}</dd>
               </div>
               <div>
-                <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Highest</dt>
+                <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Highest</dt>
                 <dd className="font-display text-xl text-oxide">{money(stats.highest)}</dd>
               </div>
             </dl>
@@ -253,7 +253,7 @@ export default async function ClientJobPage({
                       <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-sign text-lg font-bold uppercase tracking-wide">
+                            <h3 className="font-display text-lg font-semibold tracking-tight">
                               <Link href={`/find-a-tradie/${bid.slug}`} className="hover:text-oxide">
                                 {bid.business_name}
                               </Link>
@@ -265,10 +265,10 @@ export default async function ClientJobPage({
                               <Pill className="border-oxide bg-oxide text-canvas">Homegirl</Pill>
                             ) : null}
                             {isLowest && stats.total > 1 ? (
-                              <Pill className="border-ink bg-mustard text-ink">Lowest quote</Pill>
+                              <Pill className="border-hairline bg-mustard text-ink">Lowest quote</Pill>
                             ) : null}
                             {bid.is_shortlisted ? (
-                              <Pill className="border-ink bg-safety text-ink">Shortlisted</Pill>
+                              <Pill className="border-hairline bg-safety text-ink">Shortlisted</Pill>
                             ) : null}
                           </div>
 
@@ -281,7 +281,7 @@ export default async function ClientJobPage({
 
                           <p className="mt-3 whitespace-pre-line text-ink-soft">{bid.message}</p>
 
-                          <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-dashed border-ink/25 pt-3 text-sm">
+                          <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-dashed border-ink/25 pt-3 text-sm">
                             <Mini label="Materials" value={bid.includes_materials ? 'Included' : 'Extra'} />
                             <Mini label="GST" value={bid.includes_gst ? 'Included' : 'Plus GST'} />
                             <Mini
@@ -303,8 +303,8 @@ export default async function ClientJobPage({
                         </div>
 
                         <div className="flex shrink-0 flex-col items-stretch justify-between gap-3 lg:w-56">
-                          <div className="border-[3px] border-ink bg-manila px-4 py-3 text-center">
-                            <p className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">
+                          <div className="border border-hairline bg-manila px-4 py-3 text-center rounded-lg">
+                            <p className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                               Quoted
                             </p>
                             <p className="font-display text-3xl leading-none">{money(bid.amount)}</p>
@@ -336,7 +336,7 @@ export default async function ClientJobPage({
           </ul>
         ) : (
           <EmptyState
-            icon="📨"
+            icon="inbox"
             title="No quotes just yet"
             blurb={
               job.status === 'OPEN'
@@ -348,14 +348,14 @@ export default async function ClientJobPage({
 
         {declined.length ? (
           <details className="mt-6">
-            <summary className="cursor-pointer font-sign text-sm font-bold uppercase tracking-wide text-ink-mute">
+            <summary className="cursor-pointer font-sign text-sm font-semibold text-ink-mute">
               {declined.length} declined quote{declined.length === 1 ? '' : 's'}
             </summary>
             <ul className="mt-3 space-y-2">
               {declined.map((bid) => (
                 <li
                   key={bid.id}
-                  className="flex items-center justify-between border-2 border-ink/30 bg-canvas-deep px-4 py-2 text-sm"
+                  className="flex items-center justify-between border border-ink/30 bg-canvas-deep px-4 py-2 text-sm"
                 >
                   <span>{bid.business_name}</span>
                   <span className="font-mono">{money(bid.amount)}</span>
@@ -370,16 +370,16 @@ export default async function ClientJobPage({
       {payments.length ? (
         <section>
           <span className="eyebrow">Money</span>
-          <h2 className="mb-4 font-sign text-2xl font-bold uppercase tracking-wide">Payments</h2>
-          <Panel className="overflow-x-auto">
+          <h2 className="mb-4 font-display text-2xl font-semibold tracking-tight">Payments</h2>
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[600px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Description</th>
                   <th className="px-4 py-3">Amount</th>
                   <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3" />
+                  <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -417,7 +417,7 @@ export default async function ClientJobPage({
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">{label}</dt>
+      <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">{label}</dt>
       <dd className="font-semibold text-ink">{value}</dd>
     </div>
   )
@@ -426,7 +426,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 function Mini({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">{label}</dt>
+      <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">{label}</dt>
       <dd className="font-semibold">{value}</dd>
     </div>
   )

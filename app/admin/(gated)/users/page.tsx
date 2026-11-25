@@ -24,7 +24,7 @@ export default async function AdminUsersPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading eyebrow="People" title="Users" blurb="Every account on the platform." />
+      <SectionHeading as="h1" eyebrow="People" title="Users" blurb="Every account on the platform." />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatTile label="All users" value={stats.users.total} />
@@ -40,7 +40,7 @@ export default async function AdminUsersPage({
 
       <Panel className="p-4">
         <form method="get" className="grid gap-3 sm:grid-cols-[200px_1fr_auto_auto]">
-          <select name="role" defaultValue={searchParams.role ?? ''} className="field border-2 py-2">
+          <select aria-label="Role" name="role" defaultValue={searchParams.role ?? ''} className="field border py-2">
             <option value="">All roles</option>
             <option value="CLIENT">Homeowners</option>
             <option value="TRADESPERSON">Tradies</option>
@@ -50,7 +50,7 @@ export default async function AdminUsersPage({
             name="q"
             defaultValue={searchParams.q ?? ''}
             placeholder="Search name or email"
-            className="field border-2 py-2"
+            className="field border py-2"
           />
           <button type="submit" className="btn-navy btn-sm">
             Filter
@@ -61,9 +61,9 @@ export default async function AdminUsersPage({
         </form>
       </Panel>
 
-      <Panel className="overflow-x-auto">
+      <Panel tabIndex={0} className="overflow-x-auto">
         <table className="w-full min-w-[900px] text-sm">
-          <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+          <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
             <tr>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Role</th>
@@ -72,7 +72,7 @@ export default async function AdminUsersPage({
               <th className="px-4 py-3">Joined</th>
               <th className="px-4 py-3">Last seen</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3" />
+              <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody>
@@ -86,7 +86,7 @@ export default async function AdminUsersPage({
                   ) : null}
                 </td>
                 <td className="px-4 py-3">
-                  <Pill className="border-ink bg-canvas-deep text-ink-soft">{user.role}</Pill>
+                  <Pill className="border-hairline bg-canvas-deep text-ink-soft">{user.role}</Pill>
                 </td>
                 <td className="px-4 py-3 text-ink-soft">
                   {user.suburb ? `${user.suburb}, ${user.state ?? ''}` : '—'}
@@ -121,15 +121,15 @@ export default async function AdminUsersPage({
                         <input
                           name="reason"
                           placeholder="Reason"
-                          className="w-28 border-2 border-ink px-2 py-1 text-xs"
+                          className="w-28 border border-hairline px-2 py-1 text-xs"
                         />
                       ) : null}
                       <button
                         type="submit"
-                        className={`btn-sm border-2 font-sign uppercase tracking-widest ${
+                        className={`btn-sm border ${
                           user.is_suspended
                             ? 'border-bottle bg-bottle text-canvas'
-                            : 'border-ink hover:border-oxide hover:text-oxide'
+                            : 'border-hairline hover:border-oxide hover:text-oxide'
                         }`}
                       >
                         {user.is_suspended ? 'Reinstate' : 'Suspend'}

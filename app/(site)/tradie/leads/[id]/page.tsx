@@ -51,12 +51,12 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <div className="space-y-6">
           <Panel className="p-0">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-ink bg-canvas-deep px-5 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-canvas-deep px-5 py-3">
               <span className="font-mono text-sm font-bold">{job.reference}</span>
               <div className="flex flex-wrap gap-2">
                 <Pill className={jobStatusTone(job.status)}>{JOB_STATUS_LABEL[job.status]}</Pill>
                 {job.urgency === 'EMERGENCY' ? (
-                  <Pill className="border-ink bg-oxide text-canvas">Emergency</Pill>
+                  <Pill className="border-hairline bg-oxide text-canvas">Emergency</Pill>
                 ) : null}
                 {job.prefer_homegirl ? (
                   <Pill className="border-oxide bg-canvas text-oxide">Homegirls only</Pill>
@@ -73,14 +73,14 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
 
               <p className="mt-5 whitespace-pre-line text-ink-soft">{job.description}</p>
 
-              <dl className="mt-6 grid gap-4 border-t-2 border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-4">
+              <dl className="mt-6 grid gap-4 border-t border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-4">
                 <Fact label="Customer budget" value={budgetRange(job.budget_min, job.budget_max)} />
                 <Fact label="Size" value={JOB_SIZE_LABEL[job.job_size]} />
                 <Fact label="Timing" value={JOB_URGENCY_LABEL[job.urgency]} />
                 <Fact label="Preferred date" value={formatDate(job.preferred_date)} />
               </dl>
 
-              <p className="mt-5 border-t-2 border-dashed border-ink/25 pt-4 text-sm text-ink-mute">
+              <p className="mt-5 border-t border-dashed border-ink/25 pt-4 text-sm text-ink-mute">
                 The exact address and the customer&apos;s phone number are released once they accept
                 your quote.
               </p>
@@ -104,7 +104,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             </Panel>
           ) : blockedByHomegirls ? (
             <Panel tone="mustard" className="p-6">
-              <h2 className="font-sign text-lg font-bold uppercase tracking-wide">
+              <h2 className="font-display text-lg font-semibold tracking-tight">
                 Homegirls members only
               </h2>
               <p className="mt-2 text-sm text-ink-soft">
@@ -117,7 +117,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             </Panel>
           ) : needsVerification ? (
             <Panel tone="mustard" className="p-6">
-              <h2 className="font-sign text-lg font-bold uppercase tracking-wide">
+              <h2 className="font-display text-lg font-semibold tracking-tight">
                 Verification needed before you quote
               </h2>
               <p className="mt-2 text-sm text-ink-soft">
@@ -131,7 +131,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             </Panel>
           ) : openForQuotes ? (
             <Panel className="p-6">
-              <h2 className="mb-4 border-b-[3px] border-safety pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+              <h2 className="mb-4 border-b border-safety pb-2 font-display text-xl font-semibold tracking-tight">
                 Put your price in
               </h2>
               <BidForm
@@ -143,7 +143,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             </Panel>
           ) : (
             <Panel tone="manila" className="p-6">
-              <h2 className="font-sign text-lg font-bold uppercase tracking-wide">Quotes are closed</h2>
+              <h2 className="font-display text-lg font-semibold tracking-tight">Quotes are closed</h2>
               <p className="mt-2 text-sm text-ink-soft">
                 {slotsLeft === 0
                   ? 'This job already has the maximum number of quotes.'
@@ -155,7 +155,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
 
         <aside className="space-y-5">
           <Panel className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               The competition
             </h2>
             <dl className="space-y-3 text-sm">
@@ -166,13 +166,13 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
               <Row label="Highest quote" value={stats.highest ? money(stats.highest) : '—'} />
               <Row label="Job views" value={String(job.view_count)} />
             </dl>
-            <p className="mt-4 border-t-2 border-dashed border-ink/25 pt-3 text-xs text-ink-mute">
+            <p className="mt-4 border-t border-dashed border-ink/25 pt-3 text-xs text-ink-mute">
               Quote ranges are shown so you can price sensibly — the customer sees the same numbers.
             </p>
           </Panel>
 
           <Panel tone="manila" className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               The customer
             </h2>
             <p className="font-semibold">{job.client_name}</p>
@@ -192,7 +192,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
           </Panel>
 
           <Panel tone="navy" className="p-5">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
               Cost to quote
             </h2>
             <p className="mt-2 font-display text-4xl leading-none">
@@ -215,7 +215,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">{label}</dt>
+      <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">{label}</dt>
       <dd className="font-semibold text-ink">{value}</dd>
     </div>
   )

@@ -50,14 +50,14 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
   return (
     <>
       {/* Header board */}
-      <section className="border-b-[3px] border-ink bg-navy text-canvas">
+      <section className="border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
           <Link href="/find-a-tradie" className="text-sm text-canvas/70 underline-offset-4 hover:underline">
             ← Back to the directory
           </Link>
 
           <div className="mt-5 flex flex-wrap items-start gap-6">
-            <div className="flex h-24 w-24 shrink-0 items-center justify-center border-[3px] border-ink bg-safety font-display text-3xl text-ink shadow-hard">
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center border border-hairline bg-safety font-display text-3xl text-ink shadow-hard rounded-2xl">
               {initials(tradie.business_name)}
             </div>
 
@@ -69,7 +69,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
               </p>
 
               <div className="mt-3 flex flex-wrap items-center gap-4">
-                <Stars value={tradie.average_rating} showValue count={tradie.total_reviews} />
+                <Stars value={tradie.average_rating} showValue count={tradie.total_reviews} tone="dark" />
                 <span className="text-sm text-canvas/75">
                   {tradie.completed_jobs} jobs completed through AnyTrade
                 </span>
@@ -82,16 +82,16 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
                   <Pill className="border-canvas/50 bg-transparent text-canvas/80">Verification pending</Pill>
                 )}
                 {tradie.accepts_small_jobs ? (
-                  <Pill className="border-ink bg-mustard text-ink">Takes small jobs</Pill>
+                  <Pill className="border-hairline bg-mustard text-ink">Takes small jobs</Pill>
                 ) : null}
                 {tradie.emergency_callouts ? (
-                  <Pill className="border-ink bg-oxide text-canvas">Emergency call-outs</Pill>
+                  <Pill className="border-hairline bg-oxide text-canvas">Emergency call-outs</Pill>
                 ) : null}
                 {tradie.available_weekends ? (
                   <Pill className="border-canvas bg-transparent text-canvas">Weekends</Pill>
                 ) : null}
                 {tradie.is_homegirl ? (
-                  <Pill className="border-ink bg-safety text-ink">Homegirls member</Pill>
+                  <Pill className="border-hairline bg-safety text-ink">Homegirls member</Pill>
                 ) : null}
                 {tradie.membership_tier !== 'FREE' ? (
                   <Pill className="border-canvas bg-transparent text-canvas">
@@ -103,7 +103,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
 
             <div className="w-full sm:w-auto">
               <Panel className="p-5 sm:w-72">
-                <p className="font-sign text-xs uppercase tracking-[0.2em] text-ink-mute">Indicative rates</p>
+                <p className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">Indicative rates</p>
                 <p className="mt-1 font-display text-3xl leading-none text-ink">
                   {tradie.hourly_rate ? `${money(tradie.hourly_rate)}` : 'On quote'}
                   {tradie.hourly_rate ? <span className="font-body text-base"> /hr</span> : null}
@@ -133,7 +133,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
         <div className="space-y-8">
           {/* About */}
           <Panel className="p-6">
-            <h2 className="mb-3 border-b-[3px] border-safety pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+            <h2 className="mb-3 border-b border-safety pb-2 font-display text-xl font-semibold tracking-tight">
               About {tradie.business_name}
             </h2>
             {tradie.tagline ? (
@@ -143,7 +143,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
               {tradie.bio ?? 'This tradie has not written a profile blurb yet.'}
             </p>
 
-            <div className="mt-6 grid gap-4 border-t-2 border-dashed border-ink/25 pt-5 sm:grid-cols-3">
+            <div className="mt-6 grid gap-4 border-t border-dashed border-ink/25 pt-5 sm:grid-cols-3">
               <Fact label="Years in the trade" value={tradie.years_experience ? `${tradie.years_experience}` : '—'} />
               <Fact label="Jobs completed" value={String(tradie.completed_jobs)} />
               <Fact label="On AnyTrade since" value={formatDate(tradie.created_at)} />
@@ -152,7 +152,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
 
           {/* Services */}
           <Panel className="p-6">
-            <h2 className="mb-4 border-b-[3px] border-safety pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+            <h2 className="mb-4 border-b border-safety pb-2 font-display text-xl font-semibold tracking-tight">
               What they do
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -160,16 +160,16 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
                 <Link
                   key={trade}
                   href={`/trades/${trade}`}
-                  className="border-[3px] border-ink bg-canvas-deep px-3 py-1.5 font-sign text-sm font-bold uppercase tracking-wide hover:bg-safety"
+                  className="border border-hairline bg-canvas-deep px-3 py-1.5 font-sign text-sm font-semibold hover:bg-safety rounded-lg"
                 >
-                  {getCategory(trade)?.icon} {categoryName(trade)}
+                  {categoryName(trade)}
                 </Link>
               ))}
             </div>
 
             {tradie.handyman_services.length ? (
               <div className="mt-6">
-                <h3 className="mb-2 font-sign text-sm font-bold uppercase tracking-[0.2em] text-ink-mute">
+                <h3 className="mb-2 font-display text-sm font-semibold tracking-tight text-ink-mute">
                   Handyman jobs they take
                 </h3>
                 <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
@@ -189,7 +189,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
           {/* Reviews */}
           <section>
             <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-              <h2 className="font-sign text-2xl font-bold uppercase tracking-wide">
+              <h2 className="font-display text-2xl font-semibold tracking-tight">
                 Ratings &amp; reviews
               </h2>
               <span className="text-sm text-ink-mute">
@@ -214,7 +214,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
                     return (
                       <div key={star} className="flex items-center gap-3 text-sm">
                         <span className="w-8 font-mono text-ink-mute">{star}★</span>
-                        <span className="h-3 flex-1 border-2 border-ink bg-canvas-deep">
+                        <span className="h-3 flex-1 border border-hairline bg-canvas-deep">
                           <span className="block h-full bg-safety" style={{ width: `${pct}%` }} />
                         </span>
                         <span className="w-8 text-right font-mono text-ink-mute">{n}</span>
@@ -225,10 +225,10 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
               </div>
 
               {tradie.total_reviews > 0 ? (
-                <div className="mt-6 grid gap-3 border-t-2 border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="mt-6 grid gap-3 border-t border-dashed border-ink/25 pt-5 sm:grid-cols-2 lg:grid-cols-5">
                   {subRatings.map((item) => (
                     <div key={item.label}>
-                      <p className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">
+                      <p className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                         {item.label}
                       </p>
                       <p className="font-display text-xl text-ink">{rating1dp(item.value)}</p>
@@ -238,9 +238,9 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
               ) : null}
 
               {tags.length ? (
-                <div className="mt-5 flex flex-wrap gap-2 border-t-2 border-dashed border-ink/25 pt-5">
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-dashed border-ink/25 pt-5">
                   {tags.map((tag) => (
-                    <Pill key={tag.tag} className="border-ink bg-mustard text-ink">
+                    <Pill key={tag.tag} className="border-hairline bg-mustard text-ink">
                       {tag.tag} · {tag.n}
                     </Pill>
                   ))}
@@ -262,7 +262,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
                             {timeAgo(review.created_at)}
                           </p>
                         </div>
-                        <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                        <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                           {categoryName(review.job_category)}
                         </Pill>
                       </div>
@@ -283,7 +283,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
 
                       {review.response ? (
                         <div className="mt-4 border-l-4 border-safety bg-canvas-deep p-3">
-                          <p className="font-sign text-xs uppercase tracking-widest text-ink-mute">
+                          <p className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">
                             Reply from {tradie.business_name}
                           </p>
                           <p className="mt-1 text-sm text-ink-soft">{review.response}</p>
@@ -304,7 +304,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
         {/* Sidebar */}
         <aside className="space-y-5">
           <Panel tone="manila" className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">Credentials</h2>
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">Credentials</h2>
             <dl className="space-y-2 text-sm">
               <Row label="ABN" value={tradie.abn ?? 'Not supplied'} />
               <Row label="Licence" value={tradie.licence_number ?? 'Not supplied'} />
@@ -322,14 +322,14 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
           </Panel>
 
           <Panel className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">Coverage</h2>
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">Coverage</h2>
             {tradie.service_areas.length ? (
               <div className="flex flex-wrap gap-1.5">
                 {tradie.service_areas.map((area) => (
                   <Link
                     key={area}
                     href={`/find-a-tradie?suburb=${encodeURIComponent(area)}`}
-                    className="border-2 border-ink bg-canvas-deep px-2 py-0.5 text-xs hover:bg-safety"
+                    className="border border-hairline bg-canvas-deep px-2 py-0.5 text-xs hover:bg-safety rounded-lg"
                   >
                     {area}
                   </Link>
@@ -338,7 +338,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
             ) : (
               <p className="text-sm text-ink-mute">No service areas listed.</p>
             )}
-            <dl className="mt-4 space-y-2 border-t-2 border-dashed border-ink/25 pt-4 text-sm">
+            <dl className="mt-4 space-y-2 border-t border-dashed border-ink/25 pt-4 text-sm">
               <Row label="Available now" value={tradie.available_now ? 'Yes' : 'Booked up'} />
               <Row label="Weekends" value={tradie.available_weekends ? 'Yes' : 'No'} />
               <Row
@@ -349,7 +349,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
           </Panel>
 
           <Panel tone="navy" className="p-5">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
               How rating works here
             </h2>
             <p className="mt-2 text-sm text-canvas/85">
@@ -371,7 +371,7 @@ export default async function TradieProfilePage({ params }: { params: { slug: st
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="font-sign text-[11px] uppercase tracking-widest text-ink-mute">{label}</dt>
+      <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-ink-mute">{label}</dt>
       <dd className="text-right font-semibold">{value}</dd>
     </div>
   )
@@ -380,7 +380,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">{label}</p>
+      <p className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">{label}</p>
       <p className="font-display text-2xl leading-tight text-ink">{value}</p>
     </div>
   )

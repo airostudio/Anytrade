@@ -32,7 +32,7 @@ export default async function AdminTradiesPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Supply side"
         title="Tradies"
         blurb="Verify licences, adjust credits, manage memberships and featured placement."
@@ -60,7 +60,7 @@ export default async function AdminTradiesPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/tradies"
-            className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-hairline ${
               !searchParams.status ? 'bg-safety' : 'bg-canvas'
             }`}
           >
@@ -70,7 +70,7 @@ export default async function AdminTradiesPage({
             <Link
               key={status}
               href={`/admin/tradies?status=${status}`}
-              className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-hairline ${
                 searchParams.status === status ? 'bg-safety' : 'bg-canvas'
               }`}
             >
@@ -86,27 +86,27 @@ export default async function AdminTradiesPage({
             <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-sign text-lg font-bold uppercase tracking-wide">
+                  <h2 className="font-display text-lg font-semibold tracking-tight">
                     <Link href={`/find-a-tradie/${tradie.slug}`} className="hover:text-oxide">
                       {tradie.business_name}
                     </Link>
-                  </h3>
+                  </h2>
                   <Pill
                     className={
                       tradie.verification_status === 'VERIFIED'
                         ? 'border-bottle bg-bottle text-canvas'
                         : tradie.verification_status === 'REJECTED'
                           ? 'border-oxide bg-oxide text-canvas'
-                          : 'border-ink bg-canvas-deep text-ink-soft'
+                          : 'border-hairline bg-canvas-deep text-ink-soft'
                     }
                   >
                     {tradie.verification_status}
                   </Pill>
-                  <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                  <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                     {MEMBERSHIP_LABEL[tradie.membership_tier]}
                   </Pill>
                   {tradie.is_featured ? (
-                    <Pill className="border-ink bg-safety text-ink">Featured</Pill>
+                    <Pill className="border-hairline bg-safety text-ink">Featured</Pill>
                   ) : null}
                   {tradie.is_homegirl ? (
                     <Pill className="border-oxide bg-canvas text-oxide">Homegirl</Pill>
@@ -123,7 +123,7 @@ export default async function AdminTradiesPage({
                             ? 'border-bottle bg-bottle text-canvas'
                             : payouts.state === 'not_started'
                               ? 'border-ink/40 bg-transparent text-ink-mute'
-                              : 'border-ink bg-mustard text-ink'
+                              : 'border-hairline bg-mustard text-ink'
                         }
                       >
                         Payouts: {payouts.label}
@@ -148,7 +148,7 @@ export default async function AdminTradiesPage({
                   ))}
                 </div>
 
-                <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 border-t-2 border-dashed border-ink/25 pt-3 text-sm sm:grid-cols-4">
+                <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 border-t border-dashed border-ink/25 pt-3 text-sm sm:grid-cols-4">
                   <Fact label="Credits" value={String(tradie.lead_credits)} />
                   <Fact label="Jobs done" value={String(tradie.completed_jobs)} />
                   <Fact label="Quotes" value={`${tradie.won_bids}/${tradie.total_bids}`} />
@@ -171,11 +171,11 @@ export default async function AdminTradiesPage({
                 ) : null}
               </div>
 
-              <div className="space-y-3 border-t-2 border-dashed border-ink/25 pt-4 lg:border-l-2 lg:border-t-0 lg:pl-5 lg:pt-0">
+              <div className="space-y-3 border-t border-dashed border-ink/25 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
                 <form action={adminSetVerification} className="space-y-2">
                   <input type="hidden" name="tradespersonId" value={tradie.id} />
                   <label className="label mb-0">Verification</label>
-                  <select name="status" defaultValue={tradie.verification_status} className="field border-2 py-1.5 text-sm">
+                  <select aria-label="Status" name="status" defaultValue={tradie.verification_status} className="field border py-1.5 text-sm">
                     {STATUSES.map((status) => (
                       <option key={status} value={status}>
                         {status}
@@ -186,7 +186,7 @@ export default async function AdminTradiesPage({
                     name="notes"
                     defaultValue={tradie.verification_notes ?? ''}
                     placeholder="Note to the tradie"
-                    className="field border-2 py-1.5 text-sm"
+                    className="field border py-1.5 text-sm"
                   />
                   <button type="submit" className="btn-navy btn-sm w-full">
                     Save verification
@@ -195,7 +195,7 @@ export default async function AdminTradiesPage({
 
                 <form action={adminSetMembership} className="flex gap-2">
                   <input type="hidden" name="tradespersonId" value={tradie.id} />
-                  <select name="tier" defaultValue={tradie.membership_tier} className="field border-2 py-1.5 text-sm">
+                  <select aria-label="Tier" name="tier" defaultValue={tradie.membership_tier} className="field border py-1.5 text-sm">
                     {TIERS.map((tier) => (
                       <option key={tier} value={tier}>
                         {MEMBERSHIP_LABEL[tier]}
@@ -213,7 +213,7 @@ export default async function AdminTradiesPage({
                     name="delta"
                     type="number"
                     placeholder="± credits"
-                    className="field border-2 py-1.5 text-sm"
+                    className="field border py-1.5 text-sm"
                   />
                   <button type="submit" className="btn-ghost btn-sm whitespace-nowrap">
                     Adjust
@@ -252,7 +252,7 @@ export default async function AdminTradiesPage({
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">{label}</dt>
+      <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">{label}</dt>
       <dd className="truncate font-semibold">{value}</dd>
     </div>
   )

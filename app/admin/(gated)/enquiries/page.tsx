@@ -11,7 +11,7 @@ export default async function AdminEnquiriesPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Inbox"
         title="Contact enquiries"
         blurb="Messages sent through the contact form on the public site."
@@ -25,14 +25,14 @@ export default async function AdminEnquiriesPage() {
 
       <div className="space-y-3">
         {enquiries.map((enquiry) => (
-          <Panel key={enquiry.id} className={`p-5 ${enquiry.is_handled ? 'opacity-70' : ''}`}>
+          <Panel key={enquiry.id} className={`p-5 ${enquiry.is_handled ? 'bg-canvas-deep' : ''}`}>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-sign text-base font-bold uppercase tracking-wide">
+                  <h2 className="font-display text-base font-semibold tracking-tight">
                     {enquiry.name}
-                  </h3>
-                  <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                  </h2>
+                  <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                     {enquiry.subject ?? 'General'}
                   </Pill>
                   {enquiry.is_handled ? (

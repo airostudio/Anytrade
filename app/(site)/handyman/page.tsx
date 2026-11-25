@@ -24,7 +24,7 @@ export default async function HandymanPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative border-b-[3px] border-ink bg-oxide text-canvas">
+      <section className="relative border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
@@ -58,10 +58,10 @@ export default async function HandymanPage() {
             </div>
 
             <Panel className="p-0">
-              <div className="border-b-[3px] border-ink bg-mustard px-5 py-3">
+              <div className="border-b border-hairline bg-mustard px-5 py-3">
                 <p className="font-display text-xl leading-none text-ink">THE ODD JOBS LIST</p>
               </div>
-              <ul className="max-h-[420px] overflow-y-auto">
+              <ul className="max-h-[420px] overflow-y-auto" tabIndex={0}>
                 {HANDYMAN_SERVICES.map((service, i) => (
                   <li
                     key={service}
@@ -74,7 +74,7 @@ export default async function HandymanPage() {
                   </li>
                 ))}
               </ul>
-              <p className="border-t-[3px] border-ink bg-canvas-deep px-5 py-3 text-xs text-ink-mute">
+              <p className="border-t border-hairline bg-canvas-deep px-5 py-3 text-xs text-ink-mute">
                 Not on the list? Post it anyway. Somebody here has done it before.
               </p>
             </Panel>
@@ -95,7 +95,7 @@ export default async function HandymanPage() {
         <div className="grid gap-6 md:grid-cols-3">
           <Panel className="p-6">
             <p className="font-display text-4xl text-oxide">1 visit</p>
-            <h3 className="mt-2 font-sign text-lg font-bold uppercase">One call-out fee</h3>
+            <h3 className="mt-2 font-display text-lg font-semibold">One call-out fee</h3>
             <p className="mt-2 text-ink-soft">
               Most handymen charge $60–$90 to come out, then an hourly rate. Stack the jobs and you
               only pay it once.
@@ -103,7 +103,7 @@ export default async function HandymanPage() {
           </Panel>
           <Panel className="p-6">
             <p className="font-display text-4xl text-oxide">$85–$120</p>
-            <h3 className="mt-2 font-sign text-lg font-bold uppercase">Typical hourly rate</h3>
+            <h3 className="mt-2 font-display text-lg font-semibold">Typical hourly rate</h3>
             <p className="mt-2 text-ink-soft">
               Quotes on AnyTrade are itemised with GST included, so the number you see is the number
               you pay.
@@ -111,7 +111,7 @@ export default async function HandymanPage() {
           </Panel>
           <Panel className="p-6">
             <p className="font-display text-4xl text-oxide">Up to 6</p>
-            <h3 className="mt-2 font-sign text-lg font-bold uppercase">Quotes to compare</h3>
+            <h3 className="mt-2 font-display text-lg font-semibold">Quotes to compare</h3>
             <p className="mt-2 text-ink-soft">
               Post once, get up to six real prices back. Compare them side by side with the ratings.
             </p>
@@ -120,7 +120,7 @@ export default async function HandymanPage() {
       </section>
 
       {/* Handyman-friendly trades */}
-      <section className="border-y-[3px] border-ink bg-manila">
+      <section className="border-y border-hairline bg-manila">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <SectionHeading
             eyebrow="Small jobs by trade"
@@ -131,9 +131,9 @@ export default async function HandymanPage() {
             {TRADE_CATEGORIES.filter((c) => c.handyman).map((c) => (
               <Panel key={c.slug} className="p-5">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-sign text-lg font-bold uppercase tracking-wide">
+                  <h3 className="font-display text-lg font-semibold tracking-tight">
                     <Link href={`/trades/${c.slug}`} className="hover:text-oxide">
-                      {c.icon} {c.name}
+                      {c.name}
                     </Link>
                   </h3>
                   <span className="font-mono text-xs font-bold text-bottle">
@@ -150,7 +150,7 @@ export default async function HandymanPage() {
           </div>
 
           <Panel tone="navy" className="mt-8 p-6">
-            <h3 className="font-sign text-lg font-bold uppercase tracking-wide text-safety">
+            <h3 className="font-display text-lg font-semibold tracking-tight text-safety-soft">
               Where a licence is required
             </h3>
             <p className="mt-2 text-canvas/85">
@@ -183,7 +183,7 @@ export default async function HandymanPage() {
           </div>
         ) : (
           <EmptyState
-            icon="🔩"
+            icon="tradies"
             title="No handymen listed yet"
             blurb="Post your jobs list anyway — it goes straight into the feed for handymen in your area."
             action={

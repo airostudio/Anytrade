@@ -41,13 +41,13 @@ export default async function TradieLayout({ children }: { children: React.React
   const wonJobs = bids.filter((b) => b.status === 'ACCEPTED' && b.job_status !== 'COMPLETED')
 
   const items: NavItem[] = [
-    { href: '/tradie', label: 'Overview', icon: '🧰' },
-    { href: '/tradie/leads', label: 'Job leads', icon: '📡' },
-    { href: '/tradie/bids', label: 'My quotes', icon: '📝', badge: liveBids.length },
-    { href: '/tradie/jobs', label: 'Won jobs', icon: '✅', badge: wonJobs.length },
-    { href: '/tradie/reviews', label: 'Ratings', icon: '⭐', badge: pending.length },
-    { href: '/tradie/profile', label: 'My listing', icon: '📇' },
-    { href: '/tradie/billing', label: 'Billing', icon: '💳' },
+    { href: '/tradie', label: 'Overview', icon: 'overview' },
+    { href: '/tradie/leads', label: 'Job leads', icon: 'leads' },
+    { href: '/tradie/bids', label: 'My quotes', icon: 'quotes', badge: liveBids.length },
+    { href: '/tradie/jobs', label: 'Won jobs', icon: 'won', badge: wonJobs.length },
+    { href: '/tradie/reviews', label: 'Ratings', icon: 'reviews', badge: pending.length },
+    { href: '/tradie/profile', label: 'My listing', icon: 'listing' },
+    { href: '/tradie/billing', label: 'Billing', icon: 'payments' },
   ]
 
   return (

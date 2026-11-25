@@ -56,7 +56,7 @@ export default async function WonJobsPage() {
                     <span className="font-mono text-xs text-ink-mute">{job.reference}</span>
                     <Pill className={jobStatusTone(job.status)}>{JOB_STATUS_LABEL[job.status]}</Pill>
                   </div>
-                  <h3 className="mt-1 font-sign text-lg font-bold uppercase tracking-wide">
+                  <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
                     {job.title}
                   </h3>
                   <p className="mt-1 text-sm text-ink-mute">
@@ -64,7 +64,7 @@ export default async function WonJobsPage() {
                   </p>
                   {job.address && job.status !== 'COMPLETED' ? (
                     <p className="mt-2 border-l-4 border-safety bg-canvas-deep px-3 py-1.5 text-sm">
-                      <strong className="font-sign uppercase tracking-wide">Address:</strong>{' '}
+                      <strong className="font-sign">Address:</strong>{' '}
                       {job.address}, {job.suburb} {job.postcode}
                     </p>
                   ) : null}
@@ -76,7 +76,7 @@ export default async function WonJobsPage() {
                 </div>
 
                 <div className="text-right">
-                  <p className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">
+                  <p className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                     Agreed price
                   </p>
                   <p className="font-display text-3xl leading-none">{money(amountFor(job.id))}</p>
@@ -95,7 +95,7 @@ export default async function WonJobsPage() {
         </div>
       ) : (
         <EmptyState
-          icon="✅"
+          icon="won"
           title="No won jobs yet"
           blurb="Quote on a few leads. A sharp, detailed quote wins more often than the cheapest one."
           action={

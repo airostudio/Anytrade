@@ -42,7 +42,7 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <div className="space-y-10">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Numbers"
         title="Analytics"
         blurb="Marketplace health at a glance — liquidity, conversion and where the work is."
@@ -98,12 +98,12 @@ export default async function AdminAnalyticsPage() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section>
-          <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
             Demand by trade
           </h2>
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[420px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-3 py-2.5">Trade</th>
                   <th className="px-3 py-2.5 text-right">Jobs</th>
@@ -137,12 +137,12 @@ export default async function AdminAnalyticsPage() {
         </section>
 
         <section>
-          <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
             Busiest suburbs
           </h2>
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[380px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-3 py-2.5">Suburb</th>
                   <th className="px-3 py-2.5 text-right">Jobs</th>
@@ -175,7 +175,7 @@ export default async function AdminAnalyticsPage() {
       </div>
 
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Revenue mix
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -187,12 +187,12 @@ export default async function AdminAnalyticsPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Top performers
         </h2>
-        <Panel className="overflow-x-auto">
+        <Panel tabIndex={0} className="overflow-x-auto">
           <table className="w-full min-w-[560px] text-sm">
-            <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+            <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
               <tr>
                 <th className="px-3 py-2.5">Business</th>
                 <th className="px-3 py-2.5 text-right">Jobs done</th>
@@ -245,17 +245,17 @@ function Chart({
 
   return (
     <Panel className="p-5">
-      <h3 className="mb-4 font-sign text-sm font-bold uppercase tracking-[0.2em]">{title}</h3>
+      <h2 className="mb-4 font-display text-sm font-semibold tracking-tight">{title}</h2>
       {rows.length ? (
-        <div className="flex items-end gap-2 overflow-x-auto">
+        <div className="flex items-end gap-2 overflow-x-auto" tabIndex={0}>
           {rows.map((row) => (
             <div key={row.label} className="flex min-w-[48px] flex-1 flex-col items-center gap-1.5">
               <span className="font-mono text-[10px] text-ink-mute">{format(row.value)}</span>
               <div
-                className={`w-full border-2 border-ink ${tone}`}
+                className={`w-full border border-hairline ${tone}`}
                 style={{ height: `${Math.max(4, (row.value / max) * 130)}px` }}
               />
-              <span className="whitespace-nowrap font-sign text-[10px] uppercase tracking-wider text-ink-mute">
+              <span className="whitespace-nowrap font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                 {row.label}
               </span>
             </div>

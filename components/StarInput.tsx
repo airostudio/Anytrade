@@ -26,7 +26,7 @@ export default function StarInput({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
-      <span className="font-sign text-sm font-semibold uppercase tracking-wider text-ink-soft">
+      <span className="font-sign text-sm font-semibold text-ink-soft">
         {label}
         {required ? <span className="text-oxide"> *</span> : null}
       </span>

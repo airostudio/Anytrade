@@ -41,7 +41,7 @@ export default async function TradieOverview({
     <div className="space-y-10">
       {searchParams.rated ? (
         <Panel tone="mustard" className="p-4">
-          <p className="font-sign font-bold uppercase tracking-wide">Thanks — customer rated.</p>
+          <p className="font-sign font-semibold">Thanks — customer rated.</p>
         </Panel>
       ) : null}
 
@@ -72,7 +72,7 @@ export default async function TradieOverview({
       {tradie.lead_credits === 0 ? (
         <Panel tone="mustard" className="flex flex-wrap items-center justify-between gap-4 p-5">
           <div>
-            <p className="font-sign text-lg font-bold uppercase tracking-wide">Out of lead credits</p>
+            <p className="font-sign text-lg font-semibold">Out of lead credits</p>
             <p className="mt-1 text-sm text-ink-soft">
               You need credits to submit a quote. Packs start at $39 for ten.
             </p>
@@ -94,7 +94,7 @@ export default async function TradieOverview({
             {pending.map((item) => (
               <Panel key={item.job_id} tone="mustard" className="p-5">
                 <p className="font-mono text-xs text-ink-mute">{item.reference}</p>
-                <h3 className="mt-1 font-sign text-lg font-bold uppercase leading-tight">{item.title}</h3>
+                <h3 className="mt-1 font-display text-lg font-semibold leading-tight">{item.title}</h3>
                 <p className="mt-1 text-sm text-ink-soft">Customer: {item.other_name}</p>
                 <Link href={`/tradie/jobs/${item.job_id}/review`} className="btn-oxide btn-sm mt-4 w-full">
                   Rate the customer
@@ -123,7 +123,7 @@ export default async function TradieOverview({
           </div>
         ) : (
           <EmptyState
-            icon="📡"
+            icon="leads"
             title="No matching leads right now"
             blurb="Widen your trades or service areas in your listing and more work will land here."
             action={
@@ -138,9 +138,9 @@ export default async function TradieOverview({
       {liveBids.length ? (
         <section>
           <SectionHeading eyebrow="Waiting on the customer" title="Quotes in play" />
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">Job</th>
                   <th className="px-4 py-3">Suburb</th>
@@ -169,7 +169,7 @@ export default async function TradieOverview({
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Panel tone="navy" className="p-6">
-          <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+          <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
             Work in the pipeline
           </h2>
           <p className="mt-3 font-display text-4xl leading-none">{money(pipeline)}</p>
@@ -187,7 +187,7 @@ export default async function TradieOverview({
             {notifications.map((note) => (
               <div key={note.id} className="flex items-start justify-between gap-4 p-4">
                 <div>
-                  <p className="font-sign text-sm font-bold uppercase tracking-wide">{note.title}</p>
+                  <p className="font-sign text-sm font-semibold">{note.title}</p>
                   {note.body ? <p className="mt-0.5 text-sm text-ink-soft">{note.body}</p> : null}
                 </div>
                 <span className="shrink-0 text-xs text-ink-mute">{timeAgo(note.created_at)}</span>
@@ -196,7 +196,7 @@ export default async function TradieOverview({
           </Panel>
         ) : (
           <Panel className="p-6">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em]">Your listing</h2>
+            <h2 className="font-display text-sm font-semibold tracking-tight">Your listing</h2>
             <div className="mt-3">
               <Stars value={tradie.average_rating} showValue count={tradie.total_reviews} />
             </div>

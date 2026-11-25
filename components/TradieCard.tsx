@@ -9,7 +9,7 @@ export default function TradieCard({ tradie }: { tradie: TradieProfile }) {
   const verified = tradie.verification_status === 'VERIFIED'
 
   return (
-    <article className="relative flex h-full flex-col border-[3px] border-ink bg-canvas shadow-hard card-lift">
+    <article className="relative flex h-full flex-col border border-hairline bg-canvas shadow-hard card-lift rounded-2xl">
       {tradie.is_featured ? (
         <div className="absolute -right-2 -top-3 z-10">
           <Stamp tone="oxide" className="bg-canvas">
@@ -18,12 +18,12 @@ export default function TradieCard({ tradie }: { tradie: TradieProfile }) {
         </div>
       ) : null}
 
-      <div className="flex items-start gap-3 border-b-2 border-ink/20 p-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-ink bg-navy font-display text-xl text-canvas">
+      <div className="flex items-start gap-3 border-b border-ink/20 p-4">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-hairline bg-navy font-display text-xl text-canvas">
           {initials(tradie.business_name || tradie.name)}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-sign text-lg font-bold uppercase leading-tight text-ink">
+          <h3 className="truncate font-display text-lg font-semibold leading-tight text-ink">
             <Link href={`/find-a-tradie/${tradie.slug}`} className="hover:text-oxide">
               {tradie.business_name}
             </Link>
@@ -45,7 +45,7 @@ export default function TradieCard({ tradie }: { tradie: TradieProfile }) {
 
         <div className="flex flex-wrap gap-1.5">
           {tradie.trades.slice(0, 3).map((trade) => (
-            <Pill key={trade} className="border-ink bg-canvas-deep text-ink">
+            <Pill key={trade} className="border-hairline bg-canvas-deep text-ink">
               {categoryName(trade)}
             </Pill>
           ))}
@@ -56,25 +56,25 @@ export default function TradieCard({ tradie }: { tradie: TradieProfile }) {
           ) : null}
         </div>
 
-        <dl className="mt-auto grid grid-cols-2 gap-x-3 gap-y-1.5 border-t-2 border-dashed border-ink/25 pt-3 text-sm">
+        <dl className="mt-auto grid grid-cols-2 gap-x-3 gap-y-1.5 border-t border-dashed border-ink/25 pt-3 text-sm">
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Hourly</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Hourly</dt>
             <dd className="font-bold text-ink">
               {tradie.hourly_rate ? `${money(tradie.hourly_rate)}/hr` : 'On quote'}
             </dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Call-out</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Call-out</dt>
             <dd className="font-bold text-ink">
               {tradie.callout_fee ? money(tradie.callout_fee) : tradie.free_quotes ? 'Free quote' : '—'}
             </dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Jobs done</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Jobs done</dt>
             <dd className="font-bold text-ink">{tradie.completed_jobs}</dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Experience</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Experience</dt>
             <dd className="font-bold text-ink">
               {tradie.years_experience ? `${tradie.years_experience} yrs` : '—'}
             </dd>
@@ -86,13 +86,13 @@ export default function TradieCard({ tradie }: { tradie: TradieProfile }) {
             <Pill className="border-bottle bg-bottle text-canvas">✓ Licence checked</Pill>
           ) : null}
           {tradie.accepts_small_jobs ? (
-            <Pill className="border-ink bg-mustard text-ink">Small jobs OK</Pill>
+            <Pill className="border-hairline bg-mustard text-ink">Small jobs OK</Pill>
           ) : null}
           {tradie.is_homegirl ? (
             <Pill className="border-oxide bg-oxide text-canvas">Homegirl</Pill>
           ) : null}
           {tradie.emergency_callouts ? (
-            <Pill className="border-ink bg-safety text-ink">24/7</Pill>
+            <Pill className="border-hairline bg-safety text-ink">24/7</Pill>
           ) : null}
         </div>
 

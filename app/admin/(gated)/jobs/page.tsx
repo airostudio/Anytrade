@@ -35,7 +35,7 @@ export default async function AdminJobsPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading eyebrow="Demand side" title="Jobs" blurb="Every job posted on the platform." />
+      <SectionHeading as="h1" eyebrow="Demand side" title="Jobs" blurb="Every job posted on the platform." />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatTile label="All jobs" value={stats.jobs.total} />
@@ -49,7 +49,7 @@ export default async function AdminJobsPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/jobs"
-            className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-hairline ${
               !searchParams.status ? 'bg-safety' : 'bg-canvas'
             }`}
           >
@@ -59,7 +59,7 @@ export default async function AdminJobsPage({
             <Link
               key={status}
               href={`/admin/jobs?status=${status}`}
-              className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-hairline ${
                 searchParams.status === status ? 'bg-safety' : 'bg-canvas'
               }`}
             >
@@ -69,9 +69,9 @@ export default async function AdminJobsPage({
         </div>
       </Panel>
 
-      <Panel className="overflow-x-auto">
+      <Panel tabIndex={0} className="overflow-x-auto">
         <table className="w-full min-w-[1000px] text-sm">
-          <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+          <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
             <tr>
               <th className="px-4 py-3">Ref</th>
               <th className="px-4 py-3">Job</th>
@@ -81,7 +81,7 @@ export default async function AdminJobsPage({
               <th className="px-4 py-3">Quotes</th>
               <th className="px-4 py-3">Posted</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3" />
+              <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody>
@@ -112,7 +112,7 @@ export default async function AdminJobsPage({
                 <td className="px-4 py-3">
                   <form action={adminSetJobStatus} className="flex gap-1.5">
                     <input type="hidden" name="jobId" value={job.id} />
-                    <select name="status" defaultValue={job.status} className="border-2 border-ink px-1.5 py-1 text-xs">
+                    <select aria-label="Status" name="status" defaultValue={job.status} className="border border-hairline px-1.5 py-1 text-xs">
                       {STATUSES.map((status) => (
                         <option key={status} value={status}>
                           {JOB_STATUS_LABEL[status]}
@@ -121,7 +121,7 @@ export default async function AdminJobsPage({
                     </select>
                     <button
                       type="submit"
-                      className="border-2 border-ink px-2 py-1 font-sign text-[11px] font-bold uppercase hover:bg-safety"
+                      className="border border-hairline px-2 py-1 font-sign text-[11px] font-semibold uppercase hover:bg-safety"
                     >
                       Set
                     </button>

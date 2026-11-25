@@ -33,7 +33,7 @@ export default async function ClientDashboard({
     <div className="space-y-10">
       {searchParams.rated ? (
         <Panel tone="mustard" className="p-4">
-          <p className="font-sign font-bold uppercase tracking-wide">
+          <p className="font-sign font-semibold">
             Thanks — your rating is published.
           </p>
         </Panel>
@@ -62,7 +62,7 @@ export default async function ClientDashboard({
             {pendingRatings.map((item) => (
               <Panel key={item.job_id} tone="mustard" className="p-5">
                 <p className="font-mono text-xs text-ink-mute">{item.reference}</p>
-                <h3 className="mt-1 font-sign text-lg font-bold uppercase leading-tight">
+                <h3 className="mt-1 font-display text-lg font-semibold leading-tight">
                   {item.title}
                 </h3>
                 <p className="mt-1 text-sm text-ink-soft">Completed by {item.other_name}</p>
@@ -94,7 +94,7 @@ export default async function ClientDashboard({
           </div>
         ) : (
           <EmptyState
-            icon="📋"
+            icon="jobs"
             title="Nothing on the go"
             blurb="Post a job and local tradies will start quoting, usually within a few hours."
             action={
@@ -109,15 +109,15 @@ export default async function ClientDashboard({
       {done.length ? (
         <section>
           <SectionHeading eyebrow="History" title="Finished jobs" />
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">Reference</th>
                   <th className="px-4 py-3">Job</th>
                   <th className="px-4 py-3">Suburb</th>
                   <th className="px-4 py-3">Completed</th>
-                  <th className="px-4 py-3" />
+                  <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -147,7 +147,7 @@ export default async function ClientDashboard({
             {notifications.map((note) => (
               <div key={note.id} className="flex items-start justify-between gap-4 p-4">
                 <div>
-                  <p className="font-sign text-sm font-bold uppercase tracking-wide">{note.title}</p>
+                  <p className="font-sign text-sm font-semibold">{note.title}</p>
                   {note.body ? <p className="mt-0.5 text-sm text-ink-soft">{note.body}</p> : null}
                 </div>
                 <div className="flex shrink-0 items-center gap-3">

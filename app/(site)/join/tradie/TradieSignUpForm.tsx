@@ -42,7 +42,7 @@ export default function TradieSignUpForm() {
         <CheckboxGroup
           name="trades"
           columns={2}
-          options={TRADE_CATEGORIES.map((c) => ({ value: c.slug, label: `${c.icon} ${c.name}` }))}
+          options={TRADE_CATEGORIES.map((c) => ({ value: c.slug, label: c.name }))}
         />
       </Fieldset>
 
@@ -108,10 +108,10 @@ export default function TradieSignUpForm() {
           </label>
           <textarea id="bio" name="bio" rows={4} className="field" />
         </div>
-        <label className="mt-4 flex cursor-pointer items-start gap-3 border-[3px] border-ink bg-manila p-3">
+        <label className="mt-4 flex cursor-pointer items-start gap-3 border border-hairline bg-manila p-3">
           <input type="checkbox" name="isHomegirl" className="mt-1 h-4 w-4 accent-oxide" />
           <span className="text-sm">
-            <strong className="font-sign uppercase tracking-wide">Apply to the Homegirls network</strong>
+            <strong className="font-sign">Apply to the Homegirls network</strong>
             <span className="mt-0.5 block text-ink-soft">
               Our members-only network for women working in the trades. An admin reviews every
               application.
@@ -140,8 +140,8 @@ function Fieldset({
   children: React.ReactNode
 }) {
   return (
-    <fieldset className="border-t-[3px] border-ink pt-5">
-      <legend className="bg-canvas px-2 font-sign text-lg font-bold uppercase tracking-wide">
+    <fieldset className="border-t border-hairline pt-5">
+      <legend className="bg-canvas px-2 font-sign text-lg font-semibold">
         {legend}
       </legend>
       {hint ? <p className="mb-3 text-sm text-ink-mute">{hint}</p> : null}

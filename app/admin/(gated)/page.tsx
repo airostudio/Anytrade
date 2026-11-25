@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-10">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Back office"
         title="Platform overview"
         blurb="Everything moving through AnyTrade right now."
@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
 
       {/* Money */}
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Money
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -67,7 +67,7 @@ export default async function AdminDashboard() {
 
       {/* Marketplace */}
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Marketplace
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
 
       {/* Needs attention */}
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Needs attention
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -135,16 +135,16 @@ export default async function AdminDashboard() {
         {/* Recent jobs */}
         <section>
           <div className="mb-3 flex items-end justify-between">
-            <h2 className="font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-mute">
               Latest jobs
             </h2>
             <Link href="/admin/jobs" className="text-sm underline underline-offset-4">
               All jobs
             </Link>
           </div>
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-3 py-2.5">Ref</th>
                   <th className="px-3 py-2.5">Job</th>
@@ -183,16 +183,16 @@ export default async function AdminDashboard() {
         {/* Recent users */}
         <section>
           <div className="mb-3 flex items-end justify-between">
-            <h2 className="font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-mute">
               Newest sign-ups
             </h2>
             <Link href="/admin/users" className="text-sm underline underline-offset-4">
               All users
             </Link>
           </div>
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-3 py-2.5">Name</th>
                   <th className="px-3 py-2.5">Role</th>
@@ -207,7 +207,7 @@ export default async function AdminDashboard() {
                       <span className="block font-mono text-xs text-ink-mute">{user.email}</span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <Pill className="border-ink bg-canvas-deep text-ink-soft">{user.role}</Pill>
+                      <Pill className="border-hairline bg-canvas-deep text-ink-soft">{user.role}</Pill>
                     </td>
                     <td className="px-3 py-2.5 text-ink-mute">{timeAgo(user.created_at)}</td>
                   </tr>
@@ -226,7 +226,7 @@ export default async function AdminDashboard() {
 
         {/* Categories */}
         <section>
-          <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
             Jobs by trade
           </h2>
           <Panel className="p-4">
@@ -238,7 +238,7 @@ export default async function AdminDashboard() {
                   return (
                     <li key={row.category} className="flex items-center gap-3 text-sm">
                       <span className="w-36 shrink-0 truncate">{categoryName(row.category)}</span>
-                      <span className="h-3.5 flex-1 border-2 border-ink bg-canvas-deep">
+                      <span className="h-3.5 flex-1 border border-hairline bg-canvas-deep">
                         <span className="block h-full bg-safety" style={{ width: `${pct}%` }} />
                       </span>
                       <span className="w-10 text-right font-mono">{row.n}</span>
@@ -257,12 +257,12 @@ export default async function AdminDashboard() {
 
         {/* Top tradies */}
         <section>
-          <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
             Top tradies
           </h2>
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-3 py-2.5">Business</th>
                   <th className="px-3 py-2.5">Jobs</th>
@@ -281,7 +281,7 @@ export default async function AdminDashboard() {
                     <td className="px-3 py-2.5 font-mono">{tradie.completed_jobs}</td>
                     <td className="px-3 py-2.5 font-mono">{rating1dp(tradie.average_rating)}</td>
                     <td className="px-3 py-2.5">
-                      <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                      <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                         {tradie.membership_tier}
                       </Pill>
                     </td>
@@ -304,7 +304,7 @@ export default async function AdminDashboard() {
       <div className="grid gap-6 xl:grid-cols-2">
         <section>
           <div className="mb-3 flex items-end justify-between">
-            <h2 className="font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-mute">
               Recent activity
             </h2>
             <Link href="/admin/audit" className="text-sm underline underline-offset-4">
@@ -334,7 +334,7 @@ export default async function AdminDashboard() {
 
         <section>
           <div className="mb-3 flex items-end justify-between">
-            <h2 className="font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-mute">
               Latest enquiries
             </h2>
             <Link href="/admin/enquiries" className="text-sm underline underline-offset-4">

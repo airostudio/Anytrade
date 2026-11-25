@@ -62,7 +62,7 @@ export default async function BillingPage({
     <div className="space-y-8">
       {searchParams.paid || searchParams.demo || justPurchased ? (
         <Panel tone="mustard" className="p-5">
-          <p className="font-sign text-lg font-bold uppercase tracking-wide">
+          <p className="font-sign text-lg font-semibold">
             {live ? 'Payment received — thanks' : 'Demo purchase applied'}
           </p>
           <p className="mt-1 text-sm text-ink-soft">
@@ -136,11 +136,11 @@ export default async function BillingPage({
 
       {/* Credit ledger */}
       <section>
-        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Credit history</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">Credit history</h2>
         {ledger.length ? (
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[560px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">When</th>
                   <th className="px-4 py-3">Reason</th>
@@ -156,7 +156,7 @@ export default async function BillingPage({
                       {formatDateTime(entry.created_at)}
                     </td>
                     <td className="px-4 py-3">
-                      <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                      <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                         {entry.reason.replace(/_/g, ' ')}
                       </Pill>
                     </td>
@@ -184,11 +184,11 @@ export default async function BillingPage({
 
       {/* Job earnings */}
       <section>
-        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Job earnings</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">Job earnings</h2>
         {jobEarnings.length ? (
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Job</th>
@@ -237,11 +237,11 @@ export default async function BillingPage({
 
       {/* Invoices */}
       <section>
-        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Invoices</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">Invoices</h2>
         {payments.length ? (
-          <Panel className="overflow-x-auto">
+          <Panel tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+              <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Description</th>
@@ -299,7 +299,7 @@ function transferLabel(transfer: TransferStatus | null, payment: PaymentStatus):
 function transferTone(transfer: TransferStatus | null, payment: PaymentStatus): string {
   if (transfer === 'paid') return 'border-bottle bg-bottle text-canvas'
   if (transfer === 'failed' || transfer === 'reversed') return 'border-oxide bg-oxide text-canvas'
-  if (transfer === 'pending_account') return 'border-ink bg-mustard text-ink'
-  if (payment === 'HELD_IN_ESCROW') return 'border-ink bg-canvas-dark text-ink'
+  if (transfer === 'pending_account') return 'border-hairline bg-mustard text-ink'
+  if (payment === 'HELD_IN_ESCROW') return 'border-hairline bg-canvas-dark text-ink'
   return paymentStatusTone(payment)
 }

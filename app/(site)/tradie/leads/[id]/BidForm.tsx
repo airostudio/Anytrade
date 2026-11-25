@@ -72,11 +72,11 @@ export default function BidForm({
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        <label className="flex cursor-pointer items-center gap-2.5 border-[3px] border-ink bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard">
+        <label className="flex cursor-pointer items-center gap-2.5 border border-hairline bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard rounded-lg">
           <input id="includesMaterials" type="checkbox" name="includesMaterials" className="h-4 w-4 accent-oxide" />
           Price includes materials
         </label>
-        <label className="flex cursor-pointer items-center gap-2.5 border-[3px] border-ink bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard">
+        <label className="flex cursor-pointer items-center gap-2.5 border border-hairline bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard rounded-lg">
           <input id="includesGst" type="checkbox" name="includesGst" defaultChecked className="h-4 w-4 accent-oxide" />
           Price includes GST
         </label>
@@ -97,10 +97,10 @@ export default function BidForm({
         />
       </div>
 
-      <div className="border-[3px] border-ink bg-canvas-deep p-4">
+      <div className="border border-hairline bg-canvas-deep p-4">
         <p className="text-sm">
           Submitting costs{' '}
-          <strong className="font-sign uppercase tracking-wide">
+          <strong className="font-sign">
             {creditCost} credit{creditCost === 1 ? '' : 's'}
           </strong>
           . You have {creditsAvailable}.

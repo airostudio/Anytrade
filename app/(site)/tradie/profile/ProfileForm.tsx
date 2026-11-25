@@ -71,7 +71,7 @@ export default function ProfileForm({ tradie }: { tradie: Defaults }) {
           name="trades"
           columns={2}
           defaultValue={tradie.trades}
-          options={TRADE_CATEGORIES.map((c) => ({ value: c.slug, label: `${c.icon} ${c.name}` }))}
+          options={TRADE_CATEGORIES.map((c) => ({ value: c.slug, label: c.name }))}
         />
       </Section>
 
@@ -211,8 +211,8 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <fieldset className="border-t-[3px] border-ink pt-5">
-      <legend className="bg-canvas px-2 font-sign text-lg font-bold uppercase tracking-wide">
+    <fieldset className="border-t border-hairline pt-5">
+      <legend className="bg-canvas px-2 font-sign text-lg font-semibold">
         {legend}
       </legend>
       {hint ? <p className="mb-3 text-sm text-ink-mute">{hint}</p> : null}
@@ -246,7 +246,7 @@ function Toggle({
   defaultChecked?: boolean
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2.5 border-[3px] border-ink bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard">
+    <label className="flex cursor-pointer items-center gap-2.5 border border-hairline bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard rounded-lg">
       <input type="checkbox" name={name} defaultChecked={defaultChecked} className="h-4 w-4 accent-oxide" />
       {label}
     </label>

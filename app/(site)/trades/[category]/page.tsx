@@ -1,3 +1,5 @@
+import { IconTile } from '@/components/home/ui'
+import { tradeIcon } from '@/components/home/trade-icons'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -43,41 +45,39 @@ export default async function CategoryPage({ params }: { params: { category: str
 
   return (
     <>
-      <section className="border-b-[3px] border-ink bg-navy text-canvas">
+      <section className="border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
           <Link href="/trades" className="text-sm text-canvas/70 underline-offset-4 hover:underline">
             ← All trades
           </Link>
           <div className="mt-4 flex items-start gap-5">
-            <span className="text-5xl" aria-hidden>
-              {category.icon}
-            </span>
+            <IconTile icon={tradeIcon(category.slug)} size="lg" />
             <div>
               <h1 className="font-display text-3xl leading-tight sm:text-5xl">{category.name}</h1>
               <p className="mt-3 max-w-2xl text-lg text-canvas/85">{category.blurb}</p>
             </div>
           </div>
 
-          <dl className="mt-8 grid max-w-3xl grid-cols-2 gap-4 border-t-2 border-canvas/25 pt-6 sm:grid-cols-3">
+          <dl className="mt-8 grid max-w-3xl grid-cols-2 gap-4 border-t border-canvas/25 pt-6 sm:grid-cols-3">
             <div>
-              <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+              <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                 Typical small job
               </dt>
-              <dd className="font-display text-2xl text-safety">
+              <dd className="font-display text-2xl text-safety-soft">
                 {money(category.typicalFrom)}–{money(category.typicalTo)}
               </dd>
             </div>
             <div>
-              <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+              <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                 Average quote here
               </dt>
-              <dd className="font-display text-2xl text-safety">{avgBid ? money(avgBid) : '—'}</dd>
+              <dd className="font-display text-2xl text-safety-soft">{avgBid ? money(avgBid) : '—'}</dd>
             </div>
             <div>
-              <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+              <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                 Tradies listed
               </dt>
-              <dd className="font-display text-2xl text-safety">{total}</dd>
+              <dd className="font-display text-2xl text-safety-soft">{total}</dd>
             </div>
           </dl>
 
@@ -110,7 +110,7 @@ export default async function CategoryPage({ params }: { params: { category: str
               </div>
             ) : (
               <EmptyState
-                icon={category.icon}
+                icon="search"
                 title={`No ${category.name.toLowerCase()} listed yet`}
                 blurb="Post the job anyway — we notify tradies in your area when work comes up in their trade."
                 action={
@@ -138,7 +138,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
           <aside className="space-y-5">
             <Panel className="p-5">
-              <h2 className="mb-3 border-b-2 border-safety pb-1 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+              <h2 className="mb-3 border-b border-safety pb-1 font-display text-sm font-semibold tracking-tight">
                 Common {category.name.toLowerCase()} jobs
               </h2>
               <ul className="space-y-1.5 text-sm text-ink-soft">
@@ -157,7 +157,7 @@ export default async function CategoryPage({ params }: { params: { category: str
             </Panel>
 
             <Panel tone="mustard" className="p-5">
-              <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em]">
+              <h2 className="font-display text-sm font-semibold tracking-tight">
                 Getting a fair price
               </h2>
               <ul className="mt-3 space-y-2 text-sm text-ink-soft">
@@ -169,7 +169,7 @@ export default async function CategoryPage({ params }: { params: { category: str
             </Panel>
 
             <Panel tone="manila" className="p-5">
-              <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+              <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
                 Other trades
               </h2>
               <div className="flex flex-wrap gap-1.5">
@@ -179,7 +179,7 @@ export default async function CategoryPage({ params }: { params: { category: str
                     <Link
                       key={c.slug}
                       href={`/trades/${c.slug}`}
-                      className="border-2 border-ink bg-canvas px-2 py-0.5 text-xs hover:bg-safety"
+                      className="border border-hairline bg-canvas px-2 py-0.5 text-xs hover:bg-safety rounded-lg"
                     >
                       {c.name}
                     </Link>

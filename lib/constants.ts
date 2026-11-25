@@ -3,7 +3,6 @@
 export interface TradeCategory {
   slug: string
   name: string
-  icon: string
   blurb: string
   /** Typical all-up price band for a small job, in AUD. */
   typicalFrom: number
@@ -16,7 +15,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'handyman',
     name: 'Home Handyman',
-    icon: '🔩',
     blurb: 'The odd jobs nobody else will turn up for. Two hours or two days, done properly.',
     typicalFrom: 85,
     typicalTo: 450,
@@ -26,7 +24,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'plumbing',
     name: 'Plumbing',
-    icon: '🚿',
     blurb: 'Dripping taps, blocked drains, hot water and the burst pipe at 6am.',
     typicalFrom: 120,
     typicalTo: 900,
@@ -36,7 +33,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'electrical',
     name: 'Electrical',
-    icon: '💡',
     blurb: 'Licensed sparkies for power points, lights, fans and switchboards.',
     typicalFrom: 140,
     typicalTo: 1200,
@@ -45,7 +41,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'carpentry',
     name: 'Carpentry',
-    icon: '🪚',
     blurb: 'Decks, doors, skirting, pergolas and everything made of timber.',
     typicalFrom: 180,
     typicalTo: 4500,
@@ -55,7 +50,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'painting',
     name: 'Painting',
-    icon: '🖌️',
     blurb: 'Interior and exterior, prepped properly so it lasts more than a season.',
     typicalFrom: 250,
     typicalTo: 6000,
@@ -65,7 +59,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'tiling',
     name: 'Tiling',
-    icon: '🧱',
     blurb: 'Bathrooms, splashbacks, floors and regrouting that actually seals.',
     typicalFrom: 220,
     typicalTo: 5500,
@@ -74,7 +67,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'plastering',
     name: 'Plastering & Gyprock',
-    icon: '🧰',
     blurb: 'Patch the hole, set the joins, skim the wall. No visible repair.',
     typicalFrom: 150,
     typicalTo: 2800,
@@ -84,7 +76,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'roofing',
     name: 'Roofing & Gutters',
-    icon: '🏠',
     blurb: 'Leaks, broken tiles, gutter cleans and whirlybirds.',
     typicalFrom: 180,
     typicalTo: 9000,
@@ -93,7 +84,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'landscaping',
     name: 'Landscaping & Gardens',
-    icon: '🌿',
     blurb: 'Mowing, hedging, turf, retaining walls and green-waste runs.',
     typicalFrom: 90,
     typicalTo: 7000,
@@ -103,7 +93,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'fencing',
     name: 'Fencing & Gates',
-    icon: '🚧',
     blurb: 'Colorbond, paling, pool fencing and the gate that has never closed right.',
     typicalFrom: 200,
     typicalTo: 6500,
@@ -113,7 +102,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'concreting',
     name: 'Concreting',
-    icon: '🏗️',
     blurb: 'Driveways, paths, slabs and shed pads poured straight and level.',
     typicalFrom: 600,
     typicalTo: 15000,
@@ -122,7 +110,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'bathroom-reno',
     name: 'Bathroom Renovation',
-    icon: '🛁',
     blurb: 'Full bathroom fit-outs coordinated by one tradie who owns the job.',
     typicalFrom: 8000,
     typicalTo: 30000,
@@ -131,7 +118,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'kitchen-reno',
     name: 'Kitchen Renovation',
-    icon: '🍳',
     blurb: 'Benchtops, cabinetry and appliance install without the six-month wait.',
     typicalFrom: 9000,
     typicalTo: 40000,
@@ -140,7 +126,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'air-conditioning',
     name: 'Heating & Cooling',
-    icon: '❄️',
     blurb: 'Split systems, ducted servicing and the unit that stopped in January.',
     typicalFrom: 160,
     typicalTo: 8000,
@@ -149,7 +134,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'locksmith',
     name: 'Locksmith & Security',
-    icon: '🔐',
     blurb: 'Lockouts, rekeys, deadbolts, window locks and camera installs.',
     typicalFrom: 110,
     typicalTo: 1400,
@@ -158,7 +142,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'appliance-repair',
     name: 'Appliance Repair',
-    icon: '🔧',
     blurb: 'Washers, dryers, dishwashers and ovens — fixed before replaced.',
     typicalFrom: 110,
     typicalTo: 750,
@@ -168,7 +151,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'pest-control',
     name: 'Pest Control',
-    icon: '🐜',
     blurb: 'Termite inspections, ants, spiders, rodents and possum-proofing.',
     typicalFrom: 130,
     typicalTo: 1200,
@@ -177,7 +159,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'cleaning',
     name: 'Cleaning',
-    icon: '🧽',
     blurb: 'Bond cleans, pressure washing, windows and post-build tidy-ups.',
     typicalFrom: 100,
     typicalTo: 1500,
@@ -187,7 +168,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'removals',
     name: 'Removals & Rubbish',
-    icon: '🚚',
     blurb: 'Two blokes and a truck for moves, deceased estates and hard rubbish.',
     typicalFrom: 120,
     typicalTo: 2200,
@@ -197,7 +177,6 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   {
     slug: 'glazing',
     name: 'Glazing & Windows',
-    icon: '🪟',
     blurb: 'Cracked panes, flyscreens, shower screens and mirror fitting.',
     typicalFrom: 130,
     typicalTo: 2400,

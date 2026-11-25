@@ -196,11 +196,14 @@ Admin is protected twice over: `middleware.ts` requires a signed-in `ADMIN`
 account, and `app/admin/(gated)/layout.tsx` requires the passcode. The unlock
 page sits outside the gated route group so it stays reachable.
 
-## The homepage design system
+## The design system
 
-The homepage (`app/(home)`) uses a newer look, "Modern Australian Heritage & Craft", scoped to the
-`(home)` route group via the `.home-scope` class. The inner pages still use the older enamel-sign
-style until they are migrated.
+The whole site uses one look, "Modern Australian Heritage & Craft". Pages under `app/(site)` and the
+homepage share `components/home/HomeShell` (sticky header, footer, Post-a-Job dialog). The older pages
+were restyled by remapping the legacy token names (`ink`, `canvas`, `safety`, `oxide`, `navy`, `bottle`) and
+the `.btn`, `.field`, `.label`, `Panel`, `Pill` and `StatTile` primitives, so new pages built with those
+get the look automatically. Dashboards, the admin back office and the members area keep their own
+navigation but use the same tokens, fonts and components.
 
 - Tokens live in `tailwind.config.ts`: `charcoal`, `alabaster`, `terracotta`, `verified` (eucalyptus
   green, used only for verification and trust marks) and `hairline`. Fonts are Fraunces (headings)

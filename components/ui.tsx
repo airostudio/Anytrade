@@ -1,30 +1,36 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { NavIcon, type IconName } from './icons'
 
-/** A painted enamel panel — the workhorse container across the site. */
+/** The workhorse container across the site: a soft white card. */
 export function Panel({
   children,
   className = '',
   tone = 'canvas',
+  tabIndex,
 }: {
   children: ReactNode
   className?: string
   tone?: 'canvas' | 'navy' | 'manila' | 'mustard' | 'oxide' | 'bottle'
+  /** Pass 0 when the panel scrolls, so keyboard users can reach its content. */
+  tabIndex?: number
 }) {
   const tones = {
-    canvas: 'bg-canvas text-ink',
-    navy: 'bg-navy text-canvas',
-    manila: 'bg-manila text-ink',
-    mustard: 'bg-mustard text-ink',
-    oxide: 'bg-oxide text-canvas',
-    bottle: 'bg-bottle text-canvas',
+    canvas: 'border-hairline bg-white text-ink',
+    navy: 'border-transparent bg-navy text-white',
+    manila: 'border-hairline bg-canvas-deep text-ink',
+    mustard: 'border-mustard-deep/20 bg-mustard text-ink',
+    oxide: 'border-transparent bg-oxide text-white',
+    bottle: 'border-transparent bg-bottle text-white',
   }
   return (
-    <div className={`border-[3px] border-ink shadow-hard ${tones[tone]} ${className}`}>{children}</div>
+    <div tabIndex={tabIndex} className={`rounded-2xl border shadow-card ${tones[tone]} ${className}`}>
+      {children}
+    </div>
   )
 }
 
-/** Rubber-stamp style badge. */
+/** Soft status badge. */
 export function Stamp({
   children,
   tone = 'oxide',
@@ -54,7 +60,7 @@ export function Pill({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 border-2 px-2 py-0.5 font-sign text-[11px] font-bold uppercase tracking-widest ${className}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${className}`}
     >
       {children}
     </span>
@@ -67,12 +73,14 @@ export function SectionHeading({
   blurb,
   align = 'left',
   action,
+  as: Heading = 'h2',
 }: {
   eyebrow?: string
   title: string
   blurb?: string
   align?: 'left' | 'center'
   action?: ReactNode
+  as?: 'h1' | 'h2'
 }) {
   return (
     <div
@@ -80,7 +88,7 @@ export function SectionHeading({
     >
       <div className={align === 'center' ? 'mx-auto max-w-2xl' : ''}>
         {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
-        <h2 className="text-3xl font-bold uppercase text-ink sm:text-4xl">{title}</h2>
+        <Heading className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</Heading>
         {blurb ? <p className="mt-3 max-w-2xl text-lg text-ink-soft">{blurb}</p> : null}
       </div>
       {action}
@@ -88,7 +96,7 @@ export function SectionHeading({
   )
 }
 
-/** Hazard-tape rule used between major sections. */
+/** A quiet rule used between major sections. */
 export function TapeDivider() {
   return <div className="hazard-tape" aria-hidden />
 }
@@ -97,19 +105,19 @@ export function EmptyState({
   title,
   blurb,
   action,
-  icon = '🧰',
+  icon = 'toolbox',
 }: {
   title: string
   blurb?: string
   action?: ReactNode
-  icon?: string
+  icon?: IconName
 }) {
   return (
-    <div className="border-[3px] border-dashed border-ink/40 bg-canvas-deep/60 px-6 py-14 text-center">
-      <div className="mb-3 text-4xl" aria-hidden>
-        {icon}
-      </div>
-      <h3 className="font-sign text-xl font-bold uppercase tracking-wide text-ink">{title}</h3>
+    <div className="rounded-2xl border border-dashed border-ink/25 bg-white px-6 py-14 text-center">
+      <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta-tint text-oxide">
+        <NavIcon name={icon} className="h-7 w-7" />
+      </span>
+      <h3 className="font-display text-xl font-semibold tracking-tight text-ink">{title}</h3>
       {blurb ? <p className="mx-auto mt-2 max-w-md text-ink-soft">{blurb}</p> : null}
       {action ? <div className="mt-6">{action}</div> : null}
     </div>
@@ -131,18 +139,18 @@ export function StatTile({
   href?: string
 }) {
   const tones = {
-    canvas: 'bg-canvas text-ink',
-    navy: 'bg-navy text-canvas',
-    safety: 'bg-safety text-ink',
-    bottle: 'bg-bottle text-canvas',
-    oxide: 'bg-oxide text-canvas',
-    mustard: 'bg-mustard text-ink',
+    canvas: 'border-hairline bg-white text-ink',
+    navy: 'border-transparent bg-navy text-white',
+    safety: 'border-transparent bg-safety text-ink',
+    bottle: 'border-transparent bg-bottle text-white',
+    oxide: 'border-transparent bg-oxide text-white',
+    mustard: 'border-mustard-deep/20 bg-mustard text-ink',
   }
   const inner = (
-    <div className={`h-full border-[3px] border-ink px-4 py-4 shadow-hard-sm ${tones[tone]}`}>
-      <p className="font-sign text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">{label}</p>
-      <p className="mt-1 font-display text-3xl leading-none">{value}</p>
-      {hint ? <p className="mt-2 text-xs opacity-80">{hint}</p> : null}
+    <div className={`h-full rounded-2xl border px-4 py-4 shadow-card ${tones[tone]}`}>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] opacity-100">{label}</p>
+      <p className="mt-1 font-display text-3xl font-semibold leading-none">{value}</p>
+      {hint ? <p className="mt-2 text-xs opacity-100">{hint}</p> : null}
     </div>
   )
   return href ? (
@@ -158,7 +166,7 @@ export function StatTile({
 export function DatabaseNotice() {
   return (
     <Panel tone="mustard" className="p-5">
-      <p className="font-sign text-lg font-bold uppercase tracking-wide">Database not connected</p>
+      <p className="font-display text-lg font-semibold">Database not connected</p>
       <p className="mt-2 text-sm text-ink-soft">
         Set <code className="bg-ink/10 px-1 font-mono">DATABASE_URL</code> in your{' '}
         <code className="bg-ink/10 px-1 font-mono">.env</code>, then run{' '}

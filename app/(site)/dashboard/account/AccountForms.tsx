@@ -66,8 +66,8 @@ export default function AccountForms({
         </SubmitButton>
       </form>
 
-      <form action={passwordAction} className="space-y-4 border-t-[3px] border-ink pt-7">
-        <h3 className="font-sign text-lg font-bold uppercase tracking-wide">Change password</h3>
+      <form action={passwordAction} className="space-y-4 border-t border-hairline pt-7">
+        <h3 className="font-display text-lg font-semibold tracking-tight">Change password</h3>
         <FormMessage error={passwordState.error} success={passwordState.success} />
 
         <div className="grid gap-4 sm:grid-cols-2">

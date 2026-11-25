@@ -68,7 +68,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
 
   return (
     <>
-      <section className="border-b-[3px] border-ink bg-navy text-canvas">
+      <section className="border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
           <h1 className="font-display text-3xl leading-tight sm:text-4xl">
             {heading}
@@ -87,7 +87,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
         {/* Filters */}
         <aside className="space-y-5">
           <Panel className="p-4">
-            <h2 className="mb-3 border-b-2 border-safety pb-1 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 border-b border-safety pb-1 font-display text-sm font-semibold tracking-tight">
               Narrow it down
             </h2>
             <form method="get" className="space-y-4">
@@ -97,7 +97,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                 <label className="label" htmlFor="trade">
                   Trade
                 </label>
-                <select id="trade" name="trade" defaultValue={filters.trade ?? ''} className="field border-2 py-2">
+                <select id="trade" name="trade" defaultValue={filters.trade ?? ''} className="field border py-2">
                   <option value="">Any trade</option>
                   {TRADE_CATEGORIES.map((c) => (
                     <option key={c.slug} value={c.slug}>
@@ -111,7 +111,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                 <label className="label" htmlFor="rating">
                   Minimum rating
                 </label>
-                <select id="rating" name="rating" defaultValue={searchParams.rating ?? ''} className="field border-2 py-2">
+                <select id="rating" name="rating" defaultValue={searchParams.rating ?? ''} className="field border py-2">
                   <option value="">Any rating</option>
                   <option value="4.5">4.5 stars and up</option>
                   <option value="4">4 stars and up</option>
@@ -123,7 +123,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                 <label className="label" htmlFor="sort">
                   Sort by
                 </label>
-                <select id="sort" name="sort" defaultValue={searchParams.sort ?? 'recommended'} className="field border-2 py-2">
+                <select id="sort" name="sort" defaultValue={searchParams.sort ?? 'recommended'} className="field border py-2">
                   <option value="recommended">Recommended</option>
                   <option value="rating">Highest rated</option>
                   <option value="price">Lowest hourly rate</option>
@@ -132,7 +132,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                 </select>
               </div>
 
-              <fieldset className="space-y-2 border-t-2 border-dashed border-ink/25 pt-4">
+              <fieldset className="space-y-2 border-t border-dashed border-ink/25 pt-4">
                 <legend className="label mb-0">Only show</legend>
                 <Toggle name="verified" label="Licence checked" checked={filters.verifiedOnly} />
                 <Toggle name="small" label="Takes small jobs" checked={filters.smallJobsOnly} />
@@ -153,7 +153,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
 
           {areas.length ? (
             <Panel tone="manila" className="p-4">
-              <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+              <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
                 Areas we cover
               </h2>
               <div className="flex flex-wrap gap-1.5">
@@ -161,7 +161,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                   <Link
                     key={area.suburb}
                     href={linkWith({ suburb: area.suburb })}
-                    className="border-2 border-ink bg-canvas px-2 py-0.5 text-xs hover:bg-safety"
+                    className="border border-hairline bg-canvas px-2 py-0.5 text-xs hover:bg-safety rounded-lg"
                   >
                     {area.suburb} <span className="text-ink-mute">({area.count})</span>
                   </Link>
@@ -194,8 +194,8 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                         key={n}
                         href={`/find-a-tradie?${params.toString()}`}
                         aria-current={n === page ? 'page' : undefined}
-                        className={`border-[3px] border-ink px-3.5 py-1.5 font-sign text-sm font-bold ${
-                          n === page ? 'bg-safety shadow-hard-sm' : 'bg-canvas hover:bg-canvas-deep'
+                        className={`border border-hairline px-3.5 py-1.5 font-sign text-sm font-bold ${
+                          n === page ? 'bg-safety shadow-hard-sm rounded-2xl' : 'bg-canvas hover:bg-canvas-deep'
                         }`}
                       >
                         {n}
@@ -207,7 +207,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
             </>
           ) : (
             <EmptyState
-              icon="🔦"
+              icon="search"
               title="Nobody matches that yet"
               blurb="Try widening the trade or clearing a filter. Or post the job — tradies come to you."
               action={
@@ -230,9 +230,9 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Se
                 <Link
                   key={c.slug}
                   href={`/trades/${c.slug}`}
-                  className="border-2 border-ink bg-canvas px-3 py-2 text-sm font-semibold hover:bg-mustard"
+                  className="border border-hairline bg-canvas px-3 py-2 text-sm font-semibold hover:bg-mustard rounded-lg"
                 >
-                  {c.icon} {c.name}
+                  {c.name}
                 </Link>
               ))}
             </div>

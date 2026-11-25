@@ -30,7 +30,7 @@ export default function CheckboxGroup({
         return (
           <label
             key={option.value}
-            className={`flex cursor-pointer items-center gap-2.5 border-[3px] border-ink px-3 py-2 text-sm transition-colors ${
+            className={`flex cursor-pointer items-center gap-2.5 border border-hairline px-3 py-2 text-sm transition-colors ${
               on ? 'bg-mustard font-bold' : 'bg-canvas hover:bg-canvas-deep'
             }`}
           >

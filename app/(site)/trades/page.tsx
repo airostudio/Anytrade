@@ -1,3 +1,5 @@
+import { IconTile } from '@/components/home/ui'
+import { tradeIcon } from '@/components/home/trade-icons'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Panel, SectionHeading } from '@/components/ui'
@@ -18,6 +20,7 @@ export default async function TradesIndexPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <SectionHeading
+        as="h1"
         eyebrow="The full list"
         title="Every trade we cover"
         blurb="Indicative prices are drawn from real quotes on AnyTrade. Small jobs sit at the bottom of each range."
@@ -27,22 +30,22 @@ export default async function TradesIndexPage() {
         {TRADE_CATEGORIES.map((category) => (
           <Panel key={category.slug} className="flex h-full flex-col p-5 card-lift">
             <div className="flex items-start justify-between gap-3">
-              <span className="text-3xl" aria-hidden>
-                {category.icon}
-              </span>
-              <span className="font-mono text-xs text-ink-mute">
-                {counts[category.slug] ?? 0} listed
-              </span>
+              <IconTile icon={tradeIcon(category.slug)} size="lg" />
+              {(counts[category.slug] ?? 0) > 0 ? (
+                <span className="text-sm font-medium text-ink-mute">
+                  {counts[category.slug]} listed
+                </span>
+              ) : null}
             </div>
 
-            <h2 className="mt-3 font-sign text-xl font-bold uppercase tracking-wide">
+            <h2 className="mt-3 font-display text-xl font-semibold tracking-tight">
               <Link href={`/trades/${category.slug}`} className="hover:text-oxide">
                 {category.name}
               </Link>
             </h2>
             <p className="mt-2 flex-1 text-sm text-ink-soft">{category.blurb}</p>
 
-            <p className="mt-4 border-t-2 border-dashed border-ink/25 pt-3 font-mono text-sm font-bold text-bottle">
+            <p className="mt-4 border-t border-dashed border-ink/25 pt-3 font-mono text-sm font-bold text-bottle">
               {money(category.typicalFrom)} – {money(category.typicalTo)}
             </p>
 

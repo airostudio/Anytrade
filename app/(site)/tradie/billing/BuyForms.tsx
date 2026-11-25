@@ -21,7 +21,7 @@ export default function BuyForms({
   return (
     <div className="space-y-10">
       <section>
-        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Top up lead credits</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">Top up lead credits</h2>
         <FormMessage error={creditState.error} />
         <div className="grid gap-4 md:grid-cols-3">
           {CREDIT_PACKS.map((pack) => (
@@ -33,7 +33,7 @@ export default function BuyForms({
                   </Stamp>
                 </div>
               ) : null}
-              <h3 className="font-sign text-lg font-bold uppercase tracking-wide">{pack.name}</h3>
+              <h3 className="font-display text-lg font-semibold tracking-tight">{pack.name}</h3>
               <p className="mt-3 font-display text-4xl leading-none text-oxide">{pack.credits}</p>
               <p className="text-sm text-ink-mute">credits</p>
               <p className="mt-3 font-display text-2xl">${pack.priceAud}</p>
@@ -53,7 +53,7 @@ export default function BuyForms({
       </section>
 
       <section>
-        <h2 className="mb-4 font-sign text-xl font-bold uppercase tracking-wide">Membership</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">Membership</h2>
         <FormMessage error={planState.error} />
         <div className="grid gap-4 lg:grid-cols-4">
           {MEMBERSHIP_PLANS.map((plan) => {
@@ -67,8 +67,8 @@ export default function BuyForms({
               >
                 <div className="flex items-center justify-between gap-2">
                   <h3
-                    className={`font-sign text-lg font-bold uppercase tracking-wide ${
-                      current ? 'text-safety' : ''
+                    className={`font-display text-lg font-semibold tracking-tight ${
+                      current ? 'text-safety-soft' : ''
                     }`}
                   >
                     {plan.name}

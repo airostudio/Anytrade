@@ -80,7 +80,7 @@ export default async function TradieReviewsPage() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    <Pill className="border-ink bg-canvas-deep text-ink-soft">
+                    <Pill className="border-hairline bg-canvas-deep text-ink-soft">
                       {categoryName(review.job_category)}
                     </Pill>
                     {review.status !== 'PUBLISHED' ? (
@@ -105,13 +105,13 @@ export default async function TradieReviewsPage() {
                   </div>
                 ) : null}
 
-                <div className="mt-4 grid grid-cols-2 gap-2 border-t-2 border-dashed border-ink/25 pt-3 text-xs sm:grid-cols-5">
+                <div className="mt-4 grid grid-cols-2 gap-2 border-t border-dashed border-ink/25 pt-3 text-xs sm:grid-cols-5">
                   {RATING_CRITERIA.map((criterion) => {
                     const key = `rating_${criterion.key}` as keyof typeof review
                     const value = review[key] as number | null
                     return (
                       <div key={criterion.key}>
-                        <p className="font-sign uppercase tracking-widest text-ink-mute">
+                        <p className="font-sign text-ink-mute">
                           {criterion.label}
                         </p>
                         <p className="font-bold">{value ? `${value}/5` : '—'}</p>
@@ -122,13 +122,13 @@ export default async function TradieReviewsPage() {
 
                 {review.response ? (
                   <div className="mt-4 border-l-4 border-safety bg-canvas-deep p-3">
-                    <p className="font-sign text-xs uppercase tracking-widest text-ink-mute">
+                    <p className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">
                       Your reply
                     </p>
                     <p className="mt-1 text-sm text-ink-soft">{review.response}</p>
                   </div>
                 ) : (
-                  <div className="mt-4 border-t-2 border-dashed border-ink/25 pt-4">
+                  <div className="mt-4 border-t border-dashed border-ink/25 pt-4">
                     <ReplyForm reviewId={review.id} />
                   </div>
                 )}
@@ -136,7 +136,7 @@ export default async function TradieReviewsPage() {
             ))
           ) : (
             <EmptyState
-              icon="⭐"
+              icon="reviews"
               title="No reviews yet"
               blurb="Finish your first job through AnyTrade and the customer is prompted to rate you straight away."
               action={
@@ -150,7 +150,7 @@ export default async function TradieReviewsPage() {
 
         <aside className="space-y-5">
           <Panel className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               Star breakdown
             </h2>
             <div className="space-y-1.5">
@@ -160,7 +160,7 @@ export default async function TradieReviewsPage() {
                 return (
                   <div key={star} className="flex items-center gap-2 text-sm">
                     <span className="w-7 font-mono text-ink-mute">{star}★</span>
-                    <span className="h-3 flex-1 border-2 border-ink bg-canvas-deep">
+                    <span className="h-3 flex-1 border border-hairline bg-canvas-deep">
                       <span className="block h-full bg-safety" style={{ width: `${pct}%` }} />
                     </span>
                     <span className="w-6 text-right font-mono text-ink-mute">{n}</span>
@@ -171,7 +171,7 @@ export default async function TradieReviewsPage() {
           </Panel>
 
           <Panel tone="manila" className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               Score by criterion
             </h2>
             <dl className="space-y-2 text-sm">
@@ -186,14 +186,14 @@ export default async function TradieReviewsPage() {
 
           {tags.length ? (
             <Panel tone="navy" className="p-5">
-              <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+              <h2 className="mb-3 font-display text-sm font-semibold tracking-tight text-safety-soft">
                 What people say most
               </h2>
               <div className="flex flex-wrap gap-1.5">
                 {tags.map((tag) => (
                   <span
                     key={tag.tag}
-                    className="border-2 border-canvas/60 px-2 py-0.5 text-xs font-semibold"
+                    className="border border-canvas/60 px-2 py-0.5 text-xs font-semibold"
                   >
                     {tag.tag} · {tag.n}
                   </span>

@@ -15,7 +15,7 @@ export default async function AdminBidsPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="The bidding board"
         title="Quotes"
         blurb="Every quote submitted, what it was worth, and whether it won."
@@ -31,15 +31,15 @@ export default async function AdminBidsPage() {
 
       <Panel tone="manila" className="p-4">
         <p className="text-sm text-ink-soft">
-          <strong className="font-sign uppercase tracking-wide">{creditsSpent}</strong> lead credits
+          <strong className="font-sign">{creditsSpent}</strong> lead credits
           have been spent submitting these quotes. Average quote is{' '}
           <strong>{money(stats.bids.avgAmount)}</strong>.
         </p>
       </Panel>
 
-      <Panel className="overflow-x-auto">
+      <Panel tabIndex={0} className="overflow-x-auto">
         <table className="w-full min-w-[980px] text-sm">
-          <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+          <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
             <tr>
               <th className="px-4 py-3">Job ref</th>
               <th className="px-4 py-3">Job</th>

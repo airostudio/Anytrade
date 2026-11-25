@@ -32,7 +32,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Configuration"
         title="Settings"
         blurb="These values drive the public site, the bidding rules and the two passcode gates."
@@ -40,7 +40,7 @@ export default async function AdminSettingsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Panel tone={isStripeLive() ? 'navy' : 'mustard'} className="p-5">
-          <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em]">Stripe</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight">Stripe</h2>
           <p className="mt-2 text-sm">
             {isStripeLive()
               ? 'Live keys detected — checkout creates real Stripe sessions and the webhook is active.'
@@ -53,7 +53,7 @@ export default async function AdminSettingsPage() {
         </Panel>
 
         <Panel className="p-5">
-          <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em]">Passcode gates</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight">Passcode gates</h2>
           <ul className="mt-2 space-y-1.5 text-sm text-ink-soft">
             <li>
               <strong>Admin:</strong>{' '}
@@ -81,7 +81,7 @@ export default async function AdminSettingsPage() {
           Reference
         </Stamp>
         <table className="w-full text-sm">
-          <thead className="text-left font-sign text-xs uppercase tracking-widest text-ink-mute">
+          <thead className="text-left font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">
             <tr>
               <th className="py-1.5">Key</th>
               <th className="py-1.5">Last changed</th>

@@ -32,7 +32,7 @@ export default async function ContactPage() {
 
         <aside className="space-y-5">
           <Panel tone="navy" className="p-6">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
               The office
             </h2>
             <dl className="mt-3 space-y-3 text-sm">
@@ -56,7 +56,7 @@ export default async function ContactPage() {
           </Panel>
 
           <Panel tone="manila" className="p-6">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="font-display text-sm font-semibold tracking-tight">
               Quicker than emailing
             </h2>
             <ul className="mt-3 space-y-2 text-sm text-ink-soft">

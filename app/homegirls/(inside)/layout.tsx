@@ -13,40 +13,42 @@ export default async function HomegirlsLayout({ children }: { children: React.Re
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 border-b-[3px] border-ink bg-oxide text-canvas">
+      <header className="sticky top-0 z-50 bg-navy-deep text-white">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Logo size="sm" tone="light" href="/" />
-            <span className="border-2 border-canvas bg-ink px-2 py-0.5 font-sign text-[11px] font-bold uppercase tracking-[0.2em]">
-              Homegirls
+            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold tracking-wide">
+              Homegirls members area
             </span>
           </div>
-          <nav className="flex items-center gap-3 text-sm">
-            <Link href="/homegirls" className="underline-offset-4 hover:underline">
+          <nav aria-label="Members area" className="flex items-center gap-3 text-sm">
+            <Link href="/homegirls" className="font-medium underline-offset-4 hover:underline">
               Network
             </Link>
-            <Link href="/homegirls/join" className="underline-offset-4 hover:underline">
+            <Link href="/homegirls/join" className="font-medium underline-offset-4 hover:underline">
               Join / post
             </Link>
-            <Link href="/" className="underline-offset-4 hover:underline">
+            <Link href="/homegirls-network" className="font-medium underline-offset-4 hover:underline">
+              Public page
+            </Link>
+            <Link href="/" className="font-medium underline-offset-4 hover:underline">
               Main site
             </Link>
             <form action={lockHomegirlsGate}>
               <button
                 type="submit"
-                className="border-2 border-canvas/60 px-2.5 py-1 font-sign text-[11px] font-bold uppercase tracking-widest hover:bg-canvas hover:text-ink"
+                className="rounded-lg border border-white/30 px-3 py-1.5 text-sm font-semibold transition hover:bg-white/10"
               >
                 Lock
               </button>
             </form>
           </nav>
         </div>
-        <div className="hazard-tape" aria-hidden />
       </header>
 
       <main className="flex-1 bg-canvas">{children}</main>
 
-      <footer className="border-t-[3px] border-ink bg-ink px-4 py-6 text-center text-xs text-canvas/70">
+      <footer className="bg-navy-deep px-4 py-6 text-center text-sm text-white/75">
         The Homegirls network · private to members · be decent to each other
       </footer>
     </div>

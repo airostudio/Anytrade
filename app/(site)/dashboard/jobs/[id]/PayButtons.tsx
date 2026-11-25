@@ -33,7 +33,7 @@ export default function PayButtons({
     return (
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-canvas/85">
-          <strong className="font-sign uppercase tracking-wide text-safety">
+          <strong className="font-sign text-safety-soft">
             ${escrowAmount?.toFixed(2)} held in escrow.
           </strong>{' '}
           Released automatically when you sign the job off, or release it early below.

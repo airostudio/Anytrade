@@ -26,7 +26,7 @@ export default async function MyBidsPage({ searchParams }: { searchParams: { quo
     <div className="space-y-8">
       {searchParams.quoted ? (
         <Panel tone="mustard" className="p-4">
-          <p className="font-sign font-bold uppercase tracking-wide">
+          <p className="font-sign font-semibold">
             Quote sent. The customer gets a notification straight away.
           </p>
         </Panel>
@@ -42,9 +42,9 @@ export default async function MyBidsPage({ searchParams }: { searchParams: { quo
       </div>
 
       {bids.length ? (
-        <Panel className="overflow-x-auto">
+        <Panel tabIndex={0} className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm">
-            <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+            <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
               <tr>
                 <th className="px-4 py-3">Reference</th>
                 <th className="px-4 py-3">Job</th>
@@ -53,7 +53,7 @@ export default async function MyBidsPage({ searchParams }: { searchParams: { quo
                 <th className="px-4 py-3">Customer budget</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Sent</th>
-                <th className="px-4 py-3" />
+                <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -83,7 +83,7 @@ export default async function MyBidsPage({ searchParams }: { searchParams: { quo
                         <input type="hidden" name="bidId" value={bid.id} />
                         <button
                           type="submit"
-                          className="border-2 border-ink/30 px-2.5 py-1 font-sign text-[11px] font-bold uppercase tracking-widest text-ink-mute hover:border-oxide hover:text-oxide"
+                          className="border border-ink/30 px-2.5 py-1 font-sign text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-mute hover:border-oxide hover:text-oxide"
                         >
                           Withdraw
                         </button>
@@ -97,7 +97,7 @@ export default async function MyBidsPage({ searchParams }: { searchParams: { quo
         </Panel>
       ) : (
         <EmptyState
-          icon="📝"
+          icon="quotes"
           title="No quotes yet"
           blurb="Find a job in your trades and put a price in. You only spend a credit when you submit."
           action={

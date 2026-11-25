@@ -40,7 +40,7 @@ export default async function AdminUnlockPage({
 
           <UnlockForm next={searchParams.next} />
 
-          <p className="mt-6 border-t-2 border-dashed border-ink/25 pt-5 text-xs text-ink-mute">
+          <p className="mt-6 border-t border-dashed border-ink/25 pt-5 text-xs text-ink-mute">
             The passcode is separate from your login and rotates from Admin → Settings. Failed attempts
             are written to the audit log.
           </p>

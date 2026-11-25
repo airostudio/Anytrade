@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function HowItWorksPage() {
   return (
     <>
-      <section className="border-b-[3px] border-ink bg-navy text-canvas">
+      <section className="border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6">
           <Stamp tone="mustard" className="mb-5 bg-canvas">
             Straight down the line
@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
               <Panel className="flex gap-5 p-6">
                 <span className="font-display text-3xl leading-none text-oxide">{step.n}</span>
                 <div>
-                  <h3 className="font-sign text-xl font-bold uppercase tracking-wide">{step.title}</h3>
+                  <h3 className="font-display text-xl font-semibold tracking-tight">{step.title}</h3>
                   <p className="mt-1.5 text-ink-soft">{step.body}</p>
                 </div>
               </Panel>
@@ -92,7 +92,7 @@ export default function HowItWorksPage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <Panel className="p-6">
-              <h3 className="font-sign text-lg font-bold uppercase tracking-wide">
+              <h3 className="font-display text-lg font-semibold tracking-tight">
                 You rate the tradie
               </h3>
               <p className="mt-2 text-sm text-ink-soft">
@@ -106,7 +106,7 @@ export default function HowItWorksPage() {
               <p className="mt-4 text-sm text-ink-soft">Then tap any compliments that fit:</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {TRADIE_REVIEW_TAGS.slice(0, 6).map((tag) => (
-                  <span key={tag} className="border-2 border-ink bg-mustard px-2 py-0.5 text-xs font-semibold">
+                  <span key={tag} className="border border-hairline bg-mustard px-2 py-0.5 text-xs font-semibold rounded-lg">
                     {tag}
                   </span>
                 ))}
@@ -114,7 +114,7 @@ export default function HowItWorksPage() {
             </Panel>
 
             <Panel tone="navy" className="p-6">
-              <h3 className="font-sign text-lg font-bold uppercase tracking-wide text-safety">
+              <h3 className="font-display text-lg font-semibold tracking-tight text-safety-soft">
                 The tradie rates you
               </h3>
               <p className="mt-2 text-sm text-canvas/85">
@@ -123,7 +123,7 @@ export default function HowItWorksPage() {
               </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {CLIENT_REVIEW_TAGS.map((tag) => (
-                  <span key={tag} className="border-2 border-canvas/60 px-2 py-0.5 text-xs font-semibold text-canvas">
+                  <span key={tag} className="border border-canvas/60 px-2 py-0.5 text-xs font-semibold text-canvas">
                     {tag}
                   </span>
                 ))}
@@ -168,7 +168,7 @@ export default function HowItWorksPage() {
             },
           ].map((item) => (
             <Panel key={item.title} className="p-6">
-              <h3 className="font-sign text-lg font-bold uppercase tracking-wide">{item.title}</h3>
+              <h3 className="font-display text-lg font-semibold tracking-tight">{item.title}</h3>
               <p className="mt-2 text-ink-soft">{item.body}</p>
             </Panel>
           ))}

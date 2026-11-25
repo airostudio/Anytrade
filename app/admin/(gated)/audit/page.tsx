@@ -18,7 +18,7 @@ export default async function AdminAuditPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Paper trail"
         title="Audit log"
         blurb="Every administrative action, sign-up, award and gate attempt, oldest at the bottom."
@@ -28,7 +28,7 @@ export default async function AdminAuditPage({
         <div className="flex flex-wrap gap-2">
           <a
             href="/admin/audit"
-            className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-hairline ${
               !searchParams.action ? 'bg-safety' : 'bg-canvas'
             }`}
           >
@@ -38,7 +38,7 @@ export default async function AdminAuditPage({
             <a
               key={prefix}
               href={`/admin/audit?action=${prefix}`}
-              className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-hairline ${
                 searchParams.action === prefix ? 'bg-safety' : 'bg-canvas'
               }`}
             >
@@ -48,9 +48,9 @@ export default async function AdminAuditPage({
         </div>
       </Panel>
 
-      <Panel className="overflow-x-auto">
+      <Panel tabIndex={0} className="overflow-x-auto">
         <table className="w-full min-w-[820px] text-sm">
-          <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+          <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
             <tr>
               <th className="px-4 py-3">When</th>
               <th className="px-4 py-3">Action</th>
@@ -71,7 +71,7 @@ export default async function AdminAuditPage({
                     className={
                       entry.action.includes('failed')
                         ? 'border-oxide bg-oxide text-canvas'
-                        : 'border-ink bg-canvas-deep text-ink-soft'
+                        : 'border-hairline bg-canvas-deep text-ink-soft'
                     }
                   >
                     {entry.action}

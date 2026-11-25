@@ -10,7 +10,7 @@ export default function FormMessage({
   return (
     <p
       role={isError ? 'alert' : 'status'}
-      className={`border-[3px] border-ink px-4 py-3 font-sign text-sm font-bold uppercase tracking-wide ${
+      className={`rounded-xl px-4 py-3 text-sm font-semibold ${
         isError ? 'bg-oxide text-canvas' : 'bg-bottle text-canvas'
       }`}
     >

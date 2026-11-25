@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import '@fontsource-variable/fraunces/index.css'
+import '@fontsource-variable/fraunces/wght-italic.css'
+import '@fontsource-variable/figtree/index.css'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -20,19 +23,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-AU">
-      <head>
-        {/* Loaded in the browser rather than via next/font so the build has no
-            outbound font dependency. Fallback stacks are set in tailwind.config. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- the rule
-            targets the Pages Router's _document; this is the App Router root
-            layout, so the stylesheet is applied site-wide, not per page. */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@400;500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )

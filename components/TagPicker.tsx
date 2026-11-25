@@ -21,8 +21,8 @@ export default function TagPicker({ name, options }: { name: string; options: st
             type="button"
             aria-pressed={on}
             onClick={() => toggle(tag)}
-            className={`border-[3px] border-ink px-3 py-1.5 font-sign text-xs font-bold uppercase tracking-wider transition-all ${
-              on ? 'bg-safety text-ink shadow-hard-sm' : 'bg-canvas text-ink-soft hover:bg-canvas-deep'
+            className={`rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold transition-all ${
+              on ? 'bg-safety text-ink shadow-hard-sm rounded-2xl' : 'bg-canvas text-ink-soft hover:bg-canvas-deep'
             }`}
           >
             {on ? '✓ ' : ''}

@@ -62,7 +62,7 @@ export default async function AdminPaymentsPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Money"
         title="Payments"
         blurb="Escrowed job payments, lead credit purchases and membership subscriptions."
@@ -82,7 +82,7 @@ export default async function AdminPaymentsPage({
 
       {stranded.length ? (
         <Panel tone="mustard" className="p-5">
-          <p className="font-sign text-lg font-bold uppercase tracking-wide">
+          <p className="font-sign text-lg font-semibold">
             {money(strandedTotal, true)} released but not yet paid out
           </p>
           <p className="mt-1 text-sm text-ink-soft">
@@ -99,20 +99,20 @@ export default async function AdminPaymentsPage({
 
       {monthly.length ? (
         <Panel className="p-5">
-          <h2 className="mb-4 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+          <h2 className="mb-4 font-display text-sm font-semibold tracking-tight">
             Last 12 months
           </h2>
-          <div className="flex items-end gap-2 overflow-x-auto">
+          <div className="flex items-end gap-2 overflow-x-auto" tabIndex={0}>
             {monthly.map((month) => (
               <div key={month.month} className="flex min-w-[52px] flex-1 flex-col items-center gap-1.5">
                 <span className="font-mono text-[10px] text-ink-mute">
                   {money(Number(month.gross))}
                 </span>
                 <div
-                  className="w-full border-2 border-ink bg-safety"
+                  className="w-full border border-hairline bg-safety"
                   style={{ height: `${Math.max(4, (Number(month.gross) / maxMonth) * 140)}px` }}
                 />
-                <span className="whitespace-nowrap font-sign text-[10px] uppercase tracking-wider text-ink-mute">
+                <span className="whitespace-nowrap font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                   {month.month}
                 </span>
               </div>
@@ -125,7 +125,7 @@ export default async function AdminPaymentsPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/payments"
-            className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-hairline ${
               !searchParams.status && !searchParams.type ? 'bg-safety' : 'bg-canvas'
             }`}
           >
@@ -135,7 +135,7 @@ export default async function AdminPaymentsPage({
             <Link
               key={status}
               href={`/admin/payments?status=${status}`}
-              className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-hairline ${
                 searchParams.status === status ? 'bg-safety' : 'bg-canvas'
               }`}
             >
@@ -146,7 +146,7 @@ export default async function AdminPaymentsPage({
             <Link
               key={type}
               href={`/admin/payments?type=${type}`}
-              className={`btn-sm border-2 border-ink/40 font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-ink/40 ${
                 searchParams.type === type ? 'bg-mustard' : 'bg-canvas'
               }`}
             >
@@ -156,9 +156,9 @@ export default async function AdminPaymentsPage({
         </div>
       </Panel>
 
-      <Panel className="overflow-x-auto">
+      <Panel tabIndex={0} className="overflow-x-auto">
         <table className="w-full min-w-[1040px] text-sm">
-          <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+          <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
             <tr>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Who</th>
@@ -169,7 +169,7 @@ export default async function AdminPaymentsPage({
               <th className="px-4 py-3 text-right">To tradie</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Payout</th>
-              <th className="px-4 py-3" />
+              <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody>
@@ -210,7 +210,7 @@ export default async function AdminPaymentsPage({
                         payment.transfer_status === 'paid'
                           ? 'border-bottle bg-bottle text-canvas'
                           : payment.transfer_status === 'pending_account'
-                            ? 'border-ink bg-mustard text-ink'
+                            ? 'border-hairline bg-mustard text-ink'
                             : 'border-oxide bg-oxide text-canvas'
                       }
                     >
@@ -228,10 +228,10 @@ export default async function AdminPaymentsPage({
                 <td className="px-4 py-3">
                   <form action={adminUpdatePayment} className="flex gap-1.5">
                     <input type="hidden" name="paymentId" value={payment.id} />
-                    <select
+                    <select aria-label="Status"
                       name="status"
                       defaultValue={payment.status}
-                      className="border-2 border-ink px-1.5 py-1 text-xs"
+                      className="border border-hairline px-1.5 py-1 text-xs"
                     >
                       {STATUSES.map((status) => (
                         <option key={status} value={status}>
@@ -241,7 +241,7 @@ export default async function AdminPaymentsPage({
                     </select>
                     <button
                       type="submit"
-                      className="border-2 border-ink px-2 py-1 font-sign text-[11px] font-bold uppercase hover:bg-safety"
+                      className="border border-hairline px-2 py-1 font-sign text-[11px] font-semibold uppercase hover:bg-safety"
                     >
                       Set
                     </button>

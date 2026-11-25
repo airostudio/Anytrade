@@ -18,12 +18,12 @@ export default function JobCard({
   const slotsLeft = Math.max(0, job.max_bids - job.bid_count)
 
   return (
-    <article className="flex h-full flex-col border-[3px] border-ink bg-canvas shadow-hard card-lift">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink/20 bg-canvas-deep px-4 py-2">
+    <article className="flex h-full flex-col border border-hairline bg-canvas shadow-hard card-lift rounded-2xl">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/20 bg-canvas-deep px-4 py-2">
         <span className="font-mono text-xs font-bold tracking-wider text-ink-mute">{job.reference}</span>
         <div className="flex flex-wrap items-center gap-1.5">
           {job.urgency === 'EMERGENCY' ? (
-            <Pill className="border-ink bg-oxide text-canvas">Emergency</Pill>
+            <Pill className="border-hairline bg-oxide text-canvas">Emergency</Pill>
           ) : null}
           {job.prefer_homegirl ? (
             <Pill className="border-oxide bg-canvas text-oxide">Homegirl requested</Pill>
@@ -36,7 +36,7 @@ export default function JobCard({
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 className="font-sign text-lg font-bold uppercase leading-tight text-ink">
+          <h3 className="font-display text-lg font-semibold leading-tight text-ink">
             <Link href={href} className="hover:text-oxide">
               {job.title}
             </Link>
@@ -48,21 +48,21 @@ export default function JobCard({
 
         <p className="text-sm text-ink-soft">{truncate(job.description, 150)}</p>
 
-        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 border-y-2 border-dashed border-ink/25 py-3 text-sm sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 border-y border-dashed border-ink/25 py-3 text-sm sm:grid-cols-4">
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Budget</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Budget</dt>
             <dd className="font-bold text-ink">{budgetRange(job.budget_min, job.budget_max)}</dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Size</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Size</dt>
             <dd className="font-bold text-ink">{JOB_SIZE_LABEL[job.job_size]}</dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Timing</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Timing</dt>
             <dd className="font-bold text-ink">{JOB_URGENCY_LABEL[job.urgency]}</dd>
           </div>
           <div>
-            <dt className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">Quotes</dt>
+            <dt className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">Quotes</dt>
             <dd className="font-bold text-ink">
               {job.bid_count}/{job.max_bids}
               {slotsLeft > 0 && slotsLeft <= 2 ? (

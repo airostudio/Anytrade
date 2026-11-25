@@ -22,7 +22,7 @@ export default async function AccountPage() {
     <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
       <div className="space-y-8">
         <Panel className="p-7">
-          <h2 className="mb-5 border-b-[3px] border-safety pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+          <h2 className="mb-5 border-b border-safety pb-2 font-display text-xl font-semibold tracking-tight">
             Your details
           </h2>
           <AccountForms
@@ -39,7 +39,7 @@ export default async function AccountPage() {
 
       <aside className="space-y-5">
         <Panel tone="navy" className="p-6">
-          <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+          <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
             Your customer rating
           </h2>
           <p className="mt-3 font-display text-5xl leading-none">
@@ -54,7 +54,7 @@ export default async function AccountPage() {
         </Panel>
 
         <Panel className="p-5">
-          <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">Account</h2>
+          <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">Account</h2>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-ink-mute">Email</dt>
@@ -69,7 +69,7 @@ export default async function AccountPage() {
 
         {reviews.length ? (
           <Panel tone="manila" className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               What tradies said
             </h2>
             <ul className="space-y-3">

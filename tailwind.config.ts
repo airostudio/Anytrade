@@ -9,43 +9,47 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Old-school worksite palette: enamel signs, oxide primer, manila dockets
+        // Legacy token names, remapped onto the "Modern Australian Heritage & Craft"
+        // palette so every inner page picks up the new look without per-page edits.
+        // ink = charcoal, canvas = alabaster, safety = terracotta (CTAs), oxide =
+        // terracotta-deep (4.9:1 under white), navy = warm slate, bottle = eucalyptus.
         ink: {
-          DEFAULT: "#1B1714",
-          soft: "#3A322B",
-          mute: "#6B5F53",
+          DEFAULT: "#18181B",
+          soft: "#3F3F46",
+          mute: "#52525B",
         },
         canvas: {
-          DEFAULT: "#FBF4E6",
-          deep: "#F3E7CE",
-          dark: "#E7D7B6",
+          DEFAULT: "#FAF9F6",
+          deep: "#F2EFE8",
+          dark: "#E4E0D6",
         },
         manila: {
-          DEFAULT: "#EBD9B4",
-          dark: "#D8C296",
+          DEFAULT: "#F2EFE8",
+          dark: "#E4E0D6",
         },
         navy: {
-          DEFAULT: "#1E3A5C",
-          deep: "#152B45",
-          light: "#2E5583",
+          DEFAULT: "#2B3036",
+          deep: "#1F2429",
+          light: "#3C434A",
         },
         oxide: {
-          DEFAULT: "#A6371F",
-          deep: "#7E2715",
-          light: "#C4573C",
+          DEFAULT: "#B8431F",
+          deep: "#8F3317",
+          light: "#C9552F",
         },
         safety: {
-          DEFAULT: "#E8730C",
-          deep: "#C25A05",
-          light: "#F7A03F",
+          DEFAULT: "#D95D39",
+          soft: "#F4B09A",
+          deep: "#B8431F",
+          light: "#E3694A",
         },
         mustard: {
-          DEFAULT: "#DFA425",
-          deep: "#B8831A",
+          DEFAULT: "#F3E3C3",
+          deep: "#8A5A12",
         },
         bottle: {
-          DEFAULT: "#2C5449",
-          deep: "#1E3B33",
+          DEFAULT: "#15803D",
+          deep: "#106A31",
         },
         khaki: "#847754",
         steel: "#7B8A96",
@@ -95,20 +99,22 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["'Alfa Slab One'", "Rockwell", "'Courier Bold'", "Georgia", "serif"],
-        sign: ["Oswald", "'Arial Narrow'", "Impact", "sans-serif"],
-        body: ["Barlow", "'Helvetica Neue'", "Arial", "sans-serif"],
-        mono: ["'Courier Prime'", "'Courier New'", "monospace"],
-        // Self-hosted via @fontsource-variable in app/(home)/layout.tsx
+        // Legacy family names now resolve to the new pairing.
+        display: ["'Fraunces Variable'", "Georgia", "'Times New Roman'", "serif"],
+        sign: ["'Figtree Variable'", "system-ui", "-apple-system", "'Segoe UI'", "Roboto", "sans-serif"],
+        body: ["'Figtree Variable'", "system-ui", "-apple-system", "'Segoe UI'", "Roboto", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+        // Self-hosted via @fontsource-variable, imported in app/layout.tsx
         heritage: ["'Fraunces Variable'", "Georgia", "'Times New Roman'", "serif"],
         ui: ["'Figtree Variable'", "system-ui", "-apple-system", "'Segoe UI'", "Roboto", "sans-serif"],
       },
       boxShadow: {
-        hard: "4px 4px 0 0 #1B1714",
-        "hard-sm": "2px 2px 0 0 #1B1714",
-        "hard-lg": "7px 7px 0 0 #1B1714",
-        "hard-navy": "4px 4px 0 0 #1E3A5C",
-        "hard-oxide": "4px 4px 0 0 #A6371F",
+        // Legacy "hard" shadow names are now soft elevation.
+        hard: "0 1px 2px rgba(24,24,27,.05), 0 10px 28px -14px rgba(24,24,27,.16)",
+        "hard-sm": "0 1px 2px rgba(24,24,27,.06), 0 4px 12px -6px rgba(24,24,27,.14)",
+        "hard-lg": "0 2px 4px rgba(24,24,27,.06), 0 18px 40px -16px rgba(24,24,27,.24)",
+        "hard-navy": "0 1px 2px rgba(24,24,27,.05), 0 10px 28px -14px rgba(24,24,27,.16)",
+        "hard-oxide": "0 1px 2px rgba(24,24,27,.05), 0 10px 28px -14px rgba(24,24,27,.16)",
         card: "0 1px 2px rgba(24,24,27,.05), 0 10px 28px -14px rgba(24,24,27,.16)",
         lift: "0 2px 4px rgba(24,24,27,.06), 0 18px 40px -16px rgba(24,24,27,.24)",
         enamel: "inset 0 0 0 3px #FBF4E6, inset 0 0 0 6px currentColor",

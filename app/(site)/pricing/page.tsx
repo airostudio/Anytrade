@@ -16,7 +16,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <section className="border-b-[3px] border-ink bg-navy text-canvas">
+      <section className="border-b border-hairline bg-navy text-canvas">
         <div className="mx-auto max-w-7xl px-4 py-14 text-center sm:px-6">
           <Stamp tone="mustard" className="mb-5 bg-canvas">
             No commission on your invoice
@@ -56,8 +56,8 @@ export default function PricingPage() {
               ) : null}
 
               <h3
-                className={`font-sign text-xl font-bold uppercase tracking-wide ${
-                  plan.popular ? 'text-safety' : ''
+                className={`font-display text-xl font-semibold tracking-tight ${
+                  plan.popular ? 'text-safety-soft' : ''
                 }`}
               >
                 {plan.name}
@@ -78,7 +78,7 @@ export default function PricingPage() {
 
               {plan.includedCredits ? (
                 <p className="mt-2">
-                  <Pill className={plan.popular ? 'border-canvas bg-safety text-ink' : 'border-ink bg-mustard text-ink'}>
+                  <Pill className={plan.popular ? 'border-canvas bg-safety text-ink' : 'border-hairline bg-mustard text-ink'}>
                     {plan.includedCredits} lead credits/month
                   </Pill>
                 </p>
@@ -91,7 +91,7 @@ export default function PricingPage() {
               >
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
-                    <span className={plan.popular ? 'text-safety' : 'text-bottle'} aria-hidden>
+                    <span className={plan.popular ? 'text-safety-soft' : 'text-bottle'} aria-hidden>
                       ✓
                     </span>
                     {feature}
@@ -125,7 +125,7 @@ export default function PricingPage() {
           <div className="mx-auto grid max-w-4xl gap-5 md:grid-cols-3">
             {CREDIT_PACKS.map((pack) => (
               <Panel key={pack.id} className="flex flex-col p-6 text-center">
-                <h3 className="font-sign text-lg font-bold uppercase tracking-wide">{pack.name}</h3>
+                <h3 className="font-display text-lg font-semibold tracking-tight">{pack.name}</h3>
                 <p className="mt-3 font-display text-4xl leading-none text-oxide">{pack.credits}</p>
                 <p className="text-sm text-ink-mute">lead credits</p>
                 <p className="mt-4 font-display text-2xl">{money(pack.priceAud)}</p>
@@ -141,13 +141,13 @@ export default function PricingPage() {
           </div>
 
           <Panel className="mx-auto mt-10 max-w-4xl p-6">
-            <h3 className="mb-3 font-sign text-lg font-bold uppercase tracking-wide">
+            <h3 className="mb-3 font-display text-lg font-semibold tracking-tight">
               What a quote costs you
             </h3>
             <div className="grid gap-3 sm:grid-cols-5">
               {Object.entries(BID_CREDIT_COST).map(([size, cost]) => (
-                <div key={size} className="border-2 border-ink bg-canvas-deep px-3 py-2 text-center">
-                  <p className="font-sign text-[10px] uppercase tracking-widest text-ink-mute">
+                <div key={size} className="border border-hairline bg-canvas-deep px-3 py-2 text-center rounded-lg">
+                  <p className="font-sign text-[10px] uppercase tracking-[0.12em] text-ink-mute">
                     {size.replace(/_/g, ' ').toLowerCase()}
                   </p>
                   <p className="font-display text-xl">
@@ -175,25 +175,25 @@ export default function PricingPage() {
         <Panel className="p-6">
           <dl className="grid gap-5 sm:grid-cols-3 text-center">
             <div>
-              <dt className="font-sign text-xs uppercase tracking-widest text-ink-mute">
+              <dt className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">
                 Platform fee
               </dt>
               <dd className="font-display text-3xl text-oxide">
                 {(PLATFORM_FEE_RATE * 100).toFixed(1)}%
               </dd>
-              <p className="mt-1 text-xs text-ink-mute">Only on escrowed jobs. Never on direct invoices.</p>
+              <dd className="mt-1 text-xs text-ink-mute">Only on escrowed jobs. Never on direct invoices.</dd>
             </div>
             <div>
-              <dt className="font-sign text-xs uppercase tracking-widest text-ink-mute">Released</dt>
+              <dt className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">Released</dt>
               <dd className="font-display text-3xl text-oxide">On sign-off</dd>
-              <p className="mt-1 text-xs text-ink-mute">The customer marks the job complete.</p>
+              <dd className="mt-1 text-xs text-ink-mute">The customer marks the job complete.</dd>
             </div>
             <div>
-              <dt className="font-sign text-xs uppercase tracking-widest text-ink-mute">Processed by</dt>
+              <dt className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">Processed by</dt>
               <dd className="font-display text-3xl text-oxide">Stripe</dd>
-              <p className="mt-1 text-xs text-ink-mute">
+              <dd className="mt-1 text-xs text-ink-mute">
                 {live ? 'Live payments enabled.' : 'Demo mode until Stripe keys are added.'}
-              </p>
+              </dd>
             </div>
           </dl>
         </Panel>

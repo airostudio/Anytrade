@@ -65,7 +65,7 @@ export default async function TradieProfilePage() {
 
         <aside className="space-y-5">
           <Panel tone="navy" className="p-5">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-safety">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-safety-soft">
               Verification
             </h2>
             <p className="mt-3">
@@ -90,7 +90,7 @@ export default async function TradieProfilePage() {
               </p>
             )}
             {tradie.verification_notes ? (
-              <p className="mt-3 border-t-2 border-canvas/25 pt-3 text-sm text-canvas/80">
+              <p className="mt-3 border-t border-canvas/25 pt-3 text-sm text-canvas/80">
                 <strong>Note from us:</strong> {tradie.verification_notes}
               </p>
             ) : null}
@@ -100,7 +100,7 @@ export default async function TradieProfilePage() {
           </Panel>
 
           <Panel tone="manila" className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
               Listing health
             </h2>
             <ul className="space-y-2 text-sm">

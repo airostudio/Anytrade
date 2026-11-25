@@ -19,9 +19,9 @@ export interface PayoutPanelProps {
 }
 
 const TONE: Record<PayoutState, { panel: 'navy' | 'mustard' | 'oxide' | 'canvas'; pill: string }> = {
-  not_started: { panel: 'mustard', pill: 'border-ink bg-canvas text-ink' },
-  incomplete: { panel: 'mustard', pill: 'border-ink bg-oxide text-canvas' },
-  pending_review: { panel: 'canvas', pill: 'border-ink bg-mustard text-ink' },
+  not_started: { panel: 'mustard', pill: 'border-hairline bg-canvas text-ink' },
+  incomplete: { panel: 'mustard', pill: 'border-hairline bg-oxide text-canvas' },
+  pending_review: { panel: 'canvas', pill: 'border-hairline bg-mustard text-ink' },
   restricted: { panel: 'oxide', pill: 'border-canvas bg-canvas text-oxide' },
   ready: { panel: 'navy', pill: 'border-canvas bg-bottle text-canvas' },
 }
@@ -38,7 +38,7 @@ export default function PayoutPanel(props: PayoutPanelProps) {
         <div>
           <h2
             className={`font-sign text-sm font-bold uppercase tracking-[0.2em] ${
-              onNavy ? 'text-safety' : 'text-ink-mute'
+              onNavy ? 'text-safety-soft' : 'text-ink-mute'
             }`}
           >
             Getting paid
@@ -59,7 +59,7 @@ export default function PayoutPanel(props: PayoutPanelProps) {
             onNavy ? 'bg-canvas/10' : 'bg-canvas-deep'
           }`}
         >
-          <p className="font-sign text-xs uppercase tracking-widest">Stripe still needs</p>
+          <p className="font-sign text-xs uppercase tracking-[0.12em]">Stripe still needs</p>
           <ul className={`mt-1 space-y-0.5 text-sm ${onNavy ? 'text-canvas/85' : 'text-ink-soft'}`}>
             {props.requirements.slice(0, 6).map((requirement) => (
               <li key={requirement}>· {requirement}</li>
@@ -69,8 +69,8 @@ export default function PayoutPanel(props: PayoutPanelProps) {
       ) : null}
 
       {props.awaitingTransfer > 0 ? (
-        <div className="mt-4 border-[3px] border-ink bg-mustard p-3 text-ink">
-          <p className="font-sign text-sm font-bold uppercase tracking-wide">
+        <div className="mt-4 border border-hairline bg-mustard p-3 text-ink">
+          <p className="font-sign text-sm font-semibold">
             ${props.awaitingTransfer.toFixed(2)} waiting to be sent
           </p>
           <p className="mt-1 text-sm text-ink-soft">

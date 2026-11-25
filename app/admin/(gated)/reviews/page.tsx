@@ -26,7 +26,7 @@ export default async function AdminReviewsPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Trust & safety"
         title="Reviews"
         blurb="Both directions of the rating system. Hiding a review recalculates the affected average straight away."
@@ -52,7 +52,7 @@ export default async function AdminReviewsPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/reviews"
-            className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-hairline ${
               !searchParams.status && !searchParams.flagged && !searchParams.direction
                 ? 'bg-safety'
                 : 'bg-canvas'
@@ -64,7 +64,7 @@ export default async function AdminReviewsPage({
             <Link
               key={status}
               href={`/admin/reviews?status=${status}`}
-              className={`btn-sm border-2 border-ink font-sign uppercase tracking-widest ${
+              className={`btn-sm border border-hairline ${
                 searchParams.status === status ? 'bg-safety' : 'bg-canvas'
               }`}
             >
@@ -73,7 +73,7 @@ export default async function AdminReviewsPage({
           ))}
           <Link
             href="/admin/reviews?flagged=1"
-            className={`btn-sm border-2 border-oxide font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-oxide ${
               searchParams.flagged === '1' ? 'bg-oxide text-canvas' : 'bg-canvas text-oxide'
             }`}
           >
@@ -81,7 +81,7 @@ export default async function AdminReviewsPage({
           </Link>
           <Link
             href="/admin/reviews?direction=CLIENT_TO_TRADIE"
-            className={`btn-sm border-2 border-ink/40 font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-ink/40 ${
               searchParams.direction === 'CLIENT_TO_TRADIE' ? 'bg-mustard' : 'bg-canvas'
             }`}
           >
@@ -89,7 +89,7 @@ export default async function AdminReviewsPage({
           </Link>
           <Link
             href="/admin/reviews?direction=TRADIE_TO_CLIENT"
-            className={`btn-sm border-2 border-ink/40 font-sign uppercase tracking-widest ${
+            className={`btn-sm border border-ink/40 ${
               searchParams.direction === 'TRADIE_TO_CLIENT' ? 'bg-mustard' : 'bg-canvas'
             }`}
           >
@@ -108,7 +108,7 @@ export default async function AdminReviewsPage({
                   <Pill
                     className={
                       review.direction === 'CLIENT_TO_TRADIE'
-                        ? 'border-ink bg-canvas-deep text-ink-soft'
+                        ? 'border-hairline bg-canvas-deep text-ink-soft'
                         : 'border-navy bg-navy text-canvas'
                     }
                   >
@@ -120,13 +120,13 @@ export default async function AdminReviewsPage({
                         ? 'border-bottle bg-bottle text-canvas'
                         : review.status === 'HIDDEN'
                           ? 'border-oxide bg-oxide text-canvas'
-                          : 'border-ink bg-mustard text-ink'
+                          : 'border-hairline bg-mustard text-ink'
                     }
                   >
                     {review.status.replace(/_/g, ' ')}
                   </Pill>
                   {review.is_flagged ? (
-                    <Pill className="border-oxide bg-canvas text-oxide">⚑ Flagged</Pill>
+                    <Pill className="border-oxide bg-canvas text-oxide">Flagged</Pill>
                   ) : null}
                 </div>
 
@@ -157,7 +157,7 @@ export default async function AdminReviewsPage({
 
                 {review.response ? (
                   <div className="mt-3 border-l-4 border-safety bg-canvas-deep p-3">
-                    <p className="font-sign text-xs uppercase tracking-widest text-ink-mute">
+                    <p className="font-sign text-xs uppercase tracking-[0.12em] text-ink-mute">
                       Tradie reply
                     </p>
                     <p className="mt-1 text-sm text-ink-soft">{review.response}</p>
@@ -176,14 +176,14 @@ export default async function AdminReviewsPage({
                 ) : null}
               </div>
 
-              <div className="space-y-3 border-t-2 border-dashed border-ink/25 pt-4 lg:border-l-2 lg:border-t-0 lg:pl-5 lg:pt-0">
+              <div className="space-y-3 border-t border-dashed border-ink/25 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
                 <form action={adminModerateReview} className="space-y-2">
                   <input type="hidden" name="reviewId" value={review.id} />
                   <label className="label mb-0">Moderation</label>
-                  <select
+                  <select aria-label="Status"
                     name="status"
                     defaultValue={review.status}
-                    className="field border-2 py-1.5 text-sm"
+                    className="field border py-1.5 text-sm"
                   >
                     {STATUSES.map((status) => (
                       <option key={status} value={status}>
@@ -195,7 +195,7 @@ export default async function AdminReviewsPage({
                     name="note"
                     defaultValue={review.moderator_note ?? ''}
                     placeholder="Internal note"
-                    className="field border-2 py-1.5 text-sm"
+                    className="field border py-1.5 text-sm"
                   />
                   <button type="submit" className="btn-navy btn-sm w-full">
                     Apply

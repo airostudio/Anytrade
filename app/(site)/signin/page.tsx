@@ -34,7 +34,7 @@ export default async function SignInPage({
           <SignInForm callbackUrl={searchParams.callbackUrl} />
         </Suspense>
 
-        <p className="mt-6 border-t-2 border-dashed border-ink/25 pt-5 text-sm text-ink-soft">
+        <p className="mt-6 border-t border-dashed border-ink/25 pt-5 text-sm text-ink-soft">
           No account yet?{' '}
           <Link
             href={

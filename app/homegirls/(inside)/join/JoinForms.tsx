@@ -28,7 +28,7 @@ export default function JoinForms({
     <div className="space-y-8">
       {canApply ? (
         <Panel className="p-7">
-          <h2 className="mb-4 border-b-[3px] border-oxide pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+          <h2 className="mb-4 border-b border-oxide pb-2 font-display text-xl font-semibold tracking-tight">
             Membership application
           </h2>
           <form action={applyAction} className="space-y-4">
@@ -54,7 +54,7 @@ export default function JoinForms({
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
-              <label className="flex cursor-pointer items-center gap-2.5 border-[3px] border-ink bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard">
+              <label className="flex cursor-pointer items-center gap-2.5 border border-hairline bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard rounded-lg">
                 <input
                   type="checkbox"
                   name="mentorAvailable"
@@ -63,7 +63,7 @@ export default function JoinForms({
                 />
                 I&apos;m happy to mentor
               </label>
-              <label className="flex cursor-pointer items-center gap-2.5 border-[3px] border-ink bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard">
+              <label className="flex cursor-pointer items-center gap-2.5 border border-hairline bg-canvas px-3 py-2.5 text-sm has-[:checked]:bg-mustard rounded-lg">
                 <input
                   type="checkbox"
                   name="seekingMentor"
@@ -82,7 +82,7 @@ export default function JoinForms({
       ) : null}
 
       <Panel className="p-7">
-        <h2 className="mb-4 border-b-[3px] border-oxide pb-2 font-sign text-xl font-bold uppercase tracking-wide">
+        <h2 className="mb-4 border-b border-oxide pb-2 font-display text-xl font-semibold tracking-tight">
           Post to the noticeboard
         </h2>
         <form action={postAction} className="space-y-4">

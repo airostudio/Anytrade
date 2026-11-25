@@ -55,7 +55,7 @@ export default async function HomegirlsPage({
           className="mb-8 flex flex-wrap items-center justify-between gap-4 p-5"
         >
           <div>
-            <p className="font-sign text-lg font-bold uppercase tracking-wide">
+            <p className="font-sign text-lg font-semibold">
               {membership.status === 'APPROVED'
                 ? `You're in — member since ${formatDate(membership.joined_at)}`
                 : `Your application is ${membership.status.toLowerCase()}`}
@@ -73,7 +73,7 @@ export default async function HomegirlsPage({
       ) : (
         <Panel tone="mustard" className="mb-8 flex flex-wrap items-center justify-between gap-4 p-5">
           <div>
-            <p className="font-sign text-lg font-bold uppercase tracking-wide">Not a member yet</p>
+            <p className="font-sign text-lg font-semibold">Not a member yet</p>
             <p className="mt-1 text-sm text-ink-soft">
               {session?.user?.role === 'TRADESPERSON'
                 ? 'Apply and an admin will review it, usually within a day.'
@@ -119,7 +119,7 @@ export default async function HomegirlsPage({
                   <Link
                     key={category.slug}
                     href={category.slug === 'all' ? '/homegirls' : `/homegirls?category=${category.slug}`}
-                    className={`border-2 border-ink px-3 py-1.5 font-sign text-xs font-bold uppercase tracking-widest ${
+                    className={`rounded-full border border-ink/20 px-3.5 py-1.5 text-sm font-semibold ${
                       active ? 'bg-oxide text-canvas' : 'bg-canvas hover:bg-mustard'
                     }`}
                   >
@@ -138,13 +138,13 @@ export default async function HomegirlsPage({
                         {post.is_pinned ? (
                           <Pill className="border-oxide bg-oxide text-canvas">Pinned</Pill>
                         ) : null}
-                        <Pill className="border-ink bg-canvas-deep text-ink-soft">{post.category}</Pill>
+                        <Pill className="border-hairline bg-canvas-deep text-ink-soft">{post.category}</Pill>
                       </div>
-                      <h3 className="mt-2 font-sign text-xl font-bold uppercase leading-tight">
+                      <h3 className="mt-2 font-display text-xl font-semibold leading-tight">
                         {post.title}
                       </h3>
                       <p className="mt-2 whitespace-pre-line text-ink-soft">{post.body}</p>
-                      <p className="mt-3 border-t-2 border-dashed border-ink/25 pt-3 text-xs text-ink-mute">
+                      <p className="mt-3 border-t border-dashed border-ink/25 pt-3 text-xs text-ink-mute">
                         {post.author_slug ? (
                           <Link href={`/find-a-tradie/${post.author_slug}`} className="underline">
                             {post.author_business ?? post.author_name}
@@ -160,7 +160,7 @@ export default async function HomegirlsPage({
               </ul>
             ) : (
               <EmptyState
-                icon="📌"
+                icon="pin"
                 title="Nothing on the board yet"
                 blurb="Be the first to post — a tip, a tool for sale, or a job you can't get to."
                 action={
@@ -186,7 +186,7 @@ export default async function HomegirlsPage({
                   <Panel key={member.id} className="p-5 card-lift">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h3 className="truncate font-sign text-lg font-bold uppercase tracking-wide">
+                        <h3 className="truncate font-display text-lg font-semibold tracking-tight">
                           <Link href={`/find-a-tradie/${member.slug}`} className="hover:text-oxide">
                             {member.business_name}
                           </Link>
@@ -211,14 +211,14 @@ export default async function HomegirlsPage({
 
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {member.trades.slice(0, 3).map((trade) => (
-                        <Pill key={trade} className="border-ink bg-canvas-deep text-ink-soft">
+                        <Pill key={trade} className="border-hairline bg-canvas-deep text-ink-soft">
                           {categoryName(trade)}
                         </Pill>
                       ))}
                     </div>
 
                     {member.intro ? (
-                      <p className="mt-3 border-t-2 border-dashed border-ink/25 pt-3 text-sm italic text-ink-soft">
+                      <p className="mt-3 border-t border-dashed border-ink/25 pt-3 text-sm italic text-ink-soft">
                         “{member.intro}”
                       </p>
                     ) : null}
@@ -228,7 +228,7 @@ export default async function HomegirlsPage({
                         <Pill className="border-oxide bg-oxide text-canvas">Mentors</Pill>
                       ) : null}
                       {member.seeking_mentor ? (
-                        <Pill className="border-ink bg-mustard text-ink">Looking for a mentor</Pill>
+                        <Pill className="border-hairline bg-mustard text-ink">Looking for a mentor</Pill>
                       ) : null}
                       <Pill className="border-ink/40 bg-transparent text-ink-mute">
                         {member.completed_jobs} jobs
@@ -238,7 +238,7 @@ export default async function HomegirlsPage({
                 ))}
               </div>
             ) : (
-              <EmptyState icon="👷‍♀️" title="No approved members yet" />
+              <EmptyState icon="hardhat" title="No approved members yet" />
             )}
           </section>
         </div>
@@ -246,20 +246,20 @@ export default async function HomegirlsPage({
         {/* Sidebar */}
         <aside className="space-y-5">
           <Panel tone="oxide" className="p-5 text-canvas">
-            <h2 className="font-sign text-sm font-bold uppercase tracking-[0.2em] text-mustard">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-white">
               Jobs asking for a woman
             </h2>
             {homegirlJobs.length ? (
               <ul className="mt-3 space-y-3">
                 {homegirlJobs.map((job) => (
-                  <li key={job.id} className="border-b border-canvas/25 pb-3 last:border-0">
+                  <li key={job.id} className="border-b border-white/30 pb-3 last:border-0">
                     <Link
                       href={tradie ? `/tradie/leads/${job.id}` : '/join/tradie'}
-                      className="font-sign text-sm font-bold uppercase tracking-wide underline-offset-4 hover:underline"
+                      className="font-sign text-sm font-semibold underline-offset-4 hover:underline"
                     >
                       {job.title}
                     </Link>
-                    <p className="mt-0.5 text-xs text-canvas/80">
+                    <p className="mt-0.5 text-xs text-white">
                       {categoryName(job.category)} · {job.suburb} ·{' '}
                       {budgetRange(job.budget_min, job.budget_max)}
                     </p>
@@ -267,7 +267,7 @@ export default async function HomegirlsPage({
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-sm text-canvas/85">
+              <p className="mt-3 text-sm text-white">
                 Nothing open right now. Customers tick a box when posting to request a woman
                 tradesperson — those jobs land here and in members&apos; lead feeds.
               </p>
@@ -276,7 +276,7 @@ export default async function HomegirlsPage({
 
           {mentors.length ? (
             <Panel tone="manila" className="p-5">
-              <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">
+              <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
                 Happy to mentor
               </h2>
               <ul className="space-y-2 text-sm">
@@ -296,7 +296,7 @@ export default async function HomegirlsPage({
           ) : null}
 
           <Panel className="p-5">
-            <h2 className="mb-3 font-sign text-sm font-bold uppercase tracking-[0.2em]">House rules</h2>
+            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">House rules</h2>
             <ul className="space-y-2 text-sm text-ink-soft">
               <li>· What is said here stays here.</li>
               <li>· Refer work you can&apos;t take to someone on this list.</li>

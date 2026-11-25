@@ -20,7 +20,7 @@ export default async function HomegirlsEnterPage() {
   const [settings, stats] = await Promise.all([getSettings(), homegirlsStats()])
 
   return (
-    <div className="min-h-screen bg-oxide">
+    <main className="min-h-screen bg-navy-deep">
       <div className="hazard-tape" aria-hidden />
       <div className="mx-auto flex max-w-5xl flex-col items-center px-4 py-14 sm:px-6">
         <Logo size="md" tone="light" href="/" />
@@ -33,21 +33,21 @@ export default async function HomegirlsEnterPage() {
             <h1 className="font-display text-4xl leading-tight sm:text-5xl">The Homegirls</h1>
             <p className="mt-4 max-w-xl text-lg text-canvas/90">{settings['homegirls.intro']}</p>
 
-            <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t-2 border-canvas/30 pt-6">
+            <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-canvas/30 pt-6">
               <div>
-                <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+                <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                   Members
                 </dt>
                 <dd className="font-display text-3xl text-mustard">{stats.approved}</dd>
               </div>
               <div>
-                <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+                <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                   Mentors
                 </dt>
                 <dd className="font-display text-3xl text-mustard">{stats.mentors}</dd>
               </div>
               <div>
-                <dt className="font-sign text-[11px] uppercase tracking-[0.18em] text-canvas/70">
+                <dt className="font-sign text-[11px] uppercase tracking-[0.12em] text-canvas/70">
                   Jobs asking
                 </dt>
                 <dd className="font-display text-3xl text-mustard">{stats.jobsRequestingHomegirls}</dd>
@@ -91,7 +91,7 @@ export default async function HomegirlsEnterPage() {
 
             <EnterForm />
 
-            <div className="mt-6 space-y-3 border-t-2 border-dashed border-ink/25 pt-5 text-sm">
+            <div className="mt-6 space-y-3 border-t border-dashed border-ink/25 pt-5 text-sm">
               <p className="text-ink-soft">
                 Not a member yet?{' '}
                 <Link href="/join/tradie" className="font-bold underline underline-offset-4">
@@ -115,6 +115,6 @@ export default async function HomegirlsEnterPage() {
           </Panel>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

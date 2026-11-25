@@ -38,9 +38,9 @@ export default async function ClientPaymentsPage() {
       </div>
 
       {payments.length ? (
-        <Panel className="overflow-x-auto">
+        <Panel tabIndex={0} className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-sm">
-            <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+            <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Job</th>
@@ -48,7 +48,7 @@ export default async function ClientPaymentsPage() {
                 <th className="px-4 py-3">Amount</th>
                 <th className="px-4 py-3">Fee</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3" />
+                <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +91,7 @@ export default async function ClientPaymentsPage() {
         </Panel>
       ) : (
         <EmptyState
-          icon="💳"
+          icon="payments"
           title="No payments yet"
           blurb="When you accept a quote you can choose to fund the job into escrow. It stays there until you sign the work off."
         />

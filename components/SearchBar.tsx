@@ -19,14 +19,14 @@ export default function SearchBar({
     <form
       action={action}
       method="get"
-      className={`grid gap-2 border-[3px] border-ink bg-canvas p-2 shadow-hard ${
+      className={`grid gap-2 border border-hairline bg-canvas p-2 shadow-hard ${
         compact ? 'sm:grid-cols-[1fr_1fr_auto]' : 'sm:grid-cols-[1.2fr_1fr_auto]'
       }`}
     >
       <label className="sr-only" htmlFor="trade">
         What do you need done?
       </label>
-      <select id="trade" name="trade" defaultValue={defaultTrade} className="field border-2">
+      <select id="trade" name="trade" defaultValue={defaultTrade} className="field border">
         <option value="">What do you need done?</option>
         {TRADE_CATEGORIES.map((c) => (
           <option key={c.slug} value={c.slug}>
@@ -43,7 +43,7 @@ export default function SearchBar({
         name="suburb"
         defaultValue={defaultSuburb}
         placeholder="Suburb or postcode"
-        className="field border-2"
+        className="field border"
       />
 
       <button type="submit" className="btn-primary whitespace-nowrap">

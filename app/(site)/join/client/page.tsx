@@ -25,7 +25,7 @@ export default async function ClientJoinPage({
           Takes about a minute. You&apos;ll be able to post your first job straight after.
         </p>
         <ClientSignUpForm next={safeNext(searchParams.next)} />
-        <p className="mt-6 border-t-2 border-dashed border-ink/25 pt-5 text-sm text-ink-soft">
+        <p className="mt-6 border-t border-dashed border-ink/25 pt-5 text-sm text-ink-soft">
           Are you a tradie?{' '}
           <Link href="/join/tradie" className="font-bold underline underline-offset-4 hover:text-oxide">
             Sign up over here

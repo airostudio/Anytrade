@@ -25,7 +25,7 @@ export default function SettingsForm({
 
       {Object.entries(groups).map(([group, settings]) => (
         <Panel key={group} className="p-5">
-          <h2 className="mb-4 border-b-[3px] border-safety pb-2 font-sign text-lg font-bold uppercase tracking-wide">
+          <h2 className="mb-4 border-b border-safety pb-2 font-display text-lg font-semibold tracking-tight">
             {groupLabels[group] ?? group}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">

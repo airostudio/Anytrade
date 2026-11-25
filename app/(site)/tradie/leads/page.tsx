@@ -37,7 +37,7 @@ export default async function LeadsPage({
 
       <Panel className="p-4">
         <form method="get" className="grid gap-3 sm:grid-cols-[1fr_1fr_auto_auto]">
-          <select name="category" defaultValue={searchParams.category ?? ''} className="field border-2 py-2">
+          <select aria-label="Category" name="category" defaultValue={searchParams.category ?? ''} className="field border py-2">
             <option value="">All my trades</option>
             {TRADE_CATEGORIES.filter((c) => tradie.trades.includes(c.slug)).map((c) => (
               <option key={c.slug} value={c.slug}>
@@ -49,9 +49,9 @@ export default async function LeadsPage({
             name="q"
             defaultValue={searchParams.q ?? ''}
             placeholder="Search jobs or suburbs"
-            className="field border-2 py-2"
+            className="field border py-2"
           />
-          <label className="flex items-center gap-2 border-2 border-ink bg-canvas px-3 text-sm">
+          <label className="flex items-center gap-2 border border-hairline bg-canvas px-3 text-sm rounded-lg">
             <input type="checkbox" name="all" value="1" defaultChecked={searchParams.all === '1'} className="h-4 w-4 accent-oxide" />
             Outside my areas
           </label>
@@ -63,7 +63,7 @@ export default async function LeadsPage({
 
       <Panel tone="manila" className="p-4">
         <p className="text-sm text-ink-soft">
-          <strong className="font-sign uppercase tracking-wide">What a quote costs:</strong>{' '}
+          <strong className="font-sign">What a quote costs:</strong>{' '}
           {Object.entries(BID_CREDIT_COST)
             .map(([size, cost]) => `${size.replace(/_/g, ' ').toLowerCase()} ${cost}`)
             .join(' · ')}{' '}
@@ -79,7 +79,7 @@ export default async function LeadsPage({
         </div>
       ) : (
         <EmptyState
-          icon="📡"
+          icon="leads"
           title="Nothing matching right now"
           blurb="Try clearing the filters, ticking 'outside my areas', or adding more trades to your listing."
           action={

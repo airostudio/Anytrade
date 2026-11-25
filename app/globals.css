@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Old-school worksite furniture ───────────────────────────────────────── */
+/* ── Modern Australian Heritage & Craft ─────────────────────────────────────
+   One look for the whole site. Legacy token names (ink, canvas, safety, oxide,
+   navy, bottle) are remapped in tailwind.config.ts, so the component classes
+   below restyle every older page at once. */
 
 @layer base {
   :root {
@@ -10,142 +13,109 @@
   }
 
   body {
-    @apply bg-canvas text-ink font-body;
-    background-image: theme('backgroundImage.grain');
-    background-attachment: fixed;
+    @apply bg-alabaster font-body text-ink antialiased;
   }
 
   h1,
   h2,
   h3,
   h4 {
-    @apply font-sign tracking-wide;
+    @apply font-display font-semibold tracking-tight;
   }
 
   ::selection {
-    @apply bg-safety text-ink;
+    @apply bg-terracotta/30 text-ink;
   }
 
-  /* Modern Australian Heritage & Craft — scoped to the (home) route group so
-     the older pages keep their enamel-sign look until they are migrated. */
-  .home-scope {
-    @apply bg-alabaster font-ui text-charcoal antialiased;
-    background-image: none;
+  /* Grid children may shrink below their content width, so wide tables scroll
+     inside their own wrapper instead of stretching the whole page. */
+  .grid > * {
+    min-width: 0;
   }
-  .home-scope :where(h1, h2, h3, h4) {
-    @apply font-ui tracking-normal;
-  }
-  .home-scope :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-    @apply ring-0 ring-offset-0;
+
+  /* One clear, high-contrast focus ring on light and dark surfaces alike */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
     outline: 2px solid #d95d39;
     outline-offset: 2px;
   }
-  .home-scope ::selection {
-    @apply bg-terracotta/30 text-charcoal;
-  }
 
-  /* Chunky, honest focus ring — no thin modern hairlines */
-  :where(a, button, input, select, textarea):focus-visible {
-    @apply outline-none ring-4 ring-safety/60 ring-offset-2 ring-offset-canvas;
+  /* The homepage and network pages set their own heading family per element. */
+  .home-scope :where(h1, h2, h3, h4) {
+    @apply font-ui tracking-normal;
   }
 }
 
 @layer components {
-  /* Painted enamel sign: thick keyline with a cream inset, like a workshop plaque */
+  /* Surfaces */
   .enamel {
-    @apply relative border-[3px] border-ink bg-canvas shadow-hard;
+    @apply relative rounded-2xl border border-hairline bg-white shadow-hard;
   }
 
   .enamel-navy {
-    @apply relative border-[3px] border-ink bg-navy text-canvas shadow-hard;
+    @apply relative rounded-2xl bg-navy text-white shadow-hard;
   }
 
-  /* Manila docket — used for quotes, bids and receipts */
   .docket {
-    @apply border-[3px] border-ink bg-manila shadow-hard-sm;
-    background-image: repeating-linear-gradient(
-      0deg,
-      transparent 0 27px,
-      rgba(27, 23, 20, 0.07) 27px 28px
-    );
+    @apply rounded-2xl border border-hairline bg-canvas-deep shadow-hard-sm;
   }
 
-  /* Rubber stamp badge, rotated like it was banged on by hand */
+  /* Status badge: a soft pill, never rotated */
   .stamp {
-    @apply inline-flex items-center gap-1 border-[3px] px-2.5 py-1 font-sign text-xs font-bold uppercase tracking-[0.14em];
-    transform: rotate(-3deg);
+    @apply inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold;
   }
 
-  /* Hazard tape divider */
+  /* Section rule */
   .hazard-tape {
-    @apply h-3 w-full border-y-2 border-ink;
-    background-image: theme('backgroundImage.diag-stripe');
-    background-size: 40px 40px;
+    @apply h-px w-full bg-hairline;
   }
 
+  /* Buttons */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 border-[3px] border-ink px-6 py-3 font-sign text-base font-bold uppercase tracking-widest
-           transition-all duration-100 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-[15px] font-semibold
+           transition duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-primary {
-    @apply btn bg-safety text-ink shadow-hard hover:bg-safety-light;
+    @apply btn bg-safety text-ink shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_8px_20px_-10px_rgba(217,93,57,.8)] hover:bg-safety-light;
   }
 
   .btn-navy {
-    @apply btn bg-navy text-canvas shadow-hard hover:bg-navy-light;
+    @apply btn bg-navy text-white hover:bg-navy-light;
   }
 
   .btn-oxide {
-    @apply btn bg-oxide text-canvas shadow-hard hover:bg-oxide-light;
+    @apply btn bg-oxide text-white hover:bg-oxide-light;
   }
 
   .btn-ghost {
-    @apply btn bg-canvas text-ink shadow-hard-sm hover:bg-canvas-deep;
+    @apply btn border border-ink/20 bg-white text-ink hover:border-ink/50 hover:bg-canvas-deep;
   }
 
   .btn-sm {
-    @apply border-2 px-3.5 py-1.5 text-xs shadow-hard-sm;
+    @apply rounded-lg px-3.5 py-2 text-sm;
   }
 
+  /* Forms */
   .field {
-    @apply w-full border-[3px] border-ink bg-canvas px-4 py-3 font-body text-ink
-           placeholder:text-ink-mute/60 focus:bg-white;
+    @apply w-full rounded-xl border border-ink/20 bg-white px-4 py-3 font-body text-ink transition
+           placeholder:text-ink-mute/70 hover:border-ink/40 focus:border-ink focus:outline-none;
   }
 
   .label {
-    @apply mb-1.5 block font-sign text-sm font-semibold uppercase tracking-wider text-ink-soft;
+    @apply mb-1.5 block text-sm font-semibold text-ink;
   }
 
-  /* Section eyebrow: small caps on a ruled line */
   .eyebrow {
-    @apply mb-3 inline-block border-b-[3px] border-safety pb-1 font-sign text-sm font-bold uppercase tracking-[0.25em] text-oxide;
+    @apply mb-2 inline-block text-sm font-semibold uppercase tracking-[0.14em] text-oxide;
   }
 
   .card-lift {
-    @apply transition-transform duration-100 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-hard-lg;
-  }
-
-  /* Perforated tear-off edge for dockets */
-  .tear-bottom {
-    mask-image: radial-gradient(circle at 8px 100%, transparent 0 6px, black 6.5px);
-    mask-size: 16px 100%;
-    mask-repeat: repeat-x;
+    @apply transition duration-150 hover:-translate-y-0.5 hover:shadow-hard-lg;
   }
 }
 
 @layer utilities {
-  .text-shadow-hard {
-    text-shadow: 3px 3px 0 theme('colors.ink.DEFAULT');
-  }
-
-  .text-outline {
-    -webkit-text-stroke: 2px theme('colors.ink.DEFAULT');
-    paint-order: stroke fill;
-  }
-
   .paper {
     background-color: theme('colors.canvas.DEFAULT');
-    background-image: theme('backgroundImage.grain');
   }
 }

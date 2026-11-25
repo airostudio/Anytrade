@@ -25,7 +25,7 @@ export default function BidActions({
 
   if (confirming) {
     return (
-      <div className="border-[3px] border-oxide bg-canvas p-3">
+      <div className="border border-oxide bg-canvas p-3">
         <p className="text-sm font-semibold">
           Hire {businessName} for {amount}?
         </p>
@@ -64,7 +64,7 @@ export default function BidActions({
         <input type="hidden" name="bidId" value={bidId} />
         <button
           type="submit"
-          className="w-full border-2 border-ink/30 px-3 py-1.5 font-sign text-xs font-bold uppercase tracking-widest text-ink-mute hover:border-oxide hover:text-oxide"
+          className="w-full border border-ink/30 px-3 py-1.5 font-sign text-xs font-semibold uppercase tracking-[0.12em] text-ink-mute hover:border-oxide hover:text-oxide"
         >
           Decline
         </button>

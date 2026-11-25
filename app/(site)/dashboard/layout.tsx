@@ -19,10 +19,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const live = jobs.filter((j) => ['OPEN', 'SHORTLISTING', 'AWARDED', 'IN_PROGRESS'].includes(j.status))
 
   const items: NavItem[] = [
-    { href: '/dashboard', label: 'My jobs', icon: '📋', badge: live.length },
-    { href: '/dashboard/payments', label: 'Payments', icon: '💳' },
-    { href: '/dashboard/account', label: 'Account', icon: '⚙️' },
-    { href: '/post-a-job', label: 'Post a job', icon: '➕' },
+    { href: '/dashboard', label: 'My jobs', icon: 'jobs', badge: live.length },
+    { href: '/dashboard/payments', label: 'Payments', icon: 'payments' },
+    { href: '/dashboard/account', label: 'Account', icon: 'settings' },
+    { href: '/post-a-job', label: 'Post a job', icon: 'plus' },
   ]
 
   return (

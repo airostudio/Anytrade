@@ -22,7 +22,7 @@ export default async function AdminHomegirlsPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Members only"
         title="Homegirls network"
         blurb="Approve members, moderate the noticeboard and keep an eye on demand for women tradies."
@@ -51,7 +51,7 @@ export default async function AdminHomegirlsPage() {
 
       {pending.length ? (
         <section>
-          <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-oxide">
+          <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-oxide">
             Waiting on you
           </h2>
           <div className="space-y-3">
@@ -59,7 +59,7 @@ export default async function AdminHomegirlsPage() {
               <Panel key={member.id} tone="mustard" className="p-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h3 className="font-sign text-lg font-bold uppercase tracking-wide">
+                    <h3 className="font-display text-lg font-semibold tracking-tight">
                       {member.business_name}
                     </h3>
                     <p className="text-sm text-ink-soft">
@@ -101,12 +101,12 @@ export default async function AdminHomegirlsPage() {
       ) : null}
 
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           All members
         </h2>
-        <Panel className="overflow-x-auto">
+        <Panel tabIndex={0} className="overflow-x-auto">
           <table className="w-full min-w-[900px] text-sm">
-            <thead className="border-b-[3px] border-ink bg-canvas-deep text-left font-sign text-xs uppercase tracking-widest">
+            <thead className="border-b border-hairline bg-canvas-deep text-left font-sign text-xs uppercase tracking-[0.12em]">
               <tr>
                 <th className="px-4 py-3">Business</th>
                 <th className="px-4 py-3">Trades</th>
@@ -114,7 +114,7 @@ export default async function AdminHomegirlsPage() {
                 <th className="px-4 py-3">Rating</th>
                 <th className="px-4 py-3">Joined</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3" />
+                <th className="relative px-4 py-3"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@ export default async function AdminHomegirlsPage() {
                         member.status === 'APPROVED'
                           ? 'border-bottle bg-bottle text-canvas'
                           : member.status === 'PENDING'
-                            ? 'border-ink bg-mustard text-ink'
+                            ? 'border-hairline bg-mustard text-ink'
                             : 'border-oxide bg-oxide text-canvas'
                       }
                     >
@@ -154,10 +154,10 @@ export default async function AdminHomegirlsPage() {
                   <td className="px-4 py-3">
                     <form action={adminSetHomegirlStatus} className="flex gap-1.5">
                       <input type="hidden" name="memberId" value={member.id} />
-                      <select
+                      <select aria-label="Status"
                         name="status"
                         defaultValue={member.status}
-                        className="border-2 border-ink px-1.5 py-1 text-xs"
+                        className="border border-hairline px-1.5 py-1 text-xs"
                       >
                         {STATUSES.map((status) => (
                           <option key={status} value={status}>
@@ -167,7 +167,7 @@ export default async function AdminHomegirlsPage() {
                       </select>
                       <button
                         type="submit"
-                        className="border-2 border-ink px-2 py-1 font-sign text-[11px] font-bold uppercase hover:bg-safety"
+                        className="border border-hairline px-2 py-1 font-sign text-[11px] font-semibold uppercase hover:bg-safety"
                       >
                         Set
                       </button>
@@ -188,7 +188,7 @@ export default async function AdminHomegirlsPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-sign text-lg font-bold uppercase tracking-[0.2em] text-ink-mute">
+        <h2 className="mb-3 font-display text-lg font-semibold tracking-tight text-ink-mute">
           Noticeboard
         </h2>
         <div className="space-y-3">
@@ -197,12 +197,12 @@ export default async function AdminHomegirlsPage() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-sign text-base font-bold uppercase tracking-wide">
+                    <h3 className="font-display text-base font-semibold tracking-tight">
                       {post.title}
                     </h3>
-                    <Pill className="border-ink bg-canvas-deep text-ink-soft">{post.category}</Pill>
+                    <Pill className="border-hairline bg-canvas-deep text-ink-soft">{post.category}</Pill>
                     {post.is_pinned ? (
-                      <Pill className="border-ink bg-safety text-ink">Pinned</Pill>
+                      <Pill className="border-hairline bg-safety text-ink">Pinned</Pill>
                     ) : null}
                     {post.is_hidden ? (
                       <Pill className="border-oxide bg-oxide text-canvas">Hidden</Pill>

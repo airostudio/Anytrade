@@ -39,7 +39,7 @@ export default async function HomegirlsJoinPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <SectionHeading
+      <SectionHeading as="h1"
         eyebrow="Members"
         title="Join & post"
         blurb="Apply for membership, and once you're in, post to the noticeboard."
@@ -47,7 +47,7 @@ export default async function HomegirlsJoinPage() {
 
       {!tradie ? (
         <Panel tone="mustard" className="mb-6 p-5">
-          <p className="font-sign font-bold uppercase tracking-wide">Tradie accounts only</p>
+          <p className="font-sign font-semibold">Tradie accounts only</p>
           <p className="mt-1 text-sm text-ink-soft">
             Homegirls membership is for women working in the trades. If that&apos;s you,{' '}
             <Link href="/join/tradie" className="font-bold underline underline-offset-4">
@@ -61,7 +61,7 @@ export default async function HomegirlsJoinPage() {
           tone={membership.status === 'APPROVED' ? 'navy' : 'manila'}
           className="mb-6 p-5"
         >
-          <p className="font-sign font-bold uppercase tracking-wide">
+          <p className="font-sign font-semibold">
             Application status: {membership.status}
           </p>
           <p className="mt-1 text-sm opacity-85">

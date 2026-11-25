@@ -56,7 +56,7 @@ export default function PostJobForm({
             <option value="">Pick a trade</option>
             {TRADE_CATEGORIES.map((c) => (
               <option key={c.slug} value={c.slug}>
-                {c.icon} {c.name}
+                {c.name}
               </option>
             ))}
           </select>
@@ -91,7 +91,7 @@ export default function PostJobForm({
             {JOB_SIZES.map((size) => (
               <label
                 key={size.value}
-                className="flex cursor-pointer items-start gap-3 border-[3px] border-ink bg-canvas p-3 text-sm has-[:checked]:bg-mustard"
+                className="flex cursor-pointer items-start gap-3 border border-hairline bg-canvas p-3 text-sm has-[:checked]:bg-mustard"
               >
                 <input
                   type="radio"
@@ -102,7 +102,7 @@ export default function PostJobForm({
                   className="mt-0.5 h-4 w-4 accent-oxide"
                 />
                 <span>
-                  <strong className="font-sign uppercase tracking-wide">{size.label}</strong>
+                  <strong className="font-sign">{size.label}</strong>
                   <span className="mt-0.5 block text-ink-mute">{size.hint}</span>
                 </span>
               </label>
@@ -200,7 +200,7 @@ export default function PostJobForm({
           </div>
         </div>
 
-        <label className="mt-5 flex cursor-pointer items-start gap-3 border-[3px] border-ink bg-manila p-3">
+        <label className="mt-5 flex cursor-pointer items-start gap-3 border border-hairline bg-manila p-3">
           <input
             type="checkbox"
             name="preferHomegirl"
@@ -208,7 +208,7 @@ export default function PostJobForm({
             className="mt-1 h-4 w-4 accent-oxide"
           />
           <span className="text-sm">
-            <strong className="font-sign uppercase tracking-wide">
+            <strong className="font-sign">
               I&apos;d prefer a woman tradesperson
             </strong>
             <span className="mt-0.5 block text-ink-soft">
@@ -238,8 +238,8 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <fieldset className="border-t-[3px] border-ink pt-5">
-      <legend className="bg-canvas px-2 font-sign text-lg font-bold uppercase tracking-wide">
+    <fieldset className="border-t border-hairline pt-5">
+      <legend className="bg-canvas px-2 font-sign text-lg font-semibold">
         {legend}
       </legend>
       {hint ? <p className="mb-3 text-sm text-ink-mute">{hint}</p> : null}
