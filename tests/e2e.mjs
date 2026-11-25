@@ -12,6 +12,7 @@ import { chromium } from 'playwright'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const TRADIE = { email: 'bruce.kowalski@kowalski-home-handyman.com.au', password: 'Password!123' }
+const PENDING_TRADIE = { email: 'pete.donnelly@donnelly-appliance-rep.com.au', password: 'Password!123' }
 const CLIENT = { email: 'margaret.doyle@example.com', password: 'Password!123' }
 const ADMIN = { email: 'admin@anytrade.com.au', password: 'Admin!2345' }
 // Seeded with a half-finished Connect account, so the requirements panel shows.
@@ -162,6 +163,16 @@ try {
 
     const after = Number(await statValue(page, 'Lead credits'))
     check('credit balance increased by 30', after === before + 30, `${before} -> ${after}`)
+  }
+
+  // ── Only verified tradies can quote ──────────────────────────────────────
+  if (quotedJobUrl) {
+    const page = await (await browser.newContext()).newPage()
+    await signIn(page, PENDING_TRADIE)
+    await page.goto(`${BASE}/tradie/leads/${quotedJobUrl}`, { waitUntil: 'domcontentloaded' })
+    const body = await page.textContent('body')
+    check('unverified tradie is told verification is needed', /Verification needed before you quote/.test(body))
+    check('unverified tradie gets no quote form', (await page.locator('#amount').count()) === 0)
   }
 
   // ── Hiring and two-way ratings ───────────────────────────────────────────

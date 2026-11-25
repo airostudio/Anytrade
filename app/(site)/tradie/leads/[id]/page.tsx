@@ -40,6 +40,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   const slotsLeft = Math.max(0, job.max_bids - job.bid_count)
   const openForQuotes = ['OPEN', 'SHORTLISTING'].includes(job.status) && slotsLeft > 0
   const blockedByHomegirls = job.prefer_homegirl && !tradie.is_homegirl
+  const needsVerification = tradie.verification_status !== 'VERIFIED'
 
   return (
     <div className="space-y-8">
@@ -112,6 +113,20 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
               </p>
               <Link href="/homegirls" className="btn-oxide btn-sm mt-4">
                 About Homegirls
+              </Link>
+            </Panel>
+          ) : needsVerification ? (
+            <Panel tone="mustard" className="p-6">
+              <h2 className="font-sign text-lg font-bold uppercase tracking-wide">
+                Verification needed before you quote
+              </h2>
+              <p className="mt-2 text-sm text-ink-soft">
+                {tradie.verification_status === 'PENDING'
+                  ? 'Your documents are with our team. You can quote on jobs as soon as your licence, ABN and insurance are verified.'
+                  : 'Every quote on AnyTrade comes from a tradie whose licence, ABN and insurance have been checked. Complete your profile and we will review it.'}
+              </p>
+              <Link href="/tradie/profile" className="btn-oxide btn-sm mt-4">
+                Go to my profile
               </Link>
             </Panel>
           ) : openForQuotes ? (

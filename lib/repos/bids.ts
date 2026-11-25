@@ -90,6 +90,10 @@ export interface NewBid {
  * The insert is guarded by the job still being open and under its bid cap, so
  * two tradies racing for the last slot cannot both get in.
  */
+/** Shown to a tradie who tries to quote before they have been verified. */
+export const VERIFICATION_REQUIRED_MESSAGE =
+  'You can quote on jobs once AnyTrade has verified your licence, ABN and insurance. Finish your profile and we will review it.'
+
 export async function placeBid(input: NewBid): Promise<{ ok: true; bid: BidRow } | { ok: false; error: string }> {
   try {
     return await transaction(async (client) => {
@@ -107,11 +111,15 @@ export async function placeBid(input: NewBid): Promise<{ ok: true; bid: BidRow }
       }
 
       const tradie = await client.query(
-        'SELECT id, lead_credits FROM tradespeople WHERE id = $1 FOR UPDATE',
+        'SELECT id, lead_credits, verification_status FROM tradespeople WHERE id = $1 FOR UPDATE',
         [input.tradespersonId]
       )
       const tradieRow = tradie.rows[0]
       if (!tradieRow) return { ok: false as const, error: 'Tradie profile not found.' }
+      // AnyTrade promises homeowners that every quote comes from a checked tradie.
+      if (tradieRow.verification_status !== 'VERIFIED') {
+        return { ok: false as const, error: VERIFICATION_REQUIRED_MESSAGE }
+      }
       if (tradieRow.lead_credits < input.creditsSpent) {
         return {
           ok: false as const,

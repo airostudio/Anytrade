@@ -105,6 +105,11 @@ service areas that they have not already quoted on and that are under the bid
 cap (six by default). Submitting a quote costs lead credits, scaled by job size
 (`BID_CREDIT_COST` in `lib/constants.ts`).
 
+Only tradies whose `verification_status` is `VERIFIED` can quote. The check lives inside the `placeBid`
+transaction (`lib/repos/bids.ts`), so it cannot be bypassed from the UI, and unverified tradies see an
+explanation on the lead page instead of the quote form. This is what makes the homepage's "Licence & ABN
+Checked" and "Public Liability Insured" claims true.
+
 `placeBid()` in `lib/repos/bids.ts` does the whole thing in one transaction with
 `SELECT … FOR UPDATE` on both the job and the tradie, so two tradies racing for
 the last slot cannot both get in and credits can never go negative.
