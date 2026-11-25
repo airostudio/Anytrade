@@ -2,20 +2,32 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Menu, Phone, X } from 'lucide-react'
 import { ESTABLISHED, telHref } from '@/lib/trust'
 import { usePostJob } from './PostJobProvider'
-import { btnPrimary } from './ui'
+import { btnCopper, btnPrimary } from './ui'
 
 const NAV = [
   { href: '/how-it-works', label: 'How It Works' },
+  { href: '/trades', label: 'Trades' },
+  { href: '/homegirls-network', label: 'Homegirls Network' },
   { href: '/join/tradie', label: 'For Tradies' },
   { href: '/signin', label: 'Sign In' },
 ] as const
 
-export default function HomeHeader({ phone }: { phone: string }) {
+export default function HomeHeader({
+  phone,
+  accent = 'terracotta',
+}: {
+  phone: string
+  accent?: 'terracotta' | 'copper'
+}) {
   const { open } = usePostJob()
+  const pathname = usePathname()
+  const cta = accent === 'copper' ? btnCopper : btnPrimary
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
   const [menu, setMenu] = useState(false)
 
   useEffect(() => {
@@ -47,7 +59,10 @@ export default function HomeHeader({ phone }: { phone: string }) {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-lg px-3.5 py-2 text-[15px] font-semibold text-charcoal transition hover:bg-charcoal/5"
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              className={`rounded-lg px-3 py-2 text-[15px] font-semibold text-charcoal transition hover:bg-charcoal/5 ${
+                isActive(item.href) ? 'bg-charcoal/[0.06] underline decoration-2 underline-offset-[10px]' : ''
+              }`}
             >
               {item.label}
             </Link>
@@ -57,9 +72,10 @@ export default function HomeHeader({ phone }: { phone: string }) {
             className="ml-2 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-[15px] font-bold text-charcoal transition hover:bg-charcoal/5"
           >
             <Phone className="h-4 w-4 text-terracotta-deep" aria-hidden="true" />
-            {phone}
+            <span className="hidden xl:inline">{phone}</span>
+            <span className="sr-only xl:hidden">Call {phone}</span>
           </a>
-          <button type="button" className={`${btnPrimary} ml-2 !px-5 !py-2.5`} onClick={() => open()}>
+          <button type="button" className={`${cta} ml-2 !px-5 !py-2.5`} onClick={() => open()}>
             Post a Job
           </button>
         </nav>
@@ -93,7 +109,10 @@ export default function HomeHeader({ phone }: { phone: string }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenu(false)}
-                className="rounded-lg px-3 py-3 text-lg font-semibold text-charcoal hover:bg-charcoal/5"
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                className={`rounded-lg px-3 py-3 text-lg font-semibold text-charcoal hover:bg-charcoal/5 ${
+                  isActive(item.href) ? 'bg-charcoal/[0.06]' : ''
+                }`}
               >
                 {item.label}
               </Link>
@@ -107,7 +126,7 @@ export default function HomeHeader({ phone }: { phone: string }) {
             </a>
             <button
               type="button"
-              className={`${btnPrimary} mt-2 w-full`}
+              className={`${cta} mt-2 w-full`}
               onClick={() => {
                 setMenu(false)
                 open()

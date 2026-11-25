@@ -213,6 +213,25 @@ style until they are migrated.
 - The Tradie spotlight shows real verified tradies, topped up with labelled SAMPLE profiles until three
   exist (`SHOW_SAMPLE_TRADIES=0` turns the samples off).
 
+### The public Homegirls Network page
+
+`/homegirls-network` (route group `app/(network)`) is the public front door for the network: a
+directory of approved members, a request-a-quote flow, a mentorship sign-up, and a notice board. It is
+separate from the passcode-gated members area at `/homegirls`, which stays private and `noindex`.
+
+- Members come from `homegirls_members` (status `APPROVED`) joined to their tradie profile, using only
+  public fields (`lib/repos/network.ts`). A badge only shows what the record supports: licence, insurance
+  and ABN lines appear only for `VERIFIED` tradies.
+- Until eight members exist, labelled SAMPLE profiles fill the grid (`SHOW_SAMPLE_TRADIES=0` turns them
+  off). A member portrait is `users.avatar_url`; without one a botanical monogram is drawn. Only use
+  photos the member has agreed to.
+- Quote requests and mentorship sign-ups are written to `contact_enquiries` (see Admin, Enquiries) with the
+  subject starting `Homegirls Network:`, so the team can pass them on. Both forms have a honeypot field.
+- Filtering is client-side and pure: `filterMembers` in `lib/homegirls-network.ts`.
+- The page has its own sage / slate / copper tokens (`hg-*` in `tailwind.config.ts`). Copper buttons use
+  near-black text because white on `#C96A42` is only 3.7:1.
+- The community notice board on this page is fixed copy in `NOTICE_BOARD` (`lib/homegirls-network.ts`).
+
 ## Where the Homegirls section is heading
 
 The Homegirls network currently lives inside AnyTrade as a passcode-gated

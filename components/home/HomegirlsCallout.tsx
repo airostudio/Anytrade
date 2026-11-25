@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { ArrowRight, Heart } from 'lucide-react'
 import PostJobButton from './PostJobButton'
 
@@ -44,6 +45,12 @@ export default function HomegirlsCallout() {
           Request a female tradie
           <ArrowRight className="h-[18px] w-[18px]" aria-hidden="true" />
         </PostJobButton>
+        <Link
+          href="/homegirls-network"
+          className="mt-4 block text-center text-[15px] font-semibold underline underline-offset-4 hover:text-white/80 sm:ml-5 sm:inline sm:text-left"
+        >
+          Meet the network
+        </Link>
       </div>
     </section>
   )

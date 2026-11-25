@@ -17,7 +17,7 @@ const GROUPS = [
     links: [
       { href: '/join/tradie', label: 'Join AnyTrade' },
       { href: '/pricing', label: 'Memberships & leads' },
-      { href: '/homegirls', label: 'Homegirls Network' },
+      { href: '/homegirls-network', label: 'Homegirls Network' },
       { href: '/signin', label: 'Sign in' },
     ],
   },

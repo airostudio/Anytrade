@@ -5,6 +5,10 @@ import type { LucideIcon } from 'lucide-react'
 export const btnPrimary =
   'inline-flex items-center justify-center gap-2 rounded-xl bg-terracotta px-6 py-3.5 text-base font-semibold text-charcoal shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_8px_20px_-10px_rgba(217,93,57,.8)] transition hover:bg-terracotta-hover active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60'
 
+/** Primary action colour on the Homegirls Network page (copper, near-black text). */
+export const btnCopper =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-hg-copper px-6 py-3.5 text-base font-semibold text-hg-on-copper shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_8px_20px_-10px_rgba(169,83,46,.8)] transition hover:bg-hg-copper-hover active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60'
+
 export const btnSecondary =
   'inline-flex items-center justify-center gap-2 rounded-xl border border-charcoal/20 bg-white px-5 py-3 text-[15px] font-semibold text-charcoal transition hover:border-charcoal/50 hover:bg-alabaster active:translate-y-px'
 

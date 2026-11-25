@@ -67,7 +67,7 @@ try {
   // ── Public pages render ──────────────────────────────────────────────────
   {
     const page = await (await browser.newContext()).newPage()
-    for (const path of ['/', '/handyman', '/find-a-tradie', '/trades', '/trades/handyman', '/pricing', '/how-it-works', '/contact']) {
+    for (const path of ['/', '/handyman', '/find-a-tradie', '/trades', '/trades/handyman', '/pricing', '/how-it-works', '/contact', '/homegirls-network']) {
       const res = await page.goto(BASE + path, { waitUntil: 'domcontentloaded' })
       check(`public page ${path}`, res?.status() === 200, String(res?.status()))
     }
@@ -81,6 +81,31 @@ try {
 
     await page.goto(`${BASE}/post-a-job`, { waitUntil: 'domcontentloaded' })
     check('posting a job requires sign-in', page.url().includes('/signin'))
+  }
+
+  // ── Homegirls Network (public page) ──────────────────────────────────────
+  {
+    const page = await (await browser.newContext()).newPage()
+    await page.goto(`${BASE}/homegirls-network`, { waitUntil: 'networkidle' })
+    const cards = () => page.locator('#members article').count()
+    const total = await cards()
+    check('network page lists members', total > 0, String(total))
+    check('network page is public (no gate redirect)', page.url().endsWith('/homegirls-network'), page.url())
+
+    await page.getByLabel('Suburb / Postcode').fill('zzzz-nowhere')
+    check('network filter shows an empty state', (await cards()) === 0 && (await page.getByText('No members match those filters').isVisible()))
+    await page.locator('#members').getByRole('button', { name: 'Reset filters' }).last().click()
+    check('network filter resets', (await cards()) === total)
+
+    await page.locator('#members article').first().getByRole('button', { name: /Request a Quote/ }).click()
+    const dialog = page.locator('dialog[open]')
+    await dialog.waitFor()
+    await dialog.locator('#q-name').fill('E2E Homeowner')
+    await dialog.locator('#q-email').fill('e2e-homeowner@example.test')
+    await dialog.locator('#q-summary').fill('Replace two tap washers and check the toilet cistern.')
+    await dialog.getByRole('button', { name: 'Send quote request' }).click()
+    await dialog.getByText('Thank you. We have your request.').waitFor({ timeout: 15000 })
+    check('network quote request confirms', true)
   }
 
   // ── Bidding: tradie quotes on a lead ─────────────────────────────────────

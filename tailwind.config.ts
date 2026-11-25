@@ -74,6 +74,25 @@ const config: Config = {
           tint: "#E8F3EC",
         },
         hairline: "#E4E0D6",
+
+        // The Homegirls Network page: warm botanical slate, cream, sage and copper.
+        // Copper is #C96A42; its button text is near-black (4.9:1), because white
+        // on that copper is only 3.7:1. Sage text always uses sage-deep (7:1 on white).
+        hg: {
+          ink: "#1F2429",
+          slate: "#2B3036",
+          cream: "#F6F3EE",
+          paper: "#FAF8F5",
+          sage: "#687864",
+          "sage-deep": "#4E5D4B",
+          "sage-tint": "#E9EEE6",
+          "sage-light": "#B9C4B5",
+          copper: "#C96A42",
+          "copper-hover": "#D4784F",
+          "copper-deep": "#A9532E",
+          "on-copper": "#14181B",
+          line: "#E3DED5",
+        },
       },
       fontFamily: {
         display: ["'Alfa Slab One'", "Rockwell", "'Courier Bold'", "Georgia", "serif"],
