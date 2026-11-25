@@ -7,6 +7,7 @@ import { homeForRole, signIn } from '@/lib/auth'
 import { createClient, createTradie, emailTaken, getUserByEmail } from '@/lib/repos/users'
 import { describeDbError, query } from '@/lib/db'
 import { recordAudit } from '@/lib/repos/admin'
+import { safeNext } from '@/lib/trust'
 
 /**
  * Visitors get a plain message and never a database error code. The real cause
@@ -77,7 +78,8 @@ export async function signUpClient(_prev: ActionState, formData: FormData): Prom
   await signIn('credentials', {
     email: data.email,
     password: data.password,
-    redirectTo: '/dashboard',
+    // A visitor who came from the homepage's Post-a-Job flow carries on to it.
+    redirectTo: safeNext(formData.get('next')) ?? '/dashboard',
   })
   return {}
 }
@@ -161,7 +163,8 @@ export async function signInWithCredentials(
 ): Promise<ActionState> {
   const email = String(formData.get('email') ?? '')
   const password = String(formData.get('password') ?? '')
-  const callbackUrl = String(formData.get('callbackUrl') ?? '') || undefined
+  // Only same-site paths are honoured, so a crafted link can't redirect off-site.
+  const callbackUrl = safeNext(formData.get('callbackUrl'))
 
   if (!email || !password) return { error: 'Enter your email and password.' }
 

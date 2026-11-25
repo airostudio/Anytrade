@@ -5,6 +5,18 @@ import { auth } from '@/lib/auth'
 import { Panel, Stamp } from '@/components/ui'
 import PostJobForm from './PostJobForm'
 
+type Prefill = {
+  category?: string
+  size?: string
+  urgency?: string
+  title?: string
+  description?: string
+  suburb?: string
+  state?: string
+  postcode?: string
+  homegirl?: string
+}
+
 export const metadata: Metadata = {
   title: 'Post a job — free',
   description: 'Describe the job, get up to six quotes from local tradies. Free to post, free to compare.',
@@ -14,7 +26,7 @@ export const dynamic = 'force-dynamic'
 export default async function PostJobPage({
   searchParams,
 }: {
-  searchParams: { category?: string; size?: string }
+  searchParams: Prefill
 }) {
   const session = await auth()
 
@@ -58,6 +70,15 @@ export default async function PostJobPage({
         <PostJobForm
           defaultCategory={searchParams.category ?? ''}
           defaultSize={searchParams.size ?? 'ODD_JOB'}
+          prefill={{
+            title: searchParams.title,
+            description: searchParams.description,
+            urgency: searchParams.urgency,
+            suburb: searchParams.suburb,
+            state: searchParams.state,
+            postcode: searchParams.postcode,
+            preferHomegirl: searchParams.homegirl === '1',
+          }}
         />
       </Panel>
     </div>

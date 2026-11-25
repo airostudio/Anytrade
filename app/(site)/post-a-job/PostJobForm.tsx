@@ -6,12 +6,25 @@ import FormMessage from '@/components/FormMessage'
 import { postJob } from '@/app/actions/jobs'
 import { AU_STATES, JOB_SIZES, JOB_URGENCIES, TRADE_CATEGORIES } from '@/lib/constants'
 
+/** Values carried over from the homepage quick start (all optional). */
+export interface PostJobPrefill {
+  title?: string
+  description?: string
+  urgency?: string
+  suburb?: string
+  state?: string
+  postcode?: string
+  preferHomegirl?: boolean
+}
+
 export default function PostJobForm({
   defaultCategory,
   defaultSize,
+  prefill = {},
 }: {
   defaultCategory: string
   defaultSize: string
+  prefill?: PostJobPrefill
 }) {
   const [state, action] = useFormState(postJob, {})
 
@@ -27,6 +40,7 @@ export default function PostJobForm({
           <input
             id="title"
             name="title"
+            defaultValue={prefill.title ?? ''}
             required
             maxLength={120}
             placeholder="Hang three shelves and fix a sticking door"
@@ -58,6 +72,7 @@ export default function PostJobForm({
           <textarea
             id="description"
             name="description"
+            defaultValue={prefill.description ?? ''}
             required
             rows={6}
             minLength={20}
@@ -100,7 +115,13 @@ export default function PostJobForm({
             <label className="label" htmlFor="urgency">
               When do you need it?
             </label>
-            <select id="urgency" name="urgency" required defaultValue="THIS_WEEK" className="field">
+            <select
+              id="urgency"
+              name="urgency"
+              required
+              defaultValue={JOB_URGENCIES.some((u) => u.value === prefill.urgency) ? prefill.urgency : 'THIS_WEEK'}
+              className="field"
+            >
               {JOB_URGENCIES.map((u) => (
                 <option key={u.value} value={u.value}>
                   {u.label} — {u.hint}
@@ -146,14 +167,14 @@ export default function PostJobForm({
             <label className="label" htmlFor="suburb">
               Suburb
             </label>
-            <input id="suburb" name="suburb" required className="field" />
+            <input id="suburb" name="suburb" required defaultValue={prefill.suburb ?? ''} className="field" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="label" htmlFor="state">
                 State
               </label>
-              <select id="state" name="state" required className="field">
+              <select id="state" name="state" required defaultValue={prefill.state ?? ''} className="field">
                 <option value="">—</option>
                 {AU_STATES.map((s) => (
                   <option key={s} value={s}>
@@ -166,13 +187,26 @@ export default function PostJobForm({
               <label className="label" htmlFor="postcode">
                 Postcode
               </label>
-              <input id="postcode" name="postcode" required maxLength={4} inputMode="numeric" className="field" />
+              <input
+                id="postcode"
+                name="postcode"
+                required
+                maxLength={4}
+                inputMode="numeric"
+                defaultValue={prefill.postcode ?? ''}
+                className="field"
+              />
             </div>
           </div>
         </div>
 
         <label className="mt-5 flex cursor-pointer items-start gap-3 border-[3px] border-ink bg-manila p-3">
-          <input type="checkbox" name="preferHomegirl" className="mt-1 h-4 w-4 accent-oxide" />
+          <input
+            type="checkbox"
+            name="preferHomegirl"
+            defaultChecked={prefill.preferHomegirl}
+            className="mt-1 h-4 w-4 accent-oxide"
+          />
           <span className="text-sm">
             <strong className="font-sign uppercase tracking-wide">
               I&apos;d prefer a woman tradesperson

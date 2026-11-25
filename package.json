@@ -18,8 +18,11 @@
     "db:restore": "bash scripts/db-restore.sh"
   },
   "dependencies": {
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@hookform/resolvers": "^5.2.2",
     "bcryptjs": "^3.0.3",
+    "lucide-react": "^1.80.0",
     "next": "14.2.15",
     "next-auth": "^5.0.0-beta.30",
     "pg": "^8.23.0",

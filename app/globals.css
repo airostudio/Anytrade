@@ -26,6 +26,24 @@
     @apply bg-safety text-ink;
   }
 
+  /* Modern Australian Heritage & Craft — scoped to the (home) route group so
+     the older pages keep their enamel-sign look until they are migrated. */
+  .home-scope {
+    @apply bg-alabaster font-ui text-charcoal antialiased;
+    background-image: none;
+  }
+  .home-scope :where(h1, h2, h3, h4) {
+    @apply font-ui tracking-normal;
+  }
+  .home-scope :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    @apply ring-0 ring-offset-0;
+    outline: 2px solid #d95d39;
+    outline-offset: 2px;
+  }
+  .home-scope ::selection {
+    @apply bg-terracotta/30 text-charcoal;
+  }
+
   /* Chunky, honest focus ring — no thin modern hairlines */
   :where(a, button, input, select, textarea):focus-visible {
     @apply outline-none ring-4 ring-safety/60 ring-offset-2 ring-offset-canvas;

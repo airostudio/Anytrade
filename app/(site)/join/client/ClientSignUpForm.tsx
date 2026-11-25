@@ -6,12 +6,13 @@ import FormMessage from '@/components/FormMessage'
 import { signUpClient } from '@/app/actions/auth'
 import { AU_STATES } from '@/lib/constants'
 
-export default function ClientSignUpForm() {
+export default function ClientSignUpForm({ next }: { next?: string }) {
   const [state, action] = useFormState(signUpClient, {})
 
   return (
     <form action={action} className="mt-6 space-y-4">
       <FormMessage error={state.error} />
+      {next ? <input type="hidden" name="next" value={next} /> : null}
 
       <div>
         <label className="label" htmlFor="name">

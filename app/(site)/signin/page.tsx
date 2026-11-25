@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { auth, homeForRole } from '@/lib/auth'
 import { Panel, Stamp } from '@/components/ui'
+import { safeNext } from '@/lib/trust'
 import SignInForm from './SignInForm'
 
 export const metadata: Metadata = { title: 'Sign in' }
@@ -35,7 +36,13 @@ export default async function SignInPage({
 
         <p className="mt-6 border-t-2 border-dashed border-ink/25 pt-5 text-sm text-ink-soft">
           No account yet?{' '}
-          <Link href="/join" className="font-bold underline underline-offset-4 hover:text-oxide">
+          <Link
+            href={
+              safeNext(searchParams.callbackUrl)
+                ? `/join/client?next=${encodeURIComponent(safeNext(searchParams.callbackUrl)!)}`
+                : '/join'
+            }
+            className="font-bold underline underline-offset-4 hover:text-oxide">
             Join AnyTrade
           </Link>
         </p>

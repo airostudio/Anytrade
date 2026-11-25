@@ -191,6 +191,28 @@ Admin is protected twice over: `middleware.ts` requires a signed-in `ADMIN`
 account, and `app/admin/(gated)/layout.tsx` requires the passcode. The unlock
 page sits outside the gated route group so it stays reachable.
 
+## The homepage design system
+
+The homepage (`app/(home)`) uses a newer look, "Modern Australian Heritage & Craft", scoped to the
+`(home)` route group via the `.home-scope` class. The inner pages still use the older enamel-sign
+style until they are migrated.
+
+- Tokens live in `tailwind.config.ts`: `charcoal`, `alabaster`, `terracotta`, `verified` (eucalyptus
+  green, used only for verification and trust marks) and `hairline`. Fonts are Fraunces (headings)
+  and Figtree (UI), self-hosted through `@fontsource-variable` so there is no outbound font request.
+- Components are in `components/home/`. Icons are Lucide stroke icons in tinted tiles, no emoji.
+- The Post-a-Job dialog (`PostJobProvider` / `PostJobModal`) is opened from the quick start, price
+  board, trade drawer, odd-jobs bundler and Homegirls card. It hands the draft to `/post-a-job` as query
+  parameters; a signed-out visitor goes through sign-in or sign-up with the destination preserved
+  (`safeNext` in `lib/trust.ts` only accepts same-site paths).
+- Claims and copy that must stay true to the platform live in `lib/trust.ts` (the four vetting points,
+  ABN checksum) and `lib/price-guide.ts` (guide prices; each trade's overall band matches
+  `TRADE_CATEGORIES`).
+- The footer prints the ABN only if it passes the official ATO checksum. Set the real one in
+  Admin, Settings, `site.abn`.
+- The Tradie spotlight shows real verified tradies, topped up with labelled SAMPLE profiles until three
+  exist (`SHOW_SAMPLE_TRADIES=0` turns the samples off).
+
 ## Where the Homegirls section is heading
 
 The Homegirls network currently lives inside AnyTrade as a passcode-gated
